@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DB Time Machine (with photos) – What Goes Around Comes Around… and Around</title>
+<style>
+:root{--bg:#1f1611;--card:#2c2018;--fg:#f3e6d0;--mut:#b9a58a;--acc:#e0a24a;--line:#5a4631;--hf:Georgia,serif;
+--ok:#6fcf97;--bad:#eb5757}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:background .8s,color .8s;overflow:hidden}
+h1,h2,h3,.hf{font-family:var(--hf);margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{height:56px;display:flex;align-items:center;gap:16px;padding:0 16px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 85%,#000);position:relative;z-index:30}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.brand b{font-family:var(--hf);color:var(--acc);font-size:18px;white-space:nowrap}
+#tabs button{white-space:nowrap}
+.brand span{font-size:11px;color:var(--mut)}
+#tabs{display:flex;gap:4px;margin-left:auto}
+#tabs button{background:none;border:1px solid transparent;padding:6px 12px;border-radius:8px;color:var(--mut)}
+#tabs button:hover{color:var(--fg)}
+#tabs button.on{border-color:var(--acc);color:var(--acc)}
+.prog{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.prog b{color:var(--acc)}
+.prog button{background:none;border:0;color:var(--mut);font-size:16px}
+.view{display:none;height:calc(100vh - 56px);position:relative;overflow:hidden}
+.view.on{display:block}
+.chip{display:inline-block;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:99px;border:1px solid currentColor;font-family:system-ui,sans-serif}
+.chip.root{color:#aaa}.chip.legacy{color:#c98b5a}.chip.winner{color:#6fcf97}.chip.absorbed{color:#5ab0ff}
+.chip.converging{color:#b99cff}.chip.niche{color:#f2c94c}.chip.dead{color:#eb5757}
+.btn{background:color-mix(in srgb,var(--acc) 18%,transparent);border:1px solid var(--acc);border-radius:8px;padding:5px 11px;color:var(--fg);margin:2px 2px 2px 0}
+.btn:hover{background:color-mix(in srgb,var(--acc) 40%,transparent)}
+.btn.ghost{background:none;border-color:var(--line);color:var(--mut)}
+.btn.sel{background:var(--acc);color:#000}
+.mut{color:var(--mut)}
+svg.art .a{fill:none;stroke:var(--acc);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+svg.art .f{fill:var(--acc)}
+svg.art .m{fill:none;stroke:var(--mut);stroke-width:2;stroke-linecap:round}
+svg.art text{fill:var(--acc);font-family:monospace;font-weight:700}
+
+/* timeline */
+.hero{position:absolute;left:0;right:260px;top:0;height:64px;padding:8px 24px;z-index:5;pointer-events:none}
+.hero h1{font-size:clamp(16px,2.2vw,26px);color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero p{margin:2px 0 0;color:var(--mut);font-size:13px}
+#tlwrap{position:absolute;left:0;right:0;top:64px;bottom:52px;overflow-x:auto;overflow-y:hidden;cursor:grab;scrollbar-width:none}
+#tlwrap.drag{cursor:grabbing}
+#track{position:relative;height:100%}
+.axis{position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;background:repeating-linear-gradient(90deg,var(--line) 0 14px,transparent 14px 22px);border-radius:3px}
+.era{position:absolute;top:0;height:22px;border-left:2px solid var(--c);background:linear-gradient(90deg,color-mix(in srgb,var(--c) 22%,transparent),transparent);font-size:12px;color:var(--c);padding:3px 8px;white-space:nowrap;overflow:hidden;font-family:var(--hf)}
+.nd{position:absolute;top:50%;width:0}
+.dot{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:3px solid var(--acc);z-index:2;transition:.2s}
+.nd.seen .dot{background:var(--acc)}
+.stem{position:absolute;left:-1px;width:2px;background:var(--acc);opacity:.5}
+.nd.up .stem{bottom:0;height:34px}.nd.dn .stem{top:0;height:34px}
+.card{position:absolute;left:-95px;width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 10px 10px;text-align:center;transition:transform .2s,border-color .2s,box-shadow .2s;color:var(--fg)}
+.nd.up .card{bottom:34px}.nd.dn .card{top:34px}
+.card:hover{transform:translateY(-4px) scale(1.04);border-color:var(--acc);box-shadow:0 8px 30px #0008;z-index:3}
+.card svg{width:100px;height:75px;display:block;margin:0 auto 2px}
+@media(max-height:760px){.card svg{width:64px;height:48px}.card{padding:5px 8px 7px}.card b{font-size:13px;margin-bottom:3px}.nd.up .stem,.nd.dn .stem{height:22px}.nd.up .card{bottom:22px}.nd.dn .card{top:22px}.hero p{display:none}}
+.card small{display:block;color:var(--acc);font-family:var(--hf);font-size:13px}
+.card b{display:block;font-size:14px;margin:1px 0 5px;line-height:1.2}
+@media(max-height:620px){.card svg{width:52px;height:39px}.card .chip{display:none}}
+@media(max-width:900px){.prog,.brand span{display:none}#tabs button{padding:6px 8px}.top{gap:8px}}
+#hud{position:absolute;right:20px;top:6px;text-align:right;font-family:var(--hf);font-size:26px;line-height:1.1;color:var(--acc);pointer-events:none;z-index:6}
+#hud small{display:block;font-size:12px;color:var(--mut)}
+#scrub{position:absolute;left:24px;bottom:16px;z-index:6;accent-color:var(--acc);width:calc(100% - 120px)}
+.zoom{position:absolute;right:16px;bottom:10px;z-index:6;display:flex;gap:4px;align-items:center}
+.zoom button{width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:18px}
+.zoom button:hover{border-color:var(--acc)}
+
+/* panel */
+.pic{margin:10px 0 4px;animation:picin .7s ease both}
+.pic img{width:100%;max-height:300px;object-fit:contain;background:#0006;border-radius:12px;border:1px solid var(--line);cursor:zoom-in;display:block}
+.pic figcaption{font-size:12px;color:var(--mut);margin-top:4px}
+.pic figcaption b{color:var(--fg);font-weight:600}
+@keyframes picin{from{opacity:0;transform:translateY(10px);filter:blur(8px)}}
+#lb{position:fixed;inset:0;background:#000d;z-index:90;display:none;align-items:center;justify-content:center;flex-direction:column;cursor:zoom-out;padding:20px}
+#lb.on{display:flex}
+#lb img{max-width:94vw;max-height:84vh;object-fit:contain;border-radius:8px;background:#fff1}
+#lb p{color:#ddd;font-size:13px;margin:10px 0 0;text-align:center;max-width:800px}
+#panel{position:fixed;top:0;right:0;height:100vh;width:min(580px,100%);background:var(--card);border-left:2px solid var(--acc);z-index:50;transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow-y:auto;padding:18px 20px 40px;color:var(--fg);box-shadow:-10px 0 40px #000a}
+#panel.on{transform:none}
+#panel .x{position:absolute;right:12px;top:10px;background:none;border:0;font-size:26px;color:var(--mut)}
+#panel .head{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+#panel .head svg{width:110px;height:82px;flex:none;background:color-mix(in srgb,var(--bg) 70%,transparent);border-radius:12px;padding:6px}
+#panel h2{font-size:26px;line-height:1.1;color:var(--fg)}
+#panel .yr{color:var(--acc);font-family:var(--hf);font-size:15px}
+.blk{margin:12px 0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--bg) 60%,transparent);border-left:4px solid var(--acc)}
+.blk h4{margin:0 0 2px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.blk p{margin:0}
+.blk.why{border-color:var(--ok)}.blk.why h4{color:var(--ok)}
+.blk.pain{border-color:var(--bad)}.blk.pain h4{color:var(--bad)}
+.demo{margin:12px 0;padding:12px;border:1px dashed var(--acc);border-radius:12px}
+.demo h4{margin:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+pre.code{background:#0007;color:#dfe;padding:10px 12px;border-radius:10px;overflow:auto;font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace;margin:6px 0}
+.meter{height:10px;border-radius:6px;background:#0006;overflow:hidden;margin:4px 0}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--bad),#f2c94c,var(--ok));transition:width 1s}
+.nav2{display:flex;justify-content:space-between;margin-top:16px}
+.fun{font-size:13px;color:var(--mut);font-style:italic}
+.row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+
+/* demo widgets */
+.cells{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin-bottom:8px}
+.cells i{font-style:normal;font-size:11px;text-align:center;border:1px solid var(--line);border-radius:4px;padding:3px 0;color:var(--mut)}
+.cells i.scan{background:#fff3;color:#fff}.cells i.hit{background:var(--ok);color:#000;border-color:var(--ok)}
+.tally{min-height:46px;display:flex;flex-wrap:wrap;gap:3px 6px;align-items:flex-end;margin:6px 0}
+.tally span{display:flex;gap:4px;position:relative;padding:0 2px}
+.tally i{display:block;width:5px;height:38px;background:#e8dcc0;border-radius:2px;animation:pop .25s}
+.tally span.five::after{content:"";position:absolute;left:-2px;right:-2px;top:18px;height:4px;background:#e8dcc0;transform:rotate(-22deg);border-radius:2px}
+@keyframes pop{from{transform:scaleY(0)}}
+table.t{border-collapse:collapse;font-size:13px;width:100%;margin:4px 0}
+table.t td,table.t th{border:1px solid var(--line);padding:3px 7px;text-align:left}
+table.t th{color:var(--acc);font-weight:600;background:#0004}
+table.t tr.hl td{background:color-mix(in srgb,var(--acc) 35%,transparent)}
+table.t td.null{color:#777;font-style:italic}
+table.t td.hl{background:color-mix(in srgb,var(--acc) 40%,transparent)}
+table.t tr.cl{cursor:pointer}
+.tree ul{list-style:none;margin:0;padding-left:18px;border-left:1px dotted var(--line)}
+.tree li{margin:2px 0}
+.tree li>span{cursor:pointer;padding:1px 6px;border-radius:6px;display:inline-block}
+.tree li>span:hover{background:#fff2}
+.tree li.leaf>span{cursor:default}
+.tree li.target>span{outline:1px dashed var(--ok)}
+.tree .kids{display:none}.tree li.open>.kids{display:block}
+.strip{display:flex;flex-wrap:wrap;gap:2px;margin:4px 0}
+.strip i{font-style:normal;font-size:9px;width:30px;text-align:center;padding:3px 0;border-radius:3px;border:1px solid var(--line);color:#888;transition:.3s}
+.strip i.rd{background:#fff3;color:#fff}.strip i.nd2{background:var(--acc);color:#000;border-color:var(--acc)}
+.punch{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;background:#e7d7a8;padding:8px;border-radius:6px;width:fit-content;color:#222}
+.punch i{width:22px;height:15px;font-style:normal;font-size:10px;text-align:center;line-height:15px;border-radius:2px;cursor:pointer;color:#8a7a50;user-select:none}
+.punch i.on{background:#1b140c;color:transparent}
+.mr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px}
+.mr div{background:#0004;border-radius:8px;padding:6px;min-height:60px}
+.mr b{color:var(--acc);display:block;margin-bottom:3px}
+.bk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.bk div{border:1px solid var(--line);border-radius:8px;padding:4px;font-size:11px;min-height:50px;transition:.3s}
+.bk div.on{background:color-mix(in srgb,var(--acc) 35%,transparent);border-color:var(--acc)}
+.bk code{display:block;color:#cfe;word-break:break-all}
+input[type=text],select{background:#0006;color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit;max-width:100%}
+input[type=range]{accent-color:var(--acc);width:100%}
+.grid8{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-width:320px}
+.grid8 i{aspect-ratio:1;font-style:normal;font-size:10px;display:flex;align-items:center;justify-content:center;border-radius:3px;cursor:pointer;color:#000a;outline:1px solid transparent}
+.grid8 i.s{outline-color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two>div{background:#0004;border-radius:8px;padding:8px;font-size:12px}
+.two h5{margin:0 0 4px;color:var(--acc);font-size:12px}
+.comp{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.comp i{font-style:normal;background:var(--ok);color:#000;border-radius:5px;padding:2px 6px;font-size:11px;animation:pop .3s}
+.cloudbox{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.cloudbox i{width:34px;height:22px;background:#5ab0ff;border-radius:4px;animation:pop .3s}
+.stack{display:flex;flex-direction:column-reverse;gap:3px;margin:6px 0}
+.stack div{background:color-mix(in srgb,var(--acc) 50%,transparent);border-radius:6px;padding:4px 8px;font-size:13px;animation:pop .35s}
+.stack div.base{background:var(--acc);color:#000;font-weight:700}
+svg text{font-family:system-ui,sans-serif}
+
+/* map */
+#mapsvg{width:100%;height:100%;display:block;cursor:grab;touch-action:none;background:#0b2a3a}
+#mapsvg.drag{cursor:grabbing}
+.rg{cursor:pointer;transition:opacity .6s}
+.rg:hover .bl{filter:brightness(1.25)}
+.rg text.lb{font-size:15px;font-weight:700;fill:#fff;paint-order:stroke;stroke:#0008;stroke-width:4px;text-anchor:middle;pointer-events:none}
+.rg text.sb{font-size:11px;fill:#fff;text-anchor:middle;paint-order:stroke;stroke:#0008;stroke-width:3px;pointer-events:none}
+.rg.hidden{opacity:0;pointer-events:none}
+.rg.dead .bl{filter:grayscale(1) brightness(.6)}
+.flag{display:none}.rg.seen .flag{display:block}
+.wave{fill:none;stroke:#fff;opacity:.08;stroke-width:2;stroke-dasharray:40 60;animation:wv 12s linear infinite}
+@keyframes wv{to{stroke-dashoffset:-400}}
+.smoke circle{fill:#ccc;opacity:0;animation:sm 4s infinite}
+@keyframes sm{0%{opacity:.7;transform:translateY(0) scale(.5)}100%{opacity:0;transform:translateY(-34px) scale(1.6)}}
+.br{fill:none;stroke:#fff;stroke-width:3;stroke-dasharray:6 8;opacity:.25;transition:.5s}
+.br.built{stroke:#ffd166;stroke-dasharray:none;opacity:1;stroke-width:5}
+.brl{font-size:11px;fill:#ffd166;text-anchor:middle;paint-order:stroke;stroke:#000a;stroke-width:3px;opacity:0;transition:.5s;pointer-events:none}
+.brl.built{opacity:1}
+.mapctl{position:absolute;left:14px;right:14px;bottom:12px;display:flex;gap:12px;align-items:center;background:#000a;border:1px solid var(--line);border-radius:12px;padding:8px 14px;z-index:6}
+.mapctl .yr{font-family:var(--hf);font-size:30px;color:var(--acc);min-width:76px}
+.mapctl input{flex:1}
+.mapnote{position:absolute;top:12px;left:14px;background:#000a;border-radius:10px;padding:8px 12px;font-size:13px;max-width:320px;z-index:6;color:#dde}
+.mapzoom{position:absolute;right:14px;top:12px;display:flex;flex-direction:column;gap:4px;z-index:6}
+.mapzoom button{width:34px;height:34px;border-radius:50%;background:#000a;border:1px solid var(--line)}
+#tip{position:fixed;pointer-events:none;background:#000d;color:#fff;padding:6px 10px;border-radius:8px;font-size:13px;z-index:70;display:none;max-width:240px}
+
+/* convergence */
+.pg{padding:20px 24px;overflow:auto;height:100%}
+.pg h2{font-size:26px;color:var(--acc)}
+.pg .q{color:var(--mut);max-width:760px;margin:6px 0 16px}
+.lane{display:grid;grid-template-columns:150px 1fr 130px;gap:10px;align-items:center;margin:7px 0;cursor:pointer}
+.lane:hover .nm{color:var(--acc)}
+.lane .nm{font-weight:600;font-size:14px}
+.lane .tr{position:relative;height:26px;background:#0004;border-radius:6px}
+.lane .bar{position:absolute;top:6px;height:14px;border-radius:7px;width:0;transition:width 1.6s cubic-bezier(.3,.8,.3,1)}
+.lane .mk{position:absolute;top:0;width:12px;height:26px;margin-left:-6px;opacity:0;transition:opacity .4s}
+.lane .mk::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;background:#ffd166}
+.lane .mk::after{content:"S";position:absolute;left:0;top:-1px;width:12px;font-size:9px;text-align:center;background:#ffd166;color:#000;border-radius:3px;font-weight:700}
+.lane .mk.show{opacity:1}
+.axisrow{display:grid;grid-template-columns:150px 1fr 130px;gap:10px;font-size:11px;color:var(--mut)}
+.axisrow div.ax{display:flex;justify-content:space-between}
+.legend{font-size:12px;color:var(--mut);margin:10px 0}
+
+/* games */
+.gtabs{display:flex;gap:6px;margin-bottom:14px}
+.gbox{max-width:760px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.scn{font-size:19px;font-family:var(--hf);margin:8px 0 14px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.opts button{padding:10px;border-radius:10px;background:#0004;border:1px solid var(--line)}
+.opts button:hover:not(:disabled){border-color:var(--acc)}
+.opts button.good{background:#2d6a4f;border-color:var(--ok)}.opts button.ok{background:#6b5b1d;border-color:#f2c94c}.opts button.bad{background:#6a2d2d;border-color:var(--bad)}
+.fb{min-height:48px;margin:12px 0;font-size:14px}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mt button{display:block;width:100%;margin:5px 0;padding:9px;border-radius:9px;background:#0004;border:1px solid var(--line)}
+.mt button.sel{border-color:var(--acc);background:#fff2}.mt button.done{background:#2d6a4f;border-color:var(--ok);pointer-events:none}
+.tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.tt button{background:#0004;border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.tt button svg{width:80px;height:60px}
+.tt button.done{border-color:var(--ok);background:#2d6a4f55;pointer-events:none}
+.tt button .n{display:block;font-size:20px;color:var(--ok);font-family:var(--hf)}
+.about{max-width:780px}
+.about li{margin:6px 0}
+@media(max-width:700px){.brand span,.prog{display:none}.lane,.axisrow{grid-template-columns:90px 1fr}.lane .rs,.axisrow div:last-child{display:none}.mt{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>DB Time Machine</b><span>What goes around comes around… and around</span></div>
+  <nav id="tabs">
+    <button data-v="timeline" class="on">Timeline</button>
+    <button data-v="map">Map</button>
+    <button data-v="conv">Convergence</button>
+    <button data-v="games">Games</button>
+    <button data-v="about">About</button>
+  </nav>
+  <div class="prog">Explored <b id="pc">0</b>/<span id="pt"></span><button id="rst" title="Reset progress">↺</button></div>
+</header>
+
+<section id="timeline" class="view on">
+  <div class="hero"><h1>From a notched bone to vector search</h1><p>Drag, scroll or use the slider. Click any stop. First five stops are <em>not</em> to scale (22,000 years).</p></div>
+  <div id="tlwrap"><div id="track"></div></div>
+  <div id="hud"></div>
+  <input id="scrub" type="range" min="0" max="1" step="0.01" value="0" aria-label="Time">
+  <div class="zoom"><button id="zo" title="Zoom out">−</button><button id="zi" title="Zoom in">+</button></div>
+</section>
+
+<section id="map" class="view">
+  <svg id="mapsvg" viewBox="0 0 1000 700"></svg>
+  <div class="mapnote"><b>The Database World.</b> Drag to pan, wheel to zoom, click a land. Move the slider and watch SQL build bridges.</div>
+  <div class="mapzoom"><button id="mz1">+</button><button id="mz2">−</button><button id="mz3" title="Reset">⌂</button></div>
+  <div class="mapctl"><button class="btn" id="mplay">▶ Play</button><span class="yr" id="myr">2025</span><input type="range" id="mslide" min="1960" max="2025" value="2025"><span class="mut" id="msq" style="min-width:150px;font-size:12px"></span></div>
+</section>
+
+<section id="conv" class="view"><div class="pg" id="convpg"></div></section>
+<section id="games" class="view"><div class="pg" id="gamespg"></div></section>
+<section id="about" class="view"><div class="pg about" id="aboutpg"></div></section>
+
+<aside id="panel" aria-live="polite"></aside>
+<div id="lb"></div>
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+let T=[];const later=(f,ms,iv)=>{const id=iv?setInterval(f,ms):setTimeout(f,ms);T.push(id);return id};
+const clearT=()=>{T.forEach(i=>{clearInterval(i);clearTimeout(i)});T=[]};
+
+/* ---------- themes per era ---------- */
+const TH={
+ clay:{name:'Stone & Clay',bg:'#1f1611',card:'#2c2018',fg:'#f3e6d0',mut:'#b9a58a',acc:'#e0a24a',line:'#5a4631',hf:'Georgia,serif'},
+ scroll:{name:'Scrolls & Ledgers',bg:'#14231f',card:'#1d322c',fg:'#e8efe3',mut:'#9db5a6',acc:'#c9b26b',line:'#3d5b50',hf:'Georgia,serif'},
+ paper:{name:'Paper & Punch Cards',bg:'#241a1c',card:'#33252a',fg:'#f5e6e0',mut:'#c3a7a0',acc:'#e0806f',line:'#614248',hf:'"Courier New",monospace'},
+ main:{name:'Mainframes & the Relational Revolution',bg:'#07130b',card:'#0e2214',fg:'#c8ffd9',mut:'#6fb98a',acc:'#4cf28a',line:'#1d5233',hf:'ui-monospace,Menlo,monospace'},
+ sql:{name:'SQL Everywhere',bg:'#111a2a',card:'#192639',fg:'#e6eefc',mut:'#8fa6c9',acc:'#5aa9ff',line:'#30486c',hf:'system-ui,sans-serif'},
+ big:{name:'NoSQL & Big Data Boom',bg:'#201522',card:'#2f1f33',fg:'#fbe9f0',mut:'#c5a0b5',acc:'#ff8a4c',line:'#5b3a5f',hf:'system-ui,sans-serif'},
+ cloud:{name:'Cloud & NewSQL',bg:'#0d1d2b',card:'#142d42',fg:'#e8f6ff',mut:'#8fb8d4',acc:'#4fd1e0',line:'#2d5774',hf:'system-ui,sans-serif'},
+ ai:{name:'The AI Era',bg:'#0e0b1f',card:'#1a1538',fg:'#efe9ff',mut:'#a99bd6',acc:'#b77bff',line:'#43367a',hf:'system-ui,sans-serif'}
+};
+const eraOf=y=>y<-1000?'clay':y<1500?'scroll':y<1960?'paper':y<1980?'main':y<2000?'sql':y<2012?'big':y<2022?'cloud':'ai';
+const vars=(el,t)=>{const s=el.style;s.setProperty('--bg',t.bg);s.setProperty('--card',t.card);s.setProperty('--fg',t.fg);s.setProperty('--mut',t.mut);s.setProperty('--acc',t.acc);s.setProperty('--line',t.line);s.setProperty('--hf',t.hf)};
+const thStyle=t=>`--bg:${t.bg};--card:${t.card};--fg:${t.fg};--mut:${t.mut};--acc:${t.acc};--line:${t.line};--hf:${t.hf}`;
+let curEra='';const setTheme=e=>{if(e===curEra)return;curEra=e;vars(document.documentElement,TH[e])};
+const VL={root:'Ancestor',legacy:'Legacy',winner:'Relational wins',absorbed:'Absorbed into SQL',converging:'Converging to SQL',niche:'Niche survivor',dead:'Dead end'};
+
+/* ---------- original SVG artwork (simplified, 120x90) ---------- */
+const ART={
+tally:'<rect class="a" x="12" y="34" width="96" height="22" rx="11"/><path class="a" d="M30 34v22M40 38v14M50 34v22M60 38v14M70 34v22M84 38v14M94 34v22"/><circle class="f" cx="20" cy="45" r="2"/>',
+tokens:'<path class="a" d="M16 68L32 30L48 68Z"/><circle class="a" cx="68" cy="50" r="15"/><rect class="a" x="88" y="34" width="22" height="30" rx="5"/><path class="m" d="M20 78h90"/>',
+tablet:'<rect class="a" x="20" y="10" width="80" height="70" rx="12"/><path class="m" d="M32 30h56M32 46h56M32 62h56M60 20v52"/><path class="f" d="M38 25l6 4-6 4zM70 41l6 4-6 4zM42 57l6 4-6 4z"/>',
+pinakes:'<path class="a" d="M10 78h100M18 72V38M42 72V38M66 72V38M90 72V38M10 38h100L60 12Z"/><path class="m" d="M30 56h5M54 56h5M78 56h5"/>',
+domesday:'<path class="a" d="M60 22Q36 12 14 22V72Q36 62 60 72Q84 62 106 72V22Q84 12 60 22ZM60 22V72"/><path class="m" d="M24 34h26M24 44h26M24 54h26M70 34h26M70 44h26M70 54h26"/>',
+cards:'<rect class="a" x="14" y="26" width="56" height="42" rx="5" transform="rotate(-8 42 47)"/><rect class="a" x="30" y="22" width="56" height="42" rx="5"/><rect class="a" x="48" y="26" width="56" height="42" rx="5" transform="rotate(8 76 47)"/><path class="m" d="M56 38h20M56 48h30"/>',
+punch:'<rect class="a" x="10" y="18" width="100" height="54" rx="5"/><path class="f" d="M22 30h6v8h-6zM36 46h6v8h-6zM50 30h6v8h-6zM64 54h6v8h-6zM78 38h6v8h-6zM92 30h6v8h-6zM92 54h6v8h-6zM22 54h6v8h-6z"/><path class="a" d="M10 18l12-0"/>',
+disk:'<ellipse class="a" cx="56" cy="62" rx="40" ry="12"/><ellipse class="a" cx="56" cy="46" rx="40" ry="12"/><ellipse class="a" cx="56" cy="30" rx="40" ry="12"/><path class="a" d="M96 20L114 50"/><circle class="f" cx="114" cy="52" r="3"/>',
+machine:'<rect class="a" x="16" y="24" width="88" height="46" rx="6"/><path class="m" d="M30 36h30M30 48h18"/><path class="a" d="M78 34l14 12-14 12z"/><path class="m" d="M12 76h96"/>',
+text:'<circle class="a" cx="50" cy="40" r="24"/><path class="a" d="M68 58L100 82"/><path class="m" d="M36 32h28M36 40h28M36 48h18"/>',
+hier:'<circle class="a" cx="60" cy="16" r="8"/><circle class="a" cx="32" cy="48" r="8"/><circle class="a" cx="88" cy="48" r="8"/><path class="a" d="M55 23L36 41M65 23L84 41"/><path class="a" d="M26 56L18 72M38 56L46 72M82 56L74 72M94 56L102 72"/>',
+net:'<circle class="a" cx="24" cy="24" r="8"/><circle class="a" cx="96" cy="24" r="8"/><circle class="a" cx="60" cy="48" r="8"/><circle class="a" cx="24" cy="72" r="8"/><circle class="a" cx="96" cy="72" r="8"/><path class="a" d="M31 28L54 44M89 28L66 44M54 52L31 68M66 52L89 68M32 24h56M32 72h56"/>',
+rel:'<rect class="a" x="14" y="16" width="92" height="58" rx="6"/><path class="a" d="M14 32h92"/><path class="m" d="M44 16v58M76 16v58M14 46h92M14 60h92"/>',
+sql:'<text x="60" y="56" text-anchor="middle" font-size="34" class="f">SQL</text><path class="a" d="M16 68h88"/>',
+er:'<rect class="a" x="8" y="30" width="34" height="28" rx="4"/><rect class="a" x="78" y="30" width="34" height="28" rx="4"/><path class="a" d="M60 24L74 44L60 64L46 44Z"/><path class="m" d="M42 44h4M74 44h4"/>',
+arr:'<path class="a" d="M20 30h44v44H20zM32 20h44v44M44 10h44v44"/><path class="m" d="M20 52h44M42 30v44"/>',
+oo:'<path class="a" d="M60 10L100 32V58L60 80L20 58V32Z"/><path class="m" d="M60 45L100 32M60 45L20 32M60 45V80"/><circle class="f" cx="60" cy="45" r="4"/>',
+xml:'<text x="60" y="56" text-anchor="middle" font-size="36" class="f">&lt;/&gt;</text>',
+mr:'<path class="a" d="M10 16L50 44M10 44H50M10 72L50 44"/><circle class="a" cx="58" cy="44" r="8"/><path class="a" d="M66 44H110M100 36l10 8-10 8"/>',
+cf:'<path class="a" d="M12 18h96v54H12z"/><path class="m" d="M12 36h96M12 54h96"/><path class="f" d="M18 22h22v10H18zM46 22h22v10H46zM18 40h22v10H18zM82 40h22v10H82zM46 58h22v10H46zM82 58h22v10H82z"/>',
+col:'<path class="a" d="M16 74V30M40 74V14M64 74V44M88 74V22"/><path class="m" d="M10 78h100"/><rect class="f" x="34" y="14" width="12" height="60" rx="2"/>',
+kv:'<circle class="a" cx="26" cy="45" r="14"/><path class="a" d="M40 45h30"/><path class="a" d="M62 38l8 7-8 7"/><rect class="a" x="76" y="30" width="34" height="30" rx="5"/><path class="f" d="M84 40h18v4H84zM84 48h12v4H84z"/>',
+graph:'<circle class="a" cx="30" cy="22" r="9"/><circle class="a" cx="92" cy="30" r="9"/><circle class="a" cx="56" cy="66" r="9"/><circle class="f" cx="60" cy="38" r="5"/><path class="a" d="M38 26L56 36M86 36L65 40M58 43L56 57M36 28L50 60"/>',
+doc:'<text x="60" y="58" text-anchor="middle" font-size="44" class="f">{ }</text>',
+newsql:'<path class="a" d="M64 8L34 50H56L48 82L84 36H62Z"/><path class="m" d="M10 20h20M90 66h20"/>',
+cloud:'<path class="a" d="M32 66Q10 66 14 48Q18 34 36 38Q42 14 66 20Q86 24 84 40Q108 40 104 58Q102 66 90 66Z"/><path class="m" d="M40 78h40"/>',
+vec:'<circle class="f" cx="30" cy="62" r="4"/><circle class="f" cx="42" cy="50" r="4"/><circle class="f" cx="22" cy="40" r="4"/><circle class="f" cx="86" cy="26" r="4"/><circle class="f" cx="98" cy="40" r="4"/><circle class="a" cx="34" cy="48" r="26"/><path class="a" d="M60 20l18 8"/><path class="m" d="M8 80h104M8 80V10"/>',
+chain:'<rect class="a" x="10" y="30" width="30" height="30" rx="5"/><rect class="a" x="45" y="30" width="30" height="30" rx="5"/><rect class="a" x="80" y="30" width="30" height="30" rx="5"/><path class="a" d="M40 45h5M75 45h5"/>',
+now:'<path class="a" d="M24 44a36 30 0 0 1 66-12M96 46a36 30 0 0 1-66 12"/><path class="a" d="M86 22l6 12-14 2M34 68l-6-12 14-2"/><text x="60" y="52" text-anchor="middle" font-size="18" class="f">SQL</text>'
+};
+const svgArt=k=>`<svg class="art" viewBox="0 0 120 90" aria-hidden="true">${ART[k]}</svg>`;
+
+/* ---------- the milestones ---------- */
+const N=[
+{id:'tally',y:-20000,yl:'≈ 20,000 BCE',t:'Tally bone',v:'root',art:'tally',demo:'tally',score:null,
+ pain:'Remember “how many” – kills, moons, days – without a head big enough to hold it.',
+ idea:'One notch per item, carved on bone. Storage outside the brain.',
+ why:'A counter is a table with one column and no names. Every later model adds labels.',
+ code:'bone = ||||| ||| ||||\n// count = 12. Of what? The bone does not say.',
+ fun:'The Ishango bone (Congo) carries grouped notches, roughly 20,000 years old.'},
+{id:'tokens',y:-8000,yl:'≈ 8000 BCE',t:'Clay tokens',v:'root',art:'tokens',demo:'tokens',score:null,
+ pain:'A count is useless without “what” and “whose”.',
+ idea:'Shapes carry types: cone = small measure of grain, sphere = large measure, cylinder = animal. Sealed in clay envelopes.',
+ why:'Type + quantity = the first schema. The marks pressed on the outside of the envelope are the first index.',
+ code:'envelope = [ cone, cone, cone, sphere, cylinder ]\n// 3 small grain, 1 large grain, 1 animal',
+ fun:'Flattening those impressions into clay is how writing is thought to have begun (Schmandt-Besserat).'},
+{id:'tablet',y:-3300,yl:'≈ 3300 BCE',t:'Clay tablet ledger',v:'root',art:'tablet',demo:'tablet',score:null,
+ pain:'Tokens in envelopes are hard to audit, sort and store.',
+ idea:'Press records flat into clay: one line per transaction, columns for who / what / how much.',
+ why:'This is literally a table. Writing was invented for bookkeeping, so the relational shape is ~5,000 years old.',
+ code:'| who    | what   | qty |\n| Ur-Nin | barley |  30 |\n| Lu-Gal | sheep  |  12 |',
+ fun:'Some of the oldest known texts from Uruk are accounting records, not poetry.'},
+{id:'pinakes',y:-245,yl:'≈ 245 BCE',t:'Pinakes of Alexandria',v:'root',art:'pinakes',demo:['seek',{a:'Walk the shelves',b:'Look in the catalog',n:20}],score:null,
+ pain:'Hundreds of thousands of scrolls. Nobody can walk every shelf to find one.',
+ idea:'Callimachus compiles a catalog: author, title, subject, location. A structure that is separate from the data.',
+ why:'Index separate from data: the same idea as B-trees and inverted indexes. Lookup becomes O(log n), not O(n).',
+ code:'{ author:"Homer", title:"Iliad", subject:"epic", shelf:"B-4" }',
+ fun:'Collection-size estimates for the Library vary widely; the catalog idea is the lasting part.'},
+{id:'domesday',y:1086,yl:'1086',t:'Domesday Book',v:'root',art:'domesday',score:null,
+ pain:'A king wants to know what he owns and what he can tax.',
+ idea:'Ask every manor the same questions: owner, land, plough teams, livestock, value.',
+ why:'Same fields for every record = schema-on-write, enforced by commissioners instead of a DBMS.',
+ code:'{ manor:"Hinxton",\n  holder:"Count Alan",\n  plough_teams:4,\n  value:"£8" }   // illustrative',
+ fun:'A national census-style survey, done by hand in about a year.'},
+{id:'cards',y:1791,yl:'1791',t:'Card catalog',v:'root',art:'cards',score:null,
+ pain:'Bound catalogs cannot insert an entry in the middle.',
+ idea:'One record per card. France’s revolutionary catalog famously reused the backs of playing cards.',
+ why:'Row = card. Insert, delete and re-sort without rewriting the book: the first updatable database.',
+ code:'card { subject, author, title, shelf }\ncards.sort_by(author)',
+ fun:'Dewey’s decimal system (1876) added the “classification index”.'},
+{id:'punch',y:1890,yl:'1890',t:'Hollerith punch cards',v:'root',art:'punch',demo:'punch',score:null,
+ pain:'The 1880 US census took about 8 years to tabulate. 1890 would be worse.',
+ idea:'Holes encode attributes. Machines count and cross-tabulate cards.',
+ why:'The first machine queries: filter + count (a GROUP BY). Data lived in the format of the machine.',
+ code:'col 1-2 : age band\ncol 3   : sex\ncol 4-5 : state\ncount(cards where col3 = 2)',
+ fun:'Hollerith’s company later became part of IBM.'},
+{id:'disk',y:1956,yl:'1956',t:'RAMAC disk',v:'root',art:'disk',demo:['seek',{a:'Tape: wind forward',b:'Disk: jump',n:20}],score:null,
+ pain:'Tape is sequential. To read record #9000 you wind past 8,999.',
+ idea:'IBM RAMAC: spinning platters; jump straight to any record.',
+ why:'Random access makes “navigate to a record” possible, and sets off the 1960s fight about how to navigate.',
+ code:'read(record 9000)\n// tape : 8999 skips\n// disk : 1 seek',
+ fun:'RAMAC stored about 5 million characters in a cabinet the size of two refrigerators.'},
+{id:'text',y:1965,yl:'1960s',t:'SMART text search',v:'niche',art:'text',demo:'text',score:55,
+ pain:'Find the document about X in a pile of text without reading all of it.',
+ idea:'Salton’s SMART: break documents into a “bag of words”, build an inverted index, rank by similarity.',
+ why:'Text has no data model, so a DBMS extracts structure (tokens, indexes). RDBMSs ship full-text indexes now, but Lucene / Elasticsearch still live beside them.',
+ sql:'Full-text indexes in Oracle, SQL Server, MySQL, Postgres. Often clunky and vendor-specific.',
+ code:'"cat" -> [doc1, doc2]\n"mat" -> [doc1, doc4]\n"cat" AND "mat" -> [doc1]',
+ fun:'The paper’s advice: run a search engine for text fields in a polystore, until RDBMS search gets better.'},
+{id:'hier',y:1966,yl:'1966',t:'IMS (hierarchical)',v:'legacy',art:'hier',demo:'hier',score:5,
+ pain:'Apollo program: millions of parts. “Which parts are in this rocket stage?”, fast.',
+ idea:'Data as trees: parent → children. Navigate from the root.',
+ why:'Fast for the one path you planned. Shared data is duplicated, and changing the structure breaks programs. Replaced by relational, but IMS still runs banks (data is sticky).',
+ code:'Rocket\n └ Stage1\n    └ Engine F-1\n       └ Fuel valve',
+ fun:'Nobody starts a new app on IMS, but plenty of old ones are too risky to migrate.'},
+{id:'net',y:1969,yl:'1969–71',t:'CODASYL (network)',v:'legacy',art:'net',demo:'net',score:5,
+ pain:'Trees cannot model many-to-many: a part used in many assemblies.',
+ idea:'Records linked by pointer sets (a graph). The programmer navigates: FIND NEXT … WITHIN set.',
+ why:'Powerful but low level: you are the query planner. Codd’s relational model hid the pointers. They returned in graph DBs (Neo4j chases pointers, too).',
+ code:'FIND FIRST supplier\nFIND NEXT part WITHIN supplies\nFIND OWNER WITHIN supplies',
+ fun:'Charles Bachman won the 1973 Turing Award for this line of work.'},
+{id:'rel',y:1970,yl:'1970',t:'Relational model',v:'winner',art:'rel',demo:'rel',score:100,
+ pain:'Change the disk layout and every program breaks. New questions need new code.',
+ idea:'Codd: data = sets of tuples (tables). Logic is independent of storage (data independence). Query with a high-level language.',
+ why:'Simple model + declarative queries + an optimizer. Everything after is measured against it.',
+ code:'Customer(id, name)\nOrder(id, customer_id, item, total)\n-- link by value, not by pointer',
+ fun:'Codd’s 1970 paper: “A Relational Model of Data for Large Shared Data Banks”.'},
+{id:'sql',y:1974,yl:'1974–79',t:'SQL & System R',v:'winner',art:'sql',demo:'sql',score:100,
+ pain:'Relational algebra is for mathematicians.',
+ idea:'SEQUEL / SQL (IBM System R): English-like, declarative. Say what you want, not how. Oracle ships it in 1979.',
+ why:'The optimizer got better for 50 years and is the hardest part of a DBMS. Many NoSQL systems skipped it, then came back.',
+ code:'SELECT name\nFROM customer c JOIN orders o ON o.customer_id = c.id\nWHERE o.total > 100;',
+ fun:'Berkeley’s Ingres used QUEL instead. SQL won the language war.'},
+{id:'er',y:1976,yl:'1976–80s',t:'ER & semantic models',v:'absorbed',art:'er',score:90,
+ pain:'How do you design the tables? Business people think in things and relationships.',
+ idea:'Chen’s entity-relationship diagram. “Semantic” and extended-relational models follow in the 80s.',
+ why:'ER became the design tool that maps straight to tables. Semantic models later got re-badged as “graph-relational” (same idea, says the paper).',
+ code:'Customer 1──places──∞ Order ∞──contains──∞ Product\n=> 3 tables + 1 link table',
+ fun:'Every database diagram you have drawn on a whiteboard descends from this.'},
+{id:'machine',y:1981,yl:'1981',t:'Database machines',v:'dead',art:'machine',score:10,
+ pain:'Early SQL was slow on slow CPUs.',
+ idea:'Custom hardware accelerators: Britton-Lee IDM/500, Teradata’s Y-net…',
+ why:'Not cost-effective; software on commodity CPUs caught up. Later FPGA / GPU attempts mostly the same story. Only cloud giants can afford custom silicon.',
+ code:'query -> [CPU + accelerator chip]\n// offloads a small part of execution',
+ fun:'The paper predicts many more attempts “over the next two decades”.'},
+{id:'arr',y:1985,yl:'1980s',t:'Array databases',v:'niche',art:'arr',demo:'array',score:45,
+ pain:'Scientists store grids: (lat, lon, time) → measurements. Tables flatten them awkwardly.',
+ idea:'Dense, ordered arrays addressed by integer coordinates. Roots: APL (1960s), PICDMS (1980s), Rasdaman, SciDB; formats HDF5 and NetCDF.',
+ why:'Niche but sticky in science. SQL got arrays (1999 / 2003) and true multi-dimensional arrays (SQL/MDA, 2023, inspired by Rasdaman). Engines still struggle.',
+ sql:'SQL:1999 arrays · SQL:2003 nested arrays · SQL:2023 SQL/MDA',
+ code:'A[lat, lon, time] = [temp, humidity, …]',
+ fun:'No major cloud provider sells a hosted array DBMS, says the paper.'},
+{id:'oo',y:1988,yl:'late 1980s',t:'Object-oriented DBs',v:'absorbed',art:'oo',demo:'mismatch',score:80,
+ pain:'Impedance mismatch: apps think in objects, databases in rows.',
+ idea:'Store objects directly, with pointers and methods (ObjectStore, Versant).',
+ why:'Failed in the market. The good part, user-defined types, was absorbed as object-relational (Postgres). Document DBs would later repeat the pitch.',
+ sql:'SQL:1999 user-defined types · object-relational',
+ code:'Customer { name, orders: [Order{ id, items:[…] }] }',
+ fun:'ORMs exist precisely because this mismatch never went away.'},
+{id:'xml',y:1998,yl:'late 1990s',t:'XML databases',v:'absorbed',art:'xml',score:85,
+ pain:'Exchange rich, tree-shaped documents between companies and across the web.',
+ idea:'Store XML natively, query with XPath / XQuery.',
+ why:'The 2005 paper predicted XML DBs would not displace RDBMSs. SQL/XML (2003) soaked it up, then JSON replaced XML anyway.',
+ sql:'SQL/XML (2003)',
+ code:'<customer>\n  <name>Ada</name>\n  <orders><order id="1"/></orders>\n</customer>',
+ fun:'Same debate, new syntax: see “document databases” below.'},
+{id:'mr',y:2003,yl:'2003–2014',t:'MapReduce / Hadoop',v:'dead',art:'mr',demo:'mr',score:30,
+ pain:'Google must process the whole web crawl on thousands of cheap machines that fail daily.',
+ idea:'Write map() and reduce(); the framework handles distribution and failures. Yahoo clones it as Hadoop (2005).',
+ why:'Roughly SELECT map() FROM crawl GROUP BY reduce(). It was batch-only and awkward. Google moved crawling to Bigtable and dropped MR by 2014; SQL engines (Hive → Presto, Impala, Spark SQL) replaced it.',
+ sql:'Hive, Presto, Impala, Spark SQL',
+ code:'map("to be")   -> (to,1) (be,1)\nreduce(to,[1,1]) -> (to,2)',
+ fun:'A 2009 study showed parallel DBMSs beating Hadoop; by 2010s the Hadoop market cratered.'},
+{id:'cf',y:2004,yl:'2004',t:'Bigtable (column family)',v:'niche',art:'cf',demo:'cf',score:40,
+ pain:'Google needs interactive, real-time updates of a gigantic web table. MR is batch.',
+ idea:'Rows with sparse, flexible columns, sorted by key. No joins, no secondary indexes. Cassandra and HBase copy it.',
+ why:'Not columnar! It is a document model with one level of nesting. Google itself rebuilt on Spanner (SQL). Cassandra got CQL; HBase recommends Phoenix SQL.',
+ sql:'Cassandra CQL · HBase Phoenix',
+ code:'User1000 -> { name:"Alice", accounts:[123,456], email:"x@x.edu" }\nUser1001 -> { name:"Bob",   email:["y@y.org","z@z.com"] }',
+ fun:'“Without Google, this paper would not be talking about this category.”'},
+{id:'col',y:2005,yl:'2005 →',t:'Columnar warehouses',v:'winner',art:'col',demo:'columnar',score:100,
+ pain:'Analytics read a few columns of billions of rows. Row stores drag everything along.',
+ idea:'Store each column together. Compress well, run vectorized loops. C-Store → Vertica; MonetDB; Redshift, BigQuery, Snowflake.',
+ why:'Still relational and SQL, just a new engine. Every data-warehouse vendor converted. A genuine breakthrough inside the model.',
+ code:'price: [9, 4, 12, 7, 5, 8]\ncity : [Rome, Oslo, Rome, …]\nSUM(price) reads one list',
+ fun:'Star schema (Kimball) + columnar storage: the data-warehouse recipe.'},
+{id:'kv',y:2007,yl:'2003–07',t:'Key-value stores',v:'niche',art:'kv',demo:'kv',score:60,
+ pain:'Web-scale caches and shopping carts need predictable speed and always-on writes.',
+ idea:'Memcached (2003), Dynamo (2007), Redis: get(key) / put(key, blob). The DB does not look inside the value.',
+ why:'A 2-column table: any RDBMS can emulate it, the reverse is not true. DynamoDB drifted to JSON + SQL-like queries. Embedded KVs (RocksDB, WiredTiger) now serve as storage engines inside other DBMSs.',
+ sql:'DynamoDB PartiQL · or just a 2-column table',
+ code:'put("user:1", "{…blob…}")\nget("user:1")\n// no "find users where city=Paris"',
+ fun:'MongoDB swapped to WiredTiger (a KV store) as its engine in 2014.'},
+{id:'graph',y:2007.5,yl:'2007 →',t:'Graph databases',v:'converging',art:'graph',demo:'graph',score:65,
+ pain:'“Friends of friends of friends” needs many joins. Slow and awkward in SQL.',
+ idea:'Nodes and edges with properties; follow pointers (Neo4j); Cypher / Gremlin query languages.',
+ why:'A graph fits in two tables (Node, Edge). SQL/PGQ (SQL:2023) adds graph patterns, and DuckDB’s PGQ beat a leading graph DB by up to 10× (paper). Heavy analytics still favors in-memory special structures.',
+ sql:'SQL/PGQ (SQL:2023)',
+ code:'Node(id, data)\nEdge(src, dst, data)\nMATCH (a)-[:FRIEND]->{1,3}(b)   -- SQL/PGQ',
+ fun:'Neo4j’s pointer-chasing echoes CODASYL from 1969.'},
+{id:'doc',y:2009,yl:'2009 →',t:'Document DBs / NoSQL',v:'converging',art:'doc',demo:'doc',score:80,
+ pain:'2000s RDBMSs didn’t scale out; JSON was everywhere; schema changes hurt.',
+ idea:'Store nested JSON documents, “schema later”, record-at-a-time API, weak transactions (BASE). MongoDB, CouchDB.',
+ why:'Same pitch as OO and XML before. Denormalizing duplicates data and loses data independence. By the late 2010s nearly all NoSQL added SQL-ish languages and ACID; MongoDB the last holdout (SQL for Atlas, 2021).',
+ sql:'SQL:2016 JSON · PartiQL, SQL++, CQL, AQL',
+ code:'{ "name": "Ada",\n  "orders": [ { "id": 123, "items": [..] } ] }',
+ fun:'NoSQL went from “do not use SQL, it is too slow” to “Not only SQL”.'},
+{id:'chain',y:2009.3,yl:'2009 →',t:'Blockchain databases',v:'dead',art:'chain',score:5,
+ pain:'Share data among parties who trust nobody.',
+ idea:'Decentralized, append-only ledger with Merkle-tree checksums; BFT commit protocol.',
+ why:'About five orders of magnitude slower, and real businesses mostly trust each other. The paper: “an inefficient technology looking for an application”. Exchanges run on RDBMSs.',
+ code:'block[n] = { txs, hash(block[n-1]) }',
+ fun:'Amazon QLDB offered the immutable-log idea without decentralization.'},
+{id:'newsql',y:2012,yl:'2011–12',t:'NewSQL & Spanner',v:'winner',art:'newsql',demo:'newsql',score:98,
+ pain:'Want NoSQL scale without losing SQL and ACID transactions.',
+ idea:'Distributed relational DBs: H-Store / VoltDB, Spanner, then CockroachDB, TiDB, YugabyteDB.',
+ why:'It is the relational model scaled out. Google discarded eventual consistency for real transactions with Spanner (2012). NoSQL vendors (Mongo, Cassandra, DynamoDB) added transactions too.',
+ code:'BEGIN;\n UPDATE acct SET bal=bal-50 WHERE id=1;  -- node A\n UPDATE acct SET bal=bal+50 WHERE id=2;  -- node B\nCOMMIT;',
+ fun:'Adoption was modest because “good enough” incumbents are hard to replace.'},
+{id:'cloud',y:2013,yl:'2013 →',t:'Cloud & lakehouse',v:'winner',art:'cloud',demo:'cloud',score:90,
+ pain:'Networks got faster than disks; fixed clusters sit idle.',
+ idea:'Separate compute from storage (object store like S3), serverless queries, open files (Parquet, ORC), table formats (Delta, Iceberg, Hudi) = lakehouse.',
+ why:'1970s time-sharing returns. The data lake gets governance, SQL stays on top, and DataFrames serve notebook users.',
+ code:'s3://lake/sales/part-0001.parquet\nSELECT region, SUM(amt) FROM sales GROUP BY region;',
+ fun:'The paper predicts shared-disk will dominate; shared-nothing will not resurface.'},
+{id:'vec',y:2022,yl:'2019 →',t:'Vector databases',v:'converging',art:'vec',demo:'vector',score:70,
+ pain:'Search by meaning: LLM embeddings need nearest-neighbor lookup.',
+ idea:'Store embedding vectors; index with approximate nearest neighbor (HNSW, DiskANN, FAISS). Pinecone, Milvus, Weaviate.',
+ why:'A document DB plus a special index: a feature, not a new architecture. Within about a year of ChatGPT, Oracle, SingleStore, ClickHouse, Postgres (pgvector) all had vector indexes.',
+ sql:'pgvector · vector indexes in Oracle, SingleStore, ClickHouse (2023)',
+ code:'(title, date, [0.12, -0.8, 0.33, …])\nORDER BY distance(embedding, :q) LIMIT 5',
+ fun:'JSON took RDBMSs years to absorb; vector search took months.'},
+{id:'now',y:2023,yl:'2023 →',t:'SQL absorbs again',v:'winner',art:'now',demo:'absorb',score:100,
+ pain:'Seven decades of “SQL is dead”.',
+ idea:'Each “new” model is eventually a type, an index or an extension. SQL grows to include them.',
+ why:'The paper’s forecast: more of the same. The relational model with an extendable type system keeps absorbing the good ideas.',
+ code:'SQL:1999 arrays · 2003 XML · 2016 JSON\nSQL:2023 graphs (PGQ) · multi-dim arrays (MDA)',
+ fun:'Even LLM-written queries are mostly… SQL.'}
+].map(n=>({...n,era:eraOf(n.y)})).sort((a,b)=>a.y-b.y);
+const byId=Object.fromEntries(N.map(n=>[n.id,n]));
+
+/* ---------- progress ---------- */
+let seen=new Set();try{seen=new Set(JSON.parse(localStorage.getItem('dbtm')||'[]'))}catch(e){}
+const saveSeen=()=>{try{localStorage.setItem('dbtm',JSON.stringify([...seen]))}catch(e){}};
+const updProg=()=>{$('#pc').textContent=seen.size;$('#pt').textContent=N.length;$$('.nd').forEach(e=>e.classList.toggle('seen',seen.has(e.dataset.id)));$$('.rg').forEach(e=>e.classList.toggle('seen',seen.has(e.dataset.id)))};
+$('#rst').onclick=()=>{seen.clear();saveSeen();updProg()};
+
+/* ---------- demos ---------- */
+const D={};
+const tbl=(h,rows,cl)=>`<table class="t"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr${cl?` class="${cl(r)}"`:''}>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</table>`;
+
+D.tally=b=>{let n=0;b.innerHTML=`<div class="tally"></div><button class="btn">Cut a notch</button><button class="btn ghost">Reset</button><p class="mut">Count: <b class="c">0</b>. Count of what? The bone can’t tell you.</p>`;
+ const t=$('.tally',b),draw=()=>{let h='';for(let g=0;g<Math.floor(n/5);g++)h+='<span class="five"><i></i><i></i><i></i><i></i></span>';const r=n%5;if(r)h+='<span>'+'<i></i>'.repeat(r)+'</span>';t.innerHTML=h;$('.c',b).textContent=n};
+ const bs=$$('button',b);bs[0].onclick=()=>{n++;draw()};bs[1].onclick=()=>{n=0;draw()};draw()};
+
+D.tokens=b=>{const c={'▲':0,'●':0,'▮':0},nm={'▲':'small grain','●':'large grain','▮':'animal'};let sealed=false;
+ b.innerHTML=`<div class="row">${Object.keys(c).map(k=>`<button class="btn" data-k="${k}">+ ${k} ${nm[k]}</button>`).join('')}<button class="btn ghost" id="sl">Seal envelope</button></div><div class="out" style="margin-top:8px;font-size:20px"></div>`;
+ const o=$('.out',b),draw=()=>{const inside=Object.keys(c).map(k=>k.repeat(c[k])).join(' ');const outside=Object.keys(c).filter(k=>c[k]).map(k=>k+'×'+c[k]).join('  ');
+  o.innerHTML=`<div class="mut" style="font-size:12px">${sealed?'Sealed – contents hidden':'Inside'}</div><div>${sealed?'▒▒▒':inside||'(empty)'}</div><div class="mut" style="font-size:12px;margin-top:6px">Impressions on the outside (the index)</div><div>${outside||'–'}</div>`};
+ $$('[data-k]',b).forEach(x=>x.onclick=()=>{if(sealed)return;c[x.dataset.k]++;draw()});$('#sl',b).onclick=e=>{sealed=!sealed;e.target.textContent=sealed?'Break seal':'Seal envelope';draw()};draw()};
+
+D.tablet=b=>{const rows=[['Ur-Nin','barley',30],['Lu-Gal','sheep',12],['Ur-Nin','sheep',4],['Dumu','barley',18],['Lu-Gal','oil',7]];
+ b.innerHTML=`<p class="mut" style="margin:0 0 6px">Filter by any column:</p><input type="text" placeholder="e.g. barley or Lu-Gal"><div class="res"></div>`;
+ const i=$('input',b),r=$('.res',b),f=()=>{const q=i.value.toLowerCase();r.innerHTML=tbl(['who','what','qty'],rows.filter(x=>!q||x.join(' ').toLowerCase().includes(q)))};i.oninput=f;f()};
+
+D.seek=(b,o)=>{const n=o.n;let tg=0;
+ b.innerHTML=`<div class="cells">${Array.from({length:n},(_,i)=>`<i>${i+1}</i>`).join('')}</div><div>Find item <b class="tg"></b></div><div class="row"><button class="btn" data-m="a">${o.a}</button><button class="btn" data-m="b">${o.b}</button><button class="btn ghost" data-m="n">New target</button></div><p class="mut">Steps: <b class="st">0</b></p>`;
+ const cs=$$('.cells i',b),st=$('.st',b),clr=()=>{clearT();cs.forEach(c=>c.className='');st.textContent=0};
+ const nt=()=>{clr();tg=5+rnd(n-5);$('.tg',b).textContent='#'+(tg+1)};nt();
+ $$('button',b).forEach(x=>x.onclick=()=>{const m=x.dataset.m;if(m==='n')return nt();clr();
+  if(m==='b'){cs[tg].className='hit';st.textContent=1;return}
+  let i=0;const id=later(()=>{cs[i].className='scan';st.textContent=i+1;if(i===tg){cs[i].className='hit';clearInterval(id)}else i++},120,true)})};
+
+D.punch=b=>{const cols=8,sel=Array(cols).fill(-1);
+ b.innerHTML=`<p class="mut" style="margin:0 0 6px">Punch one hole per column (a digit 0–9). Machine reads it.</p><div class="punch"></div><p>Machine reads: <b class="rd" style="font-family:monospace;letter-spacing:3px">________</b></p>`;
+ const g=$('.punch',b);let h='';for(let r=0;r<10;r++)for(let c=0;c<cols;c++)h+=`<i data-r="${r}" data-c="${c}">${r}</i>`;g.innerHTML=h;
+ g.onclick=e=>{const t=e.target.closest('i');if(!t)return;const r=+t.dataset.r,c=+t.dataset.c;sel[c]=sel[c]===r?-1:r;$$('i',g).forEach(i=>i.classList.toggle('on',sel[+i.dataset.c]===+i.dataset.r));$('.rd',b).textContent=sel.map(x=>x<0?'_':x).join('')}};
+
+D.hier=b=>{const T0={n:'Rocket',k:[{n:'Stage 1',k:[{n:'Engine F-1',k:[{n:'Fuel valve'},{n:'Pump'}]},{n:'Tank'}]},{n:'Stage 2',k:[{n:'Engine J-2',k:[{n:'Fuel valve',t:1},{n:'Pump'}]},{n:'Tank'}]},{n:'Capsule',k:[{n:'Heat shield'}]}]};
+ let clicks=0;const li=(x,top)=>`<li class="${x.k?'':'leaf'} ${x.t?'target':''} ${top?'open':''}"><span>${x.k?'▸ ':'• '}${x.n}</span>${x.k?`<ul class="kids">${x.k.map(y=>li(y)).join('')}</ul>`:''}</li>`;
+ b.innerHTML=`<p class="mut" style="margin:0 0 6px">Task: find the <b style="color:var(--ok)">Fuel valve of Engine J-2</b>. You may only start at the root.</p><div class="tree"><ul>${li(T0,1)}</ul></div><p>Clicks: <b class="ck">0</b> <span class="msg"></span></p>`;
+ b.onclick=e=>{const s=e.target.closest('.tree li>span');if(!s)return;const l=s.parentElement;if(l.classList.contains('leaf')){if(l.classList.contains('target'))$('.msg',b).innerHTML='Found it. Note “Fuel valve” and “Pump” are stored twice: shared data is copied.';return}l.classList.toggle('open');clicks++;$('.ck',b).textContent=clicks}};
+
+D.net=b=>{const P={S1:[40,35],S2:[40,115],P1:[190,20],P2:[190,75],P3:[190,130]};const E=[['S1','P1'],['S1','P2'],['S2','P2'],['S2','P3']];
+ const steps=[['FIND FIRST supplier','S1'],['FIND NEXT part WITHIN supplies','P1'],['FIND NEXT part WITHIN supplies','P2'],['FIND OWNER WITHIN supplies (other set)','S2'],['FIND NEXT part WITHIN supplies','P3']];let i=-1;
+ b.innerHTML=`<svg viewBox="0 0 260 150" style="width:100%;max-width:380px">${E.map(e=>`<line x1="${P[e[0]][0]}" y1="${P[e[0]][1]}" x2="${P[e[1]][0]}" y2="${P[e[1]][1]}" stroke="var(--line)" stroke-width="2" marker-end="url(#ar)"/>`).join('')}<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="26" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="var(--mut)"/></marker></defs>${Object.entries(P).map(([k,p])=>`<g><rect x="${p[0]-24}" y="${p[1]-14}" width="48" height="28" rx="6" fill="var(--card)" stroke="var(--acc)"/><text x="${p[0]}" y="${p[1]+5}" text-anchor="middle" fill="var(--fg)" font-size="13">${k}</text></g>`).join('')}<circle class="cur" r="8" fill="var(--ok)" cx="-20" cy="-20" style="transition:all .5s"/></svg><pre class="code cmd">// press Step</pre><button class="btn">Step</button><button class="btn ghost">Restart</button><p class="mut">You hop along pointers by hand. Part P2 is shared by two suppliers: no copy needed, but the code is the query plan.</p>`;
+ const bs=$$('button',b);bs[0].onclick=()=>{i=Math.min(i+1,steps.length-1);const s=steps[i],p=P[s[1]];const c=$('.cur',b);c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);$('.cmd',b).textContent=steps.slice(0,i+1).map(x=>x[0]).join('\n')};bs[1].onclick=()=>{i=-1;const c=$('.cur',b);c.setAttribute('cx',-20);c.setAttribute('cy',-20);$('.cmd',b).textContent='// press Step'}};
+
+D.rel=b=>{const C=[[1,'Ada'],[2,'Grace'],[3,'Linus']],O=[[101,1,'Book',30],[102,2,'Pen',5],[103,1,'Lamp',45],[104,3,'Pen',5]];let sel=1;
+ const draw=()=>{b.innerHTML=`<p class="mut" style="margin:0">Click a customer:</p><div class="two"><div><h5>customer</h5>${tbl(['id','name'],C,r=>'cl'+(r[0]===sel?' hl':''))}</div><div><h5>orders</h5>${tbl(['id','customer_id','item','total'],O,r=>r[1]===sel?'hl':'')}</div></div><pre class="code">SELECT c.name, o.item, o.total
+FROM customer c JOIN orders o ON o.customer_id = c.id
+WHERE c.id = ${sel};</pre>${tbl(['name','item','total'],O.filter(o=>o[1]===sel).map(o=>[C.find(c=>c[0]===sel)[1],o[2],o[3]]))}`;
+  $$('tr.cl',b).forEach((tr,i)=>tr.onclick=()=>{sel=C[i][0];draw()})};draw()};
+
+D.sql=b=>{b.innerHTML=`<p class="mut" style="margin:0 0 6px">You declare <i>what</i>. The optimizer picks <i>how</i>.</p><pre class="code">SELECT * FROM people WHERE city = '<span class="cv">Paris</span>';</pre><div class="row"><select><option>Paris</option><option>Oslo</option><option>Rome</option></select><label><input type="checkbox"> index on city</label></div><p class="plan"></p><div class="meter"><i></i></div>`;
+ const f=()=>{const ix=$('input',b).checked;$('.cv',b).textContent=$('select',b).value;$('.plan',b).innerHTML=ix?'Plan: <b>Index scan</b> → touches ~3 rows':'Plan: <b>Sequential scan</b> → touches 1,000,000 rows';$('.meter i',b).style.width=ix?'1%':'100%'};
+ $('input',b).onchange=f;$('select',b).onchange=f;f()};
+
+D.mismatch=b=>{b.innerHTML=`<div class="two"><div><h5>In your app (object)</h5><pre class="code" style="margin:0">customer {
+  name: "Ada"
+  orders: [
+    {id:1, items:[pen,lamp]}
+  ]
+}</pre></div><div class="tbls"><h5>In the database (rows)</h5><div class="mut">…not stored yet</div></div></div><button class="btn">save()</button><button class="btn ghost">load()</button><p class="mut ms"></p>`;
+ const bs=$$('button',b),t=$('.tbls',b);bs[0].onclick=()=>{clearT();t.innerHTML='<h5>In the database (rows)</h5>';const parts=['customer: (1,"Ada")','orders: (1, customer_id=1)','items: (1,order=1,"pen")','items: (2,order=1,"lamp")'];parts.forEach((p,i)=>later(()=>{t.insertAdjacentHTML('beforeend',`<div class="comp"><i>${p}</i></div>`);if(i===3)$('.ms',b).textContent='1 object → 4 rows. An ORM does this splitting and joining for you.'},350*i))};
+ bs[1].onclick=()=>{$('.ms',b).textContent='load(): JOIN customer, orders, items → rebuild the nested object.'}};
+
+D.doc=b=>{const pr={v:1};b.innerHTML=`<p class="mut" style="margin:0 0 6px">The product “Pen” appears in 3 orders. Its price changes.</p><div class="two"><div><h5>Embedded (document)</h5><div class="e"></div></div><div><h5>Normalized (relational)</h5><div class="n"></div></div></div><button class="btn">Change Pen price to 2</button><button class="btn ghost">Reset</button><p class="msg mut"></p>`;
+ let st=0;const draw=()=>{const e=[1,2,3].map(i=>`<div>order ${i}: pen @ <b class="${st&&i>1&&st<2?'':''}">${st>=i?2:1}</b></div>`);$('.e',b).innerHTML=e.join('');$('.n',b).innerHTML=['order 1 → product 7','order 2 → product 7','order 3 → product 7'].map(x=>`<div>${x}</div>`).join('')+`<div>product 7: pen @ <b>${st>=1?2:1}</b></div>`};
+ const bs=$$('button',b);bs[0].onclick=()=>{clearT();st=0;draw();[1,2,3].forEach(i=>later(()=>{st=i;draw();$('.msg',b).innerHTML=`Embedded needed <b>${i}</b> write${i>1?'s':''} (miss one and you have stale data). Normalized needed <b>1</b>.`},400*i))};bs[1].onclick=()=>{clearT();st=0;draw();$('.msg',b).textContent=''};draw();
+ b.insertAdjacentHTML('beforeend','<p class="fun">Trade-off: embedded reads need no join. That “pre-join” is an idea from the 1970s: duplicated data, and no data independence.</p>')};
+
+D.cf=b=>{const rows={User1000:{name:'Alice',accounts:'[123,456]',email:'xxx@xxx.edu'},User1001:{name:'Bob',email:'[yyy@yyy.org, zzz@zzz.com]'},User1002:{name:'Cy',phone:'555-0199'}};const cols=['name','accounts','email','phone'];
+ b.innerHTML=`<label><input type="checkbox"> Show as relational table (NULLs)</label><div class="v"></div>`;
+ const f=()=>{const rel=$('input',b).checked;$('.v',b).innerHTML=rel?tbl(['key',...cols],Object.entries(rows).map(([k,r])=>[k,...cols.map(c=>r[c]??'<span class="mut">NULL</span>')])):Object.entries(rows).map(([k,r])=>`<pre class="code" style="margin:3px 0">${k} → ${esc(JSON.stringify(r))}</pre>`).join('')};$('input',b).onchange=f;f()};
+
+D.columnar=b=>{const hd=['id','name','city','price','qty'];let mode='row';
+ b.innerHTML=`<pre class="code" style="margin:0 0 6px">SELECT SUM(price) FROM sales;  -- 6 rows × 5 columns</pre><div class="row"><button class="btn sel" data-m="row">Row store</button><button class="btn" data-m="col">Column store</button></div><div class="strip"></div><p class="mut">Disk layout above. Values read: <b class="rn"></b> of 30.</p>`;
+ const draw=()=>{let h='',n=0;if(mode==='row'){for(let r=0;r<6;r++)hd.forEach(c=>{h+=`<i class="${c==='price'?'nd2':'rd'}">${c}${r+1}</i>`;n++})}else{hd.forEach(c=>{for(let r=0;r<6;r++){const w=c==='price';h+=`<i class="${w?'nd2':''}">${c}${r+1}</i>`;if(w)n++}})}
+  $('.strip',b).innerHTML=h;$('.rn',b).textContent=n;$$('[data-m]',b).forEach(x=>x.classList.toggle('sel',x.dataset.m===mode))};
+ $$('[data-m]',b).forEach(x=>x.onclick=()=>{mode=x.dataset.m;draw()});draw()};
+
+D.mr=b=>{const L=['to be or not','to do or not','be to do'];let s=0;
+ b.innerHTML=`<div class="mr"><div><b>Input</b><span class="i1"></span></div><div><b>Map → (word,1)</b><span class="i2"></span></div><div><b>Shuffle / Reduce</b><span class="i3"></span></div></div><button class="btn">Next step</button><button class="btn ghost">Restart</button><p class="mut">≈ <code>SELECT map() FROM crawl GROUP BY reduce()</code></p>`;
+ const draw=()=>{$('.i1',b).innerHTML=L.map(x=>`<div>${x}</div>`).join('');
+  const m=L.flatMap(l=>l.split(' ').map(w=>[w,1]));$('.i2',b).innerHTML=s>=1?m.map(p=>`(${p[0]},1)`).join(' '):'<span class="mut">…</span>';
+  const g={};m.forEach(p=>g[p[0]]=(g[p[0]]||0)+1);$('.i3',b).innerHTML=s>=2?Object.entries(g).map(([k,v])=>s>=3?`<div>${k}: <b>${v}</b></div>`:`<div>${k}: [${'1,'.repeat(v).slice(0,-1)}]</div>`).join(''):'<span class="mut">…</span>'};
+ const bs=$$('button',b);bs[0].onclick=()=>{s=Math.min(3,s+1);draw()};bs[1].onclick=()=>{s=0;draw()};draw()};
+
+D.kv=b=>{const M=new Map([['user:1','{"name":"Ada","city":"Paris"}'],['cart:9','[3,7]'],['sess:ab','tok123']]);const h=k=>[...k].reduce((a,c)=>a+c.charCodeAt(0),0)%4;
+ b.innerHTML=`<div class="row"><input type="text" class="k" placeholder="key" size="9"><input type="text" class="v" placeholder="value" size="12"><button class="btn" data-a="put">put</button><button class="btn" data-a="get">get</button><button class="btn ghost" data-a="find">find city=Paris</button></div><div class="bk"></div><p class="msg mut"></p>`;
+ let hl=-1,scan=false;const draw=()=>{$('.bk',b).innerHTML=[0,1,2,3].map(i=>`<div class="${i===hl||scan?'on':''}"><b>bucket ${i}</b>${[...M].filter(([k])=>h(k)===i).map(([k,v])=>`<code>${esc(k)} → ${esc(v)}</code>`).join('')}</div>`).join('')};
+ $$('[data-a]',b).forEach(x=>x.onclick=()=>{const k=$('.k',b).value.trim(),v=$('.v',b).value,m=$('.msg',b);hl=-1;scan=false;
+  if(x.dataset.a==='put'&&k){M.set(k,v);hl=h(k);m.textContent=`hash("${k}") = ${hl}: 1 step.`}
+  else if(x.dataset.a==='get'&&k){hl=h(k);m.textContent=M.has(k)?`hash → bucket ${hl}: found in 1 step.`:'Not found (1 step).'}
+  else if(x.dataset.a==='find'){scan=true;m.textContent=`No secondary index: scanned all ${M.size} entries and parsed each blob yourself.`}
+  draw()});draw()};
+
+D.text=b=>{const docs=['the cat sat on the mat','the dog chased the cat','dogs love bones','the mat is a bed'],stop=new Set(['the','on','is','a']);
+ const tok=s=>s.toLowerCase().split(/\W+/).filter(w=>w&&!stop.has(w)).map(w=>w.replace(/s$/,''));
+ const idx={};docs.forEach((d,i)=>tok(d).forEach(w=>{(idx[w]=idx[w]||new Set()).add(i+1)}));
+ b.innerHTML=`<ol style="margin:0 0 8px;padding-left:20px;font-size:13px">${docs.map(d=>`<li>${d}</li>`).join('')}</ol><input type="text" placeholder="search: try cat mat" value="cat"><div class="res"></div>`;
+ const f=()=>{const q=tok($('input',b).value);let r=null;q.forEach(w=>{const s=idx[w]?[...idx[w]]:[];r=r===null?s:r.filter(x=>s.includes(x))});
+  $('.res',b).innerHTML=tbl(['term','postings'],Object.keys(idx).sort().map(k=>[k,[...idx[k]].join(', ')]),r=>q.includes(r[0])?'hl':'')+`<p>Match (AND): <b>${q.length?(r&&r.length?r.map(x=>'doc'+x).join(', '):'none'):'–'}</b>. No document scan.</p>`};
+ $('input',b).oninput=f;f()};
+
+D.array=b=>{let t=0,sel=null;
+ b.innerHTML=`<div class="grid8"></div><p class="mut" style="margin:6px 0 2px">time step t = <b class="tt2">0</b></p><input type="range" min="0" max="7" value="0"><pre class="code rd" style="margin:6px 0 0">A[lat, lon, t] – click a cell</pre>`;
+ const val=(r,c)=>Math.round(15+12*Math.sin((r+t)*.8)+10*Math.cos((c-t)*.7));
+ const draw=()=>{let h='';for(let r=0;r<8;r++)for(let c=0;c<8;c++){const v=val(r,c);h+=`<i data-r="${r}" data-c="${c}" class="${sel&&sel[0]===r&&sel[1]===c?'s':''}" style="background:hsl(${Math.max(0,230-v*7)},80%,55%)">${v}</i>`}
+  $('.grid8',b).innerHTML=h;$('.tt2',b).textContent=t;if(sel)$('.rd',b).textContent=`A[lat=${sel[0]}, lon=${sel[1]}, t=${t}] = ${val(sel[0],sel[1])}°C`};
+ $('.grid8',b).onclick=e=>{const i=e.target.closest('i');if(!i)return;sel=[+i.dataset.r,+i.dataset.c];draw()};
+ $('input',b).oninput=e=>{t=+e.target.value;draw()};draw();
+ b.insertAdjacentHTML('beforeend','<p class="fun">Position = meaning. As a table you would store (lat, lon, t, value) rows and repeat the coordinates.</p>')};
+
+D.graph=b=>{const P={Ada:[150,20],Bob:[60,60],Cy:[240,60],Di:[30,120],Eli:[110,100],Flo:[190,105],Gus:[270,125],Hal:[80,175],Ivy:[200,175]};
+ const E=[['Ada','Bob'],['Ada','Cy'],['Bob','Di'],['Bob','Eli'],['Cy','Flo'],['Cy','Gus'],['Eli','Flo'],['Di','Hal'],['Flo','Ivy'],['Eli','Hal'],['Gus','Ivy']];
+ let st='Ada',k=2;const adj={};E.forEach(([a,c])=>{(adj[a]=adj[a]||[]).push(c);(adj[c]=adj[c]||[]).push(a)});
+ b.innerHTML=`<svg viewBox="0 0 300 200" style="width:100%;max-width:400px"></svg><div>Hops: <input type="range" min="1" max="4" value="2" style="width:140px"> <b class="hk">2</b></div><pre class="code q"></pre>`;
+ const draw=()=>{const d={[st]:0},q=[st];while(q.length){const x=q.shift();(adj[x]||[]).forEach(y=>{if(!(y in d)){d[y]=d[x]+1;q.push(y)}})}
+  $('svg',b).innerHTML=E.map(([a,c])=>`<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[c][0]}" y2="${P[c][1]}" stroke="${d[a]<k&&d[c]<=k||d[c]<k&&d[a]<=k?'var(--acc)':'var(--line)'}" stroke-width="2"/>`).join('')+Object.entries(P).map(([n,p])=>{const on=d[n]<=k;return`<g data-n="${n}" style="cursor:pointer"><circle cx="${p[0]}" cy="${p[1]}" r="14" fill="${n===st?'var(--ok)':on?'var(--acc)':'var(--card)'}" stroke="var(--acc)"/><text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" font-size="10" fill="${on?'#000':'var(--fg)'}">${n}</text></g>`}).join('');
+  $$('g[data-n]',b).forEach(g=>g.onclick=()=>{st=g.dataset.n;draw()});$('.hk',b).textContent=k;
+  $('.q',b).textContent=`-- plain SQL: ${k} self-join${k>1?'s':''} on Edge\nFROM edge e1${Array.from({length:k-1},(_,i)=>` JOIN edge e${i+2} ON e${i+2}.src=e${i+1}.dst`).join('')}\n-- SQL/PGQ:\nMATCH (a {name:'${st}'})-[:FRIEND]->{1,${k}}(b)`};
+ $('input',b).oninput=e=>{k=+e.target.value;draw()};draw();b.insertAdjacentHTML('beforeend','<p class="fun">Click a person to change the start. Pointer-chasing is great for long chains. How common are they?</p>')};
+
+D.vector=b=>{const W={cat:[15,15],dog:[24,22],lion:[12,28],wolf:[28,12],puppy:[20,26],car:[68,14],truck:[80,22],bike:[62,26],bus:[76,10],taxi:[70,20],apple:[30,52],banana:[42,58],pear:[22,60],grape:[36,46]};
+ b.innerHTML=`<p class="mut" style="margin:0 0 4px">Move the pointer: it is the query embedding. Nearest 3 light up (ANN search).</p><svg viewBox="0 0 100 70" style="width:100%;max-width:460px;background:#0004;border-radius:10px;touch-action:none"></svg><p class="nn mut"></p>`;
+ const s=$('svg',b);let q=[45,35];const draw=()=>{const ds=Object.entries(W).map(([k,p])=>[k,Math.hypot(p[0]-q[0],p[1]-q[1])]).sort((a,c)=>a[1]-c[1]).slice(0,3);const nn=ds.map(d=>d[0]);
+  s.innerHTML=nn.map(k=>`<line x1="${q[0]}" y1="${q[1]}" x2="${W[k][0]}" y2="${W[k][1]}" stroke="var(--acc)" stroke-width=".6" stroke-dasharray="1.5 1"/>`).join('')+Object.entries(W).map(([k,p])=>`<circle cx="${p[0]}" cy="${p[1]}" r="${nn.includes(k)?2.2:1.4}" fill="${nn.includes(k)?'var(--acc)':'var(--mut)'}"/><text x="${p[0]+2.5}" y="${p[1]+1}" font-size="3.2" fill="${nn.includes(k)?'var(--fg)':'var(--mut)'}">${k}</text>`).join('')+`<circle cx="${q[0]}" cy="${q[1]}" r="2" fill="none" stroke="var(--ok)" stroke-width=".8"/>`;
+  $('.nn',b).textContent='Nearest: '+nn.join(', ')};
+ s.onpointermove=e=>{const r=s.getBoundingClientRect();q=[(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*70];draw()};draw();
+ b.insertAdjacentHTML('beforeend','<p class="fun">Real embeddings have hundreds to thousands of dimensions; here just 2.</p>')};
+
+D.newsql=b=>{let m='ev';b.innerHTML=`<p class="mut" style="margin:0 0 6px">Move $50 from account A (node 1) to B (node 2). Node 2 crashes after the debit.</p><div class="row"><button class="btn sel" data-m="ev">NoSQL-style (no txn)</button><button class="btn" data-m="acid">NewSQL (ACID txn)</button></div><button class="btn" id="go">Transfer + crash</button><div class="out" style="margin-top:8px"></div>`;
+ const draw=()=>{$('.out',b).innerHTML='Total before: <b>$200</b> (A=100, B=100)';$$('[data-m]',b).forEach(x=>x.classList.toggle('sel',x.dataset.m===m))};
+ $$('[data-m]',b).forEach(x=>x.onclick=()=>{m=x.dataset.m;draw()});
+ $('#go',b).onclick=()=>{clearT();draw();const o=$('.out',b);o.insertAdjacentHTML('beforeend','<div>1. A: debit 50 → A=50</div>');later(()=>{o.insertAdjacentHTML('beforeend','<div style="color:var(--bad)">2. Node 2 crashes…</div>')},600);later(()=>{o.insertAdjacentHTML('beforeend',m==='ev'?'<div>3. No rollback. A=50, B=100 → total <b style="color:var(--bad)">$150</b>. $50 vanished.</div>':'<div>3. Transaction aborts, A rolled back to 100 → total <b style="color:var(--ok)">$200</b>.</div>')},1300)};draw()};
+
+D.cloud=b=>{b.innerHTML=`<p class="mut" style="margin:0">Data sits in cheap object storage. Add compute only when needed.</p><div class="row" style="margin:6px 0"><span>Compute nodes: <b class="n">2</b></span></div><input type="range" min="1" max="16" value="2"><div class="cloudbox"></div><div class="two"><div><h5>Query time</h5><b class="tm"></b></div><div><h5>Data reshuffled</h5><b>0 GB</b></div></div><div class="mut" style="margin-top:6px;font-size:12px">Storage (Parquet files on S3): ▮▮▮▮▮▮▮▮ unchanged</div>`;
+ const f=()=>{const n=+$('input',b).value;$('.n',b).textContent=n;$('.cloudbox',b).innerHTML='<i></i>'.repeat(n);$('.tm',b).textContent=(120/n).toFixed(1)+' s'};$('input',b).oninput=f;f();
+ b.insertAdjacentHTML('beforeend','<p class="fun">Twice the nodes, half the time, similar total cost. That is per-query elasticity.</p>')};
+
+D.absorb=b=>{const L=['SQL:1999 – arrays, user-defined types','SQL:2003 – XML, nested arrays','SQL:2016 – JSON','Full-text indexes (all big RDBMSs)','SQL:2023 – property graphs (PGQ)','SQL:2023 – multi-dim arrays (MDA)','2023 – vector indexes (pgvector, …)'];let n=0;
+ b.innerHTML=`<button class="btn">Absorb next idea</button><button class="btn ghost">Reset</button><div class="stack"></div>`;
+ const f=()=>{$('.stack',b).innerHTML='<div class="base">SQL</div>'+L.slice(0,n).map(x=>`<div>${x}</div>`).join('')};
+ const bs=$$('button',b);bs[0].onclick=()=>{n=Math.min(L.length,n+1);f()};bs[1].onclick=()=>{n=0;f()};f()};
+
+/* ---------- panel ---------- */
+// id: [local file, caption, credit, Commons file name for online fallback]
+const IMG={
+ tally:['tally.jpg','Ishango bone (Congo), notched tally stick','Joeykentin, CC BY-SA 4.0','Ishango bone (cropped).jpg'],
+ tokens:['tokens.jpg','Clay accounting tokens from Susa (Louvre)','Marie-Lan Nguyen, public domain','Clay accounting tokens Susa Louvre n2.jpg'],
+ tablet:['tablet.jpg','Cuneiform account of barley and emmer distribution (Metropolitan Museum)','The Metropolitan Museum of Art, CC0','Cuneiform tablet- administrative account concerning the distribution of barley and emmer MET DP297601.jpg'],
+ pinakes:['pinakes.jpg','The Burning of the Library at Alexandria (engraving)','Ambrose Dudley, public domain','The Burning of the Library at Alexandria in 391 AD.jpg'],
+ domesday:['domesday.png','A page of Domesday Book (Cambridgeshire)','Public domain','Domesday Book, Cambridgeshire, page 21.png'],
+ cards:['cards.jpg','Card catalog, Indiana State Library','TBurmeister (WMF), CC BY-SA 4.0','Card catalog at the Indiana State Library - exterior view of shelf.jpg'],
+ punch:['punch.jpg','Hollerith punched card','Public domain','Hollerith punched card.jpg'],
+ disk:['disk.jpg','IBM 350 RAMAC disk mechanism','ArnoldReinhold, CC BY-SA 3.0','IBM 350 RAMAC disk mechanism.agr.jpg'],
+ text:['text.png','Inverted index example','RI2AI, CC BY-SA 4.0','Indice invertido ejemplo.png'],
+ hier:['hier.jpg','Apollo 11 lifting off on a Saturn V: IMS was built to track its parts','NASA, public domain','Apollo 11 Launch - GPN-2000-000630.jpg'],
+ net:['net.jpg','Charles Bachman (2006), creator of IDS, the CODASYL ancestor','Gary.Cherlet, CC BY-SA 3.0','Charles Bachman IUA Workshop 2006.JPG'],
+ rel:['rel.png','Relational model diagram','U.S. Department of Transportation, public domain','Relational Model.svg'],
+ sql:['sql.jpg','Don Chamberlin, co-inventor of SQL','Dicklyon, CC BY-SA 4.0','Don Chamberlin.jpg'],
+ er:['er.png','Entity-relationship diagram','Wooptoo, public domain','Entity-Relationship Model (diagram).png'],
+ machine:['machine.jpg','NCR Teradata WorldMark storage, a descendant of the 1980s database machines','Patrick Finnegan, CC BY 2.0','NCR Teradata Worldmark 5100 Unix Storage.jpeg'],
+ arr:['arr.png','Array tiling in rasdaman','Pebau.grandauer, CC BY-SA 3.0','Sample tiling of an array for storage in rasdaman.png'],
+ oo:['oo.png','UML class diagram: the object model OO databases tried to store','Trashtoy, public domain','UML class diagram example.svg'],
+ xml:['xml.png','JSON vs. XML','Diego Mariano, CC BY-SA 4.0','JSON vs. XML.png'],
+ mr:['mr.png','Apache Hadoop logo','Apache Software Foundation (Apache License 2.0)','Hadoop logo.svg'],
+ cf:['cf.jpg','Google data center, Council Bluffs, Iowa: Bigtable’s home turf','Chad Davis, CC BY 2.0','Google Data Center, Council Bluffs Iowa (49062863796).jpg'],
+ col:['col.png','Apache Parquet logo, the open columnar file format','Apache Software Foundation (public domain per Commons)','Apache Parquet logo.svg'],
+ kv:['kv.png','Hash table diagram','Jorge Stolfi, CC BY-SA 3.0','Hash table simple 999.svg'],
+ graph:['graph.png','Social network visualization','Martin Grandjean, CC BY-SA 4.0','Social Network Visualization.png'],
+ doc:['doc.png','A JSON document','Diego Mariano, CC BY 4.0','Example json code.png'],
+ chain:['chain.jpg','Bitcoin blockchain illustration','Satheesh Sankaran, CC BY-SA 4.0','Bitcoin Blockchain Cryptocurrency.jpg'],
+ newsql:['newsql.jpg','NIST-F2 cesium atomic clock; Spanner’s TrueTime relies on atomic clocks','NIST, public domain','NIST F2 Cesium atomic clock.jpg'],
+ cloud:['cloud.jpg','A data center, the physical “cloud”','BalticServers.com, CC BY-SA 3.0','BalticServers data center.jpg'],
+ vec:['vec.png','Word embedding illustration','Fschwarzentruber, CC BY-SA 4.0','Word embedding illustration.svg'],
+ now:['now.png','PostgreSQL elephant: an open-source RDBMS that keeps absorbing JSON, arrays and vectors','Daniel Lundin, BSD','Postgresql elephant.svg']
+};
+const remote=f=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f.replace(/ /g,'_'))+'?width=900';
+function picHTML(id){const m=IMG[id];if(!m)return'';return`<figure class="pic"><img src="img/${m[0]}" alt="${m[1]}" data-f="${m[3]}"><figcaption><b>${m[1]}</b><br>${m[2]} · via Wikimedia Commons</figcaption></figure>`}
+function wirePic(p){const im=$('.pic img',p);if(!im)return;im.onerror=()=>{if(!im.dataset.r){im.dataset.r=1;im.src=remote(im.dataset.f)}else $('.pic',p).style.display='none'};
+ im.onclick=()=>{const lb=$('#lb');lb.innerHTML=`<img src="${im.src}" alt=""><p>${$('.pic figcaption',p).innerHTML}</p>`;lb.classList.add('on')}}
+$('#lb').onclick=()=>$('#lb').classList.remove('on');
+let cur=null;
+function openNode(id){const n=byId[id];if(!n)return;cur=id;seen.add(id);saveSeen();updProg();clearT();
+ const p=$('#panel');vars(p,TH[n.era]);
+ const i=N.indexOf(n),dm=Array.isArray(n.demo)?n.demo:[n.demo];
+ p.innerHTML=`<button class="x" aria-label="Close">×</button>
+ <div class="head">${svgArt(n.art)}<div><div class="yr">${n.yl} · ${TH[n.era].name}</div><h2>${n.t}</h2><span class="chip ${n.v}">${VL[n.v]}</span></div></div>
+ ${picHTML(n.id)}
+ <div class="blk pain"><h4>The pain</h4><p>${n.pain}</p></div>
+ <div class="blk"><h4>The idea</h4><p>${n.idea}</p></div>
+ ${n.demo?'<div class="demo"><h4>Try it</h4><div class="dbox"></div></div>':''}
+ <h4 style="margin:12px 0 0;font-size:11px;letter-spacing:.12em;color:var(--acc)">DATA STRUCTURE IN ONE GLANCE</h4><pre class="code">${esc(n.code)}</pre>
+ <div class="blk why"><h4>Why it ${n.v==='winner'?'won':n.v==='root'?'matters':'did (or did not) become relational'}</h4><p>${n.why}</p>${n.sql?`<p class="mut" style="margin-top:6px"><b>SQL’s answer:</b> ${n.sql}</p>`:''}</div>
+ ${n.score!=null?`<div style="font-size:12px;color:var(--mut)">Relational gravity (our reading of the paper)</div><div class="meter"><i style="width:0"></i></div>`:''}
+ <p class="fun">${n.fun}</p>
+ <div class="nav2"><button class="btn ghost" ${i?'':'disabled'} data-g="${i-1}">← ${i?N[i-1].t:''}</button><button class="btn ghost" ${i<N.length-1?'':'disabled'} data-g="${i+1}">${i<N.length-1?N[i+1].t:''} →</button></div>`;
+ $('.x',p).onclick=closePanel;wirePic(p);$$('[data-g]',p).forEach(x=>x.onclick=()=>{const k=+x.dataset.g;openNode(N[k].id);scrollToIdx(k)});
+ if(n.demo)D[dm[0]]($('.dbox',p),dm[1]);
+ const m=$('.meter i',p);if(m)requestAnimationFrame(()=>requestAnimationFrame(()=>m.style.width=n.score+'%'));
+ p.scrollTop=0;p.classList.add('on')}
+function closePanel(){$('#panel').classList.remove('on');clearT();cur=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#lb').classList.contains('on'))return $('#lb').classList.remove('on');closePanel()}if(cur&&!/INPUT|SELECT/.test(e.target.tagName)){const i=N.findIndex(n=>n.id===cur);if(e.key==='ArrowRight'&&i<N.length-1){openNode(N[i+1].id);scrollToIdx(i+1)}if(e.key==='ArrowLeft'&&i>0){openNode(N[i-1].id);scrollToIdx(i-1)}}});
+
+/* ---------- timeline ---------- */
+let SP=230;const PAD=150;const wrap=$('#tlwrap'),track=$('#track');
+function buildTL(){track.innerHTML='<div class="axis"></div>';track.style.width=(PAD*2+(N.length-1)*SP)+'px';
+ let i=0;while(i<N.length){let j=i;while(j+1<N.length&&N[j+1].era===N[i].era)j++;const t=TH[N[i].era];
+  track.insertAdjacentHTML('beforeend',`<div class="era" style="left:${PAD+i*SP-SP/2}px;width:${(j-i+1)*SP}px;--c:${t.acc}">${t.name}</div>`);i=j+1}
+ N.forEach((n,k)=>track.insertAdjacentHTML('beforeend',`<div class="nd ${k%2?'dn':'up'}" data-id="${n.id}" style="left:${PAD+k*SP}px;${thStyle(TH[n.era])}"><div class="stem"></div><div class="dot"></div><button class="card">${svgArt(n.art)}<small>${n.yl}</small><b>${n.t}</b><span class="chip ${n.v}">${VL[n.v]}</span></button></div>`));
+ updProg()}
+const centerIdx=()=>Math.max(0,Math.min(N.length-1,Math.round((wrap.scrollLeft+wrap.clientWidth/2-PAD)/SP)));
+function scrollToIdx(k){wrap.scrollTo({left:PAD+k*SP-wrap.clientWidth/2,behavior:'smooth'})}
+function onScroll(){if(!$('#timeline').classList.contains('on'))return;const k=centerIdx();setTheme(N[k].era);$('#hud').innerHTML=`${N[k].yl}<small>${N[k].t}</small>`;
+ $('#scrub').value=Math.max(0,Math.min(1,(wrap.scrollLeft)/(wrap.scrollWidth-wrap.clientWidth||1)))}
+wrap.addEventListener('scroll',onScroll);
+wrap.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();zoom(e.deltaY<0?1.12:.89)}else if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){wrap.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+function zoom(f){const k=centerIdx();SP=Math.max(130,Math.min(420,Math.round(SP*f)));buildTL();wrap.scrollLeft=PAD+k*SP-wrap.clientWidth/2;onScroll()}
+$('#zi').onclick=()=>zoom(1.2);$('#zo').onclick=()=>zoom(.83);
+$('#scrub').oninput=e=>{wrap.scrollLeft=e.target.value*(wrap.scrollWidth-wrap.clientWidth)};
+let drag=null,moved=false;
+wrap.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button)return;drag={x:e.clientX,s:wrap.scrollLeft};moved=false});
+window.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>5){moved=true;wrap.classList.add('drag')}if(moved)wrap.scrollLeft=drag.s-dx});
+window.addEventListener('pointerup',()=>{drag=null;wrap.classList.remove('drag')});
+wrap.addEventListener('click',e=>{if(moved){moved=false;return}const c=e.target.closest('.nd');if(c)openNode(c.dataset.id)},true);
+
+/* ---------- map ---------- */
+const R=[
+ {id:'rel',x:500,y:350,r:120,c:['#3a8f6b','#1d5b44'],name:'Relational Mainland',born:1970,sq:null,art:'rel',grow:1},
+ {id:'col',x:655,y:250,r:46,c:['#3a8f6b','#1d5b44'],name:'Columnar Peaks',born:2005,att:1,art:'col'},
+ {id:'newsql',x:360,y:470,r:44,c:['#3a8f6b','#1d5b44'],name:'NewSQL Harbor',born:2012,att:1,art:'newsql'},
+ {id:'hier',x:140,y:150,r:72,c:['#8a5a3a','#4a2e1c'],name:'Legacy Highlands',born:1966,smoke:1,art:'hier',sub:'IMS · CODASYL'},
+ {id:'mr',x:350,y:70,r:44,c:['#6f6f78','#3a3a44'],name:'MapReduce Ruins',born:2003,died:2014,sq:2012,art:'mr',sub:'R.I.P. 2014'},
+ {id:'graph',x:610,y:75,r:58,c:['#7a58c9','#432b85'],name:'Graph Archipelago',born:2007,sq:2023,art:'graph'},
+ {id:'vec',x:850,y:130,r:58,c:['#b24fc7','#6a2480'],name:'Vector Nebula',born:2019,sq:2023,art:'vec'},
+ {id:'arr',x:870,y:360,r:66,c:['#c7954f','#7a5521'],name:'Array Gridlands',born:1985,sq:1999,art:'arr'},
+ {id:'text',x:790,y:565,r:62,c:['#4fa3c7','#215f7a'],name:'Search Library Bay',born:1965,sq:2008,art:'text'},
+ {id:'cf',x:545,y:615,r:52,c:['#c76f4f','#7a3521'],name:'Column-Family Plateau',born:2004,sq:2011,art:'cf'},
+ {id:'doc',x:250,y:575,r:70,c:['#4fc77a','#217a40'],name:'Document Forest',born:2009,sq:2016,art:'doc'},
+ {id:'kv',x:130,y:360,r:58,c:['#c7c24f','#7a7621'],name:'Key-Value Keys',born:2003,sq:2020,art:'kv'},
+ {id:'chain',x:940,y:520,r:36,c:['#6f6f78','#3a3a44'],name:'Blockchain Bog',born:2009,dead:1,art:'chain'},
+ {id:'machine',x:70,y:545,r:36,c:['#6f6f78','#3a3a44'],name:'Accelerator Wastes',born:1981,dead:1,art:'machine'},
+ {id:'cloud',x:85,y:30,r:0,name:'Cloud',born:2013,art:'cloud'}
+];
+const ms=$('#mapsvg');let vb={x:0,y:0,w:1000,h:700};
+function blob(cx,cy,r,seed){let s=seed*9301+49297;const rn=()=>(s=(s*16807)%2147483647)/2147483647;const n=16,P=[];for(let i=0;i<n;i++){const a=i/n*6.283,k=r*(.84+rn()*.32);P.push([cx+Math.cos(a)*k,cy+Math.sin(a)*k*.84])}
+ let d=`M${P[0]}`;for(let i=0;i<n;i++){const a=P[(i-1+n)%n],p=P[i],q=P[(i+1)%n],c=P[(i+2)%n];d+=`C${p[0]+(q[0]-a[0])/6},${p[1]+(q[1]-a[1])/6} ${q[0]-(c[0]-p[0])/6},${q[1]-(c[1]-p[1])/6} ${q[0]},${q[1]}`}return d+'Z'}
+const MC=R[0];
+function buildMap(){let h=`<defs>${R.filter(r=>r.c).map(r=>`<radialGradient id="g_${r.id}"><stop offset="0" stop-color="${r.c[0]}"/><stop offset="1" stop-color="${r.c[1]}"/></radialGradient>`).join('')}<radialGradient id="sea"><stop offset="0" stop-color="#14506b"/><stop offset="1" stop-color="#071c2a"/></radialGradient></defs><rect x="-400" y="-300" width="1800" height="1300" fill="url(#sea)"/>`;
+ for(let i=0;i<14;i++)h+=`<path class="wave" d="M${-100+i*90},${60+i*45} q60,-20 120,0 t120,0 t120,0 t120,0 t120,0 t120,0" style="animation-delay:${-i}s"/>`;
+ // bridges
+ R.filter(r=>r.sq).forEach(r=>{const dx=r.x-MC.x,dy=r.y-MC.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,x1=MC.x+ux*(MC.r*.8),y1=MC.y+uy*(MC.r*.7),x2=r.x-ux*r.r*.75,y2=r.y-uy*r.r*.7;
+  h+=`<path class="br" data-b="${r.id}" d="M${x1},${y1} L${x2},${y2}"/><text class="brl" data-bl="${r.id}" x="${(x1+x2)/2}" y="${(y1+y2)/2-6}">SQL ${r.sq}</text>`});
+ R.forEach((r,i)=>{if(!r.c){h+=`<g class="rg" data-id="${r.id}"><g transform="translate(${r.x} ${r.y}) scale(2.4)"><path d="M-24 14Q-40 14-36 0Q-32 -12-18 -9Q-12 -30 8 -25Q26 -22 24 -8Q42 -8 38 6Q36 14 26 14Z" fill="#dff" stroke="#9cd" stroke-width="1.5" opacity=".92"/></g><text class="lb" x="${r.x+10}" y="${r.y+8}">Cloud &amp; Lakehouse</text><text class="sb" x="${r.x+10}" y="${r.y+24}">compute ≠ storage</text></g>`;return}
+  h+=`<g class="rg" data-id="${r.id}"><g class="sc"><path class="bl" d="${blob(r.x,r.y,r.r,i+3)}" fill="url(#g_${r.id})" stroke="#fff4" stroke-width="2"/></g>
+  <svg x="${r.x-26}" y="${r.y-48}" width="52" height="39" viewBox="0 0 120 90" class="art" style="--acc:#fff;--mut:#ddd">${ART[r.art]}</svg>
+  <text class="lb" x="${r.x}" y="${r.y+10}">${r.name}</text><text class="sb" x="${r.x}" y="${r.y+26}">${r.sub||''}</text>
+  ${r.smoke?`<g class="smoke" transform="translate(${r.x+40} ${r.y-40})">${[0,1,2].map(k=>`<circle r="7" style="animation-delay:${k*1.3}s"/>`).join('')}</g>`:''}
+  <g class="flag"><circle cx="${r.x+r.r*.7}" cy="${r.y-r.r*.6}" r="10" fill="#6fcf97"/><path d="M${r.x+r.r*.7-5} ${r.y-r.r*.6}l4 4l7-8" stroke="#000" stroke-width="2.5" fill="none"/></g></g>`});
+ h+=`<g id="ship"><path d="M-12 0h24l-5 8h-14z M0 0v-16l10 12z" fill="#fff" stroke="#000" stroke-width="1"><animateMotion dur="40s" repeatCount="indefinite" path="M0,0 C250,40 500,-80 750,20 S1000,-10 1200,60 S800,320 350,300 S-100,200 0,0"/></path></g>`;
+ ms.innerHTML=h;setVB();updMap(+$('#mslide').value);
+ $$('.rg',ms).forEach(g=>{g.addEventListener('mouseenter',()=>{const r=R.find(x=>x.id===g.dataset.id),n=byId[r.id];showTip(`<b>${r.name}</b><br>${n.t}: ${n.pain}`)});g.addEventListener('mouseleave',()=>$('#tip').style.display='none')})}
+function updMap(y){$('#myr').textContent=y;const f=(y-1960)/65;MC.sc=.55+.45*f;
+ $$('.rg',ms).forEach(g=>{const r=R.find(x=>x.id===g.dataset.id);g.classList.toggle('hidden',y<r.born);g.classList.toggle('dead',!!((r.died&&y>=r.died)||(r.dead&&y>=r.born+3)));
+  if(r.id==='rel')$('.sc',g).setAttribute('transform',`translate(${r.x} ${r.y}) scale(${(.55+.45*f).toFixed(3)}) translate(${-r.x} ${-r.y})`)});
+ R.filter(r=>r.sq).forEach(r=>{const on=y>=r.sq&&y>=r.born;$(`[data-b=${r.id}]`,ms).style.display=y>=r.born?'':'none';$(`[data-b=${r.id}]`,ms).classList.toggle('built',on);$(`[data-bl=${r.id}]`,ms).classList.toggle('built',on)});
+ const done=R.filter(r=>r.sq&&y>=r.sq).length;$('#msq').textContent=`SQL bridges built: ${done}/${R.filter(r=>r.sq).length}`}
+function setVB(){ms.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`)}
+const showTip=h=>{const t=$('#tip');t.innerHTML=h;t.style.display='block'};
+window.addEventListener('mousemove',e=>{const t=$('#tip');t.style.left=(e.clientX+14)+'px';t.style.top=(e.clientY+14)+'px'});
+function zoomMap(f,cx,cy){const r=ms.getBoundingClientRect();const px=vb.x+((cx??r.left+r.width/2)-r.left)/r.width*vb.w,py=vb.y+((cy??r.top+r.height/2)-r.top)/r.height*vb.h;const nw=Math.max(250,Math.min(1400,vb.w/f));const k=nw/vb.w;vb={x:px-(px-vb.x)*k,y:py-(py-vb.y)*k,w:nw,h:vb.h*k};setVB()}
+ms.addEventListener('wheel',e=>{e.preventDefault();zoomMap(e.deltaY<0?1.15:.87,e.clientX,e.clientY)},{passive:false});
+let md=null,mmoved=false;
+ms.addEventListener('pointerdown',e=>{md={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};mmoved=false});
+window.addEventListener('pointermove',e=>{if(!md)return;const r=ms.getBoundingClientRect(),dx=e.clientX-md.x,dy=e.clientY-md.y;if(Math.abs(dx)+Math.abs(dy)>6){mmoved=true;ms.classList.add('drag')}if(mmoved){vb.x=md.vx-dx*vb.w/r.width;vb.y=md.vy-dy*vb.w/r.width;setVB()}});
+window.addEventListener('pointerup',()=>{md=null;ms.classList.remove('drag')});
+ms.addEventListener('click',e=>{if(mmoved){mmoved=false;return}const g=e.target.closest('.rg');if(g){$('#tip').style.display='none';openNode(g.dataset.id)}});
+$('#mz1').onclick=()=>zoomMap(1.3);$('#mz2').onclick=()=>zoomMap(.77);$('#mz3').onclick=()=>{vb={x:0,y:0,w:1000,h:700};setVB()};
+$('#mslide').oninput=e=>updMap(+e.target.value);
+$('#mplay').onclick=e=>{if(e.target.dataset.on){clearInterval(+e.target.dataset.on);delete e.target.dataset.on;e.target.textContent='▶ Play';return}
+ const s=$('#mslide');if(+s.value>=2025)s.value=1960;e.target.textContent='❚❚ Pause';const id=setInterval(()=>{s.value=+s.value+1;updMap(+s.value);if(+s.value>=2025){clearInterval(id);delete e.target.dataset.on;e.target.textContent='▶ Play'}},220);e.target.dataset.on=id};
+
+/* ---------- convergence ---------- */
+const LANES=[
+ {id:'oo',born:1988,m:[[1999,'SQL:1999 user-defined types']],end:1999},
+ {id:'xml',born:1998,m:[[2003,'SQL/XML']],end:2003},
+ {id:'text',born:1965,m:[[2005,'Full-text indexes in RDBMSs (2000s)']],end:2005},
+ {id:'arr',born:1985,m:[[1999,'SQL:1999 arrays'],[2003,'nested arrays'],[2023,'SQL/MDA']],end:2023},
+ {id:'mr',born:2003,m:[[2008,'Hive: SQL on Hadoop'],[2012,'Impala / Presto'],[2014,'Google drops MR']],end:2014},
+ {id:'cf',born:2004,m:[[2011,'Cassandra CQL']],end:2011},
+ {id:'kv',born:2003,m:[[2020,'DynamoDB PartiQL']],end:2020},
+ {id:'doc',born:2009,m:[[2016,'SQL:2016 JSON'],[2021,'MongoDB adds SQL (Atlas)']],end:2021},
+ {id:'graph',born:2007,m:[[2023,'SQL/PGQ']],end:2023},
+ {id:'vec',born:2019,m:[[2023,'Vector indexes in major RDBMSs']],end:2023}
+];
+const VC={oo:'#5ab0ff',absorbed:'#5ab0ff',niche:'#f2c94c',dead:'#eb5757',converging:'#b99cff',legacy:'#c98b5a',winner:'#6fcf97'};
+function buildConv(){const X=y=>((y-1960)/65*100).toFixed(2)+'%';
+ const ticks=[1960,1980,2000,2025];
+ $('#convpg').innerHTML=`<h2>Everything flows toward SQL</h2><p class="q">Each lane: a “replace the relational model” movement, from birth to the year SQL (or SQL-like tooling) absorbed its best idea. <b>S</b> = SQL absorbs it. Click a lane for the story.</p>
+ <div class="axisrow"><div></div><div class="ax">${ticks.map(t=>`<span>${t}</span>`).join('')}</div><div></div></div>
+ ${LANES.map(l=>{const n=byId[l.id],c=VC[n.v];return`<div class="lane" data-id="${l.id}"><div class="nm">${n.t}</div><div class="tr"><div class="bar" data-w="${((l.end-l.born)/65*100).toFixed(2)}%" style="left:${X(l.born)};background:${c}"></div>${l.m.map(([y,t])=>`<div class="mk" data-d="${(y-l.born)*45}" title="${y}: ${t}" style="left:${X(y)}"></div>`).join('')}</div><div class="rs"><span class="chip ${n.v}">${VL[n.v]}</span></div></div>`}).join('')}
+ <div class="legend">Hover the S markers for the SQL feature and year. Dates are approximate.</div>
+ <button class="btn" id="replay">Replay</button>
+ <h3 style="margin:22px 0 8px">The paper’s scoreboard</h3>
+ <div class="tt" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${['mr','kv','doc','cf','text','arr','vec','graph'].map(id=>{const n=byId[id];return`<button data-id="${id}" style="text-align:left"><span class="chip ${n.v}">${VL[n.v]}</span><br><b>${n.t}</b><br><span class="mut" style="font-size:12px">${n.why.split('. ')[0]}.</span></button>`}).join('')}</div>`;
+ $$('#convpg [data-id]').forEach(x=>x.onclick=()=>openNode(x.dataset.id));
+ $('#replay').onclick=playConv;playConv()}
+function playConv(){clearT();$$('#convpg .bar').forEach(b=>{b.style.transition='none';b.style.width='0'});$$('#convpg .mk').forEach(m=>m.classList.remove('show'));
+ later(()=>{$$('#convpg .bar').forEach(b=>{b.style.transition='';b.style.width=b.dataset.w});$$('#convpg .mk').forEach(m=>later(()=>m.classList.add('show'),+m.dataset.d+300))},60)}
+
+/* ---------- games ---------- */
+const OPTS={rel:'Relational (SQL)',kv:'Key-value',doc:'Document',col:'Column store',srch:'Search engine',arr:'Array DB',vec:'Vector DB',graph:'Graph DB',hier:'Hierarchical'};
+const SC=[
+ {q:'Cache user sessions: millions of get/set per second, no queries needed.',a:'kv',ok:['rel'],n:'Key-value is the sweet spot, but a 2-column table works. DBs have embedded KV as engines.'},
+ {q:'Dashboards: SUM(revenue) by region over 5 TB of sales history.',a:'col',ok:['rel'],n:'Columnar systems are still relational + SQL. Every warehouse vendor converted.'},
+ {q:'Bank transfers: money must never vanish.',a:'rel',ok:[],n:'ACID transactions are the relational home turf. NoSQL added them later.'},
+ {q:'Satellite temperatures: (lat, lon, time) → reading, sliced across dimensions.',a:'arr',ok:[],n:'Scientific arrays still favor bespoke array systems (HDF5, SciDB, Rasdaman).'},
+ {q:'“Find images that look like this photo.”',a:'vec',ok:['rel'],n:'Dedicated vector DBs exist, but pgvector & friends cover most cases within a year of the LLM boom.'},
+ {q:'Product search with typos, synonyms and relevance ranking.',a:'srch',ok:['rel'],n:'Search engines (Lucene, Elasticsearch) lead; RDBMS full-text is catching up.'},
+ {q:'Recommend “friends of friends of friends” on a social app.',a:'graph',ok:['rel'],n:'Graph DBs fit; but two tables + SQL/PGQ (SQL:2023) can beat them.'},
+ {q:'User profiles whose shape changes every week; you ship daily.',a:'doc',ok:['rel'],n:'Document DBs shine on “schema later”. SQL now has JSON types.'},
+ {q:'It is 1966. Apollo needs “which parts are in this rocket stage?”',a:'hier',ok:[],n:'IMS was built for exactly this. Pre-relational, tree-shaped.'},
+ {q:'Embedded storage inside a mobile app. No server at all.',a:'rel',ok:['kv'],n:'SQLite (and DuckDB) are embedded relational engines. KV works too, until complexity grows.'}
+];
+const PAIRS=[['DynamoDB','PartiQL'],['Cassandra','CQL'],['Couchbase','SQL++'],['Aerospike','AQL'],['HBase','Phoenix SQL'],['MongoDB','SQL for Atlas (2021)'],['Hadoop','Hive → Presto']];
+function buildGames(){const g=$('#gamespg');g.innerHTML=`<h2>Games</h2><div class="gtabs"><button class="btn sel" data-g="a">Pick the database</button><button class="btn" data-g="b">NoSQL meets SQL</button><button class="btn" data-g="c">Time traveler</button></div><div class="gbox" id="gb"></div>`;
+ const run={a:gameA,b:gameB,c:gameC};const go=k=>{$('#gb').onclick=null;$$('.gtabs .btn',g).forEach(x=>x.classList.toggle('sel',x.dataset.g===k));run[k]($('#gb'))};
+ $$('.gtabs .btn',g).forEach(x=>x.onclick=()=>go(x.dataset.g));go('a')}
+function gameA(box){const Q=shuffle(SC);let i=0,score=0;
+ const show=()=>{if(i>=Q.length){box.innerHTML=`<div class="scn">Score: ${score} / ${Q.length*2}</div><p>Best match = 2 pts, “acceptable” = 1. Notice how often “Relational” was a safe fallback? That is the paper’s point.</p><button class="btn">Play again</button>`;$('button',box).onclick=()=>gameA(box);return}
+  const s=Q[i];box.innerHTML=`<div class="mut">Scenario ${i+1}/${Q.length} · Score ${score}</div><div class="scn">${s.q}</div><div class="opts">${Object.entries(OPTS).map(([k,v])=>`<button data-k="${k}">${v}</button>`).join('')}</div><div class="fb"></div>`;
+  $$('.opts button',box).forEach(b=>b.onclick=()=>{const k=b.dataset.k;$$('.opts button',box).forEach(x=>{x.disabled=true;if(x.dataset.k===s.a)x.classList.add('good')});
+   if(k===s.a){score+=2;$('.fb',box).innerHTML=`<b style="color:var(--ok)">Best fit.</b> ${s.n}`}else if(s.ok.includes(k)){score+=1;b.classList.add('ok');$('.fb',box).innerHTML=`<b style="color:#f2c94c">Acceptable.</b> Sweet spot: ${OPTS[s.a]}. ${s.n}`}else{b.classList.add('bad');box.classList.add('shake');setTimeout(()=>box.classList.remove('shake'),300);$('.fb',box).innerHTML=`<b style="color:var(--bad)">Not quite.</b> ${s.n}`}
+   $('.fb',box).insertAdjacentHTML('beforeend','<br><button class="btn" style="margin-top:8px">Next →</button>');$('.fb button',box).onclick=()=>{i++;show()}})};show()}
+function gameB(box){const L=shuffle(PAIRS.map(p=>p[0])),Rr=shuffle(PAIRS.map(p=>p[1]));let a=null,done=0;
+ box.innerHTML=`<div class="scn">Which SQL-like language did each NoSQL / Hadoop system adopt?</div><div class="mt"><div>${L.map(x=>`<button data-l="${x}">${x}</button>`).join('')}</div><div>${Rr.map(x=>`<button data-r="${x}">${x}</button>`).join('')}</div></div><div class="fb"></div>`;
+ box.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.l){$$('[data-l]',box).forEach(x=>x.classList.remove('sel'));b.classList.add('sel');a=b.dataset.l}
+  else if(b.dataset.r&&a){const ok=PAIRS.some(p=>p[0]===a&&p[1]===b.dataset.r);if(ok){$(`[data-l="${a}"]`,box).classList.replace('sel','done');b.classList.add('done');a=null;done++;if(done===PAIRS.length)$('.fb',box).innerHTML='<b style="color:var(--ok)">All matched.</b> “NoSQL” became “Not only SQL”. Every one of them ended up with a SQL dialect. <button class="btn" id="ag">Again</button>',$('#ag',box).onclick=()=>gameB(box)}else{box.classList.add('shake');setTimeout(()=>box.classList.remove('shake'),300)}}}}
+function gameC(box){const pick=shuffle(N).slice(0,5);const order=[...pick].sort((a,b)=>a.y-b.y);let k=0;
+ box.innerHTML=`<div class="scn">Click these in chronological order, oldest first.</div><div class="tt">${pick.map(n=>`<button data-id="${n.id}" style="${thStyle(TH[n.era])}">${svgArt(n.art)}<br><b>${n.t}</b><span class="n"></span></button>`).join('')}</div><div class="fb"></div>`;
+ $$('.tt button',box).forEach(b=>b.onclick=()=>{if(b.dataset.id===order[k].id){b.classList.add('done');$('.n',b).textContent=byId[b.dataset.id].yl;k++;if(k===5)$('.fb',box).innerHTML='<b style="color:var(--ok)">Perfect.</b> <button class="btn" id="ag">New round</button>',$('#ag',box).onclick=()=>gameC(box)}else{b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),300);$('.fb',box).textContent='Not that one. Think: what must come first?'}})}
+
+/* ---------- about ---------- */
+$('#aboutpg').innerHTML=`<h2>About this explorer</h2>
+<p>Based on <b>“What Goes Around Comes Around… And Around”</b> by Michael Stonebraker and Andrew Pavlo, SIGMOD Record, June 2024, a sequel to the 2005 Red Book chapter. <a style="color:var(--acc)" href="https://db.cs.cmu.edu/papers/2024/whatgoesaround-sigmodrec2024.pdf" target="_blank" rel="noopener">Read the paper</a>.</p>
+<h3 style="margin-top:18px">The thesis in three lines</h3>
+<ul><li>The relational model + SQL keeps winning.</li><li>Competing models either die, stay niche, or get absorbed: SQL grows to cover them.</li><li>Real innovation happened <em>inside</em> relational systems: columnar, cloud, lakehouse.</li></ul>
+<h3 style="margin-top:18px">Legend</h3><p>${Object.entries(VL).map(([k,v])=>`<span class="chip ${k}">${v}</span>`).join(' ')}</p>
+<h3 style="margin-top:18px">Other sources behind the story</h3>
+<ul class="mut"><li>E. F. Codd, “A Relational Model of Data for Large Shared Data Banks”, CACM 1970.</li><li>Chamberlin &amp; Boyce, SEQUEL, 1974; IBM System R papers.</li><li>Dean &amp; Ghemawat, MapReduce (2004); Chang et al., Bigtable (2006); DeCandia et al., Dynamo (2007).</li><li>D. Schmandt-Besserat, work on clay tokens and the origins of writing.</li><li>Hollerith / US Census 1890; Callimachus’ Pinakes; Domesday Book (1086); Salton’s SMART system.</li></ul>
+<h3 style="margin-top:18px">Caveats</h3>
+<p class="mut">All art is simplified, original SVG. Photos in the detail panel are from Wikimedia Commons under the licenses shown in each caption; local copies are in the img/ folder (the page falls back to Commons if they are missing). Dates are approximate and some are rounded for readability. The first five timeline stops are not to scale. “Relational gravity” is a subjective reading of the paper’s conclusions, and the paper itself is opinionated.</p>`;
+
+/* ---------- tabs ---------- */
+$$('#tabs button').forEach(b=>b.onclick=()=>{$$('#tabs button').forEach(x=>x.classList.toggle('on',x===b));$$('.view').forEach(v=>v.classList.toggle('on',v.id===b.dataset.v));
+ const v=b.dataset.v;closePanel();
+ curEra='';if(v==='timeline')onScroll();else vars(document.documentElement,TH[v==='map'?'cloud':v==='conv'?'sql':v==='games'?'big':'scroll']);
+ if(v==='conv')playConv();});
+
+/* ---------- init ---------- */
+buildTL();buildMap();buildConv();buildGames();updProg();
+setTheme(N[0].era);onScroll();
+</script>
+</body>
+</html>

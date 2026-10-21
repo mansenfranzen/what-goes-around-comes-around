@@ -1,0 +1,25 @@
+{
+  "name": "dbtalk",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "containerEnv": {
+    "UV_LINK_MODE": "copy"
+  },
+  "postCreateCommand": "npx --yes playwright install --with-deps chromium",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-playwright.playwright"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
