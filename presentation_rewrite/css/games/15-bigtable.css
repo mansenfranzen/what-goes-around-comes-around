@@ -1,0 +1,43 @@
+.game-15 .body { align-items: stretch; gap: .8em; min-height: 0; }
+.game-15 .tbl { flex: 1 1 0; min-width: 0; display: flex; padding: .6em; background: #fff; border: .14em solid var(--cat); border-radius: .8em; }
+.game-15 .grid { display: grid; flex: 1; min-width: 0; gap: .22em; grid-template-rows: auto auto repeat(8, minmax(0, 1fr)); }
+
+.game-15 .fam, .game-15 .hd, .game-15 .rk { font: 800 .8em var(--mono); display: flex; align-items: center; min-width: 0; white-space: nowrap; }
+.game-15 .fam { justify-content: center; background: var(--cat-tint); color: var(--cat-ink); border-radius: .4em; padding: .15em 0; }
+.game-15 .fam.key { background: none; }
+.game-15 .hd { justify-content: center; color: var(--muted); padding: .1em 0; border-radius: .4em; overflow: hidden; }
+.game-15 .hd.key { justify-content: flex-start; padding-left: .3em; }
+.game-15 .hd.fresh { color: #fff; background: var(--cat); animation: g15Drop .5s cubic-bezier(.2, 1.6, .4, 1); }
+.game-15 .rk { color: var(--ink); padding-left: .3em; overflow: hidden; text-overflow: ellipsis; }
+
+.game-15 .cell { position: relative; padding: 0; border: .1em solid transparent; border-radius: .4em; background: transparent; cursor: pointer; touch-action: manipulation; transition: background .35s ease, border-color .35s ease; }
+.game-15 .cell.f { background: var(--cat); border-color: var(--cat); }
+.game-15 .cell.f.html { background: var(--cat-ink); border-color: var(--cat-ink); }
+.game-15 .cell.f::after { content: ''; position: absolute; left: 22%; right: 22%; top: 50%; height: .26em; margin-top: -.13em; border-radius: .2em; background: rgba(255, 255, 255, .75); }
+.game-15 .mode-row .cell.e { background: repeating-linear-gradient(135deg, #FFF0F0 0 .28em, #FFD2D2 .28em .44em); border-color: #F7B2B2; }
+.game-15 .mode-wide .cell.e { background: transparent; border: .1em dashed var(--line); }
+.game-15 .cell.e:hover { background: var(--cat-tint); border-color: var(--cat); border-style: solid; }
+.game-15 .cell.e:hover::after { content: '+'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 900 1em var(--mono); color: var(--cat-ink); }
+.game-15 .cell.pop { animation: g15Drop .45s cubic-bezier(.2, 1.6, .4, 1); }
+.game-15 .cell.fresh { animation: g15Fresh 1.1s ease-out; }
+@keyframes g15Drop { from { transform: scale(.4); } to { transform: scale(1); } }
+@keyframes g15Fresh { 0% { box-shadow: 0 0 0 .3em color-mix(in srgb, var(--cat) 55%, transparent); } 100% { box-shadow: 0 0 0 .3em transparent; } }
+
+.game-15 .gauge { flex: 0 0 8.6em; display: flex; flex-direction: column; align-items: center; gap: .5em; min-height: 0; }
+.game-15 .bar { position: relative; flex: 1 1 0; min-height: 0; width: 3.6em; overflow: hidden; border: .14em solid var(--ink); border-radius: .7em; background: linear-gradient(to top, #fff var(--cap, 75%), #FFE9E9 var(--cap, 75%)); transition: border-color .3s ease; }
+.game-15 .bar.over { border-color: var(--bad); }
+.game-15 .seg { position: absolute; left: 0; right: 0; transition: height .45s ease, bottom .45s ease; }
+.game-15 .seg.used { bottom: 0; background: var(--cat); }
+.game-15 .seg.null { background: repeating-linear-gradient(135deg, #FFE3E3 0 .28em, #FF8787 .28em .44em); }
+.game-15 .cap { position: absolute; left: 0; right: 0; bottom: var(--cap, 75%); border-top: .16em dashed var(--ink); }
+.game-15 .cap span { position: absolute; left: .3em; bottom: .15em; font: 800 .8em var(--mono); color: var(--ink); background: rgba(255, 255, 255, .85); padding: 0 .2em; border-radius: .2em; }
+.game-15 .full { display: none; position: absolute; left: 0; right: 0; width: max-content; margin: 0 auto; top: .5em; background: var(--bad); color: #fff; font: 900 .8em var(--mono); padding: .25em .5em; border-radius: .4em; }
+.game-15 .bar.over .full { display: block; }
+.game-15 .gauge .g-stat b { font-size: 1.6em; }
+.game-15 .gauge .g-stat span { white-space: nowrap; }
+.game-15 .gauge .waste b { color: var(--good); }
+.game-15 .gauge.has-waste .waste b { color: var(--bad); }
+
+.game-15 .ctl { flex: 0 0 auto; }
+.game-15 .g-msg { text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.game-15 .g-label, .game-15 .g-stat span { font-size: .8em; }

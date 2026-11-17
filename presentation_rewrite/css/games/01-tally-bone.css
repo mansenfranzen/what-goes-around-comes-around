@@ -1,0 +1,23 @@
+.game-01 .pasture { flex: 1 1 0; min-height: 0; width: 100%; background: var(--cat-tint); border: .14em solid var(--cat); border-radius: .8em; }
+.game-01 .bone { flex: 0 0 auto; width: 100%; height: 22%; cursor: pointer; touch-action: manipulation; }
+.game-01 .ground { fill: #FBE3CF; }
+.game-01 .zone { fill: rgba(9, 146, 104, .12); stroke: var(--good); stroke-width: .4; stroke-dasharray: 2 1.5; }
+.game-01 .post, .game-01 .rail { stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; }
+.game-01 .rail { stroke-width: .9; }
+.game-01 .gate.flash .zone { animation: g01Flash .45s ease-out; }
+@keyframes g01Flash { 0% { fill: rgba(9, 146, 104, .55); } 100% { fill: rgba(9, 146, 104, .12); } }
+
+.game-01 .an .body, .game-01 .an .head { stroke: var(--ink); stroke-width: .9; }
+.game-01 .an.sheep .body { fill: #fff; }
+.game-01 .an.sheep .head { fill: var(--ink); }
+.game-01 .an.goat .body { fill: #D9A66B; }
+.game-01 .an.goat .head { fill: #B9824A; }
+.game-01 .an .leg, .game-01 .an .horn { stroke: var(--ink); stroke-width: 1; stroke-linecap: round; }
+.game-01 .an.through { opacity: .55; }
+
+.game-01 .knob, .game-01 .shaft { fill: #F6EAD6; stroke: var(--ink); stroke-width: 1.6; }
+.game-01 .shaft { stroke-width: 0; }
+.game-01 .notch { stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
+.game-01 .notch.slash { stroke: var(--cat-ink); }
+.game-01 .notch.fresh { animation: g01Carve .3s cubic-bezier(.2, 1.6, .4, 1); transform-box: fill-box; transform-origin: center; }
+@keyframes g01Carve { from { transform: scaleY(0); } to { transform: scaleY(1); } }

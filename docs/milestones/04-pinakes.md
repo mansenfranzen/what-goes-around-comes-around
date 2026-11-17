@@ -1,16 +1,20 @@
 # 04 · Pinakes of Alexandria (≈ 245 BCE)
 
-[← 03 Clay tablets](03-clay-tablets.md) · [Index](../README.md) · [Next → 05 Domesday Book](05-domesday-book.md)
+[← 03 Clay tablets](03-clay-tablets.md) · [Index](../README.md) · [Next → 05 Card catalog](05-card-catalog.md)
 
 | | |
 |---|---|
 | **Era** | Hellenistic Egypt, reign of Ptolemy II |
 | **Verdict** | Ancestor: the catalog (index) as a separate structure |
+| **Category** | **Primitives**: the *index* (a separate access structure) |
 | **Key people** | Callimachus of Cyrene (c. 310–240 BCE); Zenodotus (alphabetical arrangement) |
 | **In the app** | Timeline → "Pinakes", demo: scan the shelves vs. use the catalog |
 
 ## Summary
 A catalog **about** the collection, stored separately from it, with authors, titles, subjects and locations. It turns "look through everything" into "look it up".
+
+## Category
+The catalog is the first **access-path** primitive: a second structure, ordered by a key, that points into the data. Every later index (B-tree, hash, inverted, vector) is a descendant. The relational twist comes much later: the model keeps indexes *out of* the query language, so you can add or drop one without changing a single question.
 
 ## Context
 - The Library of Alexandria collected texts at large scale. Ancient sources give huge scroll counts; they are unreliable, so say "tens of thousands to hundreds of thousands, estimates vary".
@@ -37,8 +41,8 @@ A secondary index. Relational systems formalize it: data lives in tables, indexe
 ## Coming from… [03 Clay tablets](03-clay-tablets.md)
 Tablets made data durable and plentiful. Plentiful data created the need for **access paths**. Notice the pattern that repeats through the story: every capacity improvement in *storing* creates a retrieval problem.
 
-## Leading to… [05 Domesday Book](05-domesday-book.md)
-**What a catalog could not do:** it organizes records that already exist. It does not *produce* uniform records. A ruler who wants to know what the kingdom holds must collect new information, systematically, in a fixed format. The jump is from **organizing** to **collecting**: the first large, questionnaire-driven data-gathering exercise in the Western tradition, in 1086.
+## Leading to… [05 Card catalog](05-card-catalog.md)
+**What the Pinakes could not do:** it was itself written down as a *book* (scrolls), so it froze **one fixed order** at the moment of writing. New acquisitions could only be squeezed into margins or added by recopying; looking something up by a second key (subject instead of author) needed a second book. Library catalogs stayed in this bound, handwritten or printed book form for nearly two thousand years. The fix that finally spread was physical: make **each catalog entry a separate, uniform object** that can be inserted, removed and re-sorted at will. That is the card catalog, from 1791. (Say the time jump out loud: the *idea* of the index is old; making it *updatable* is the next invention.)
 
 ## Sources
 - [Wikipedia: Pinakes](https://en.wikipedia.org/wiki/Pinakes), [Callimachus](https://en.wikipedia.org/wiki/Callimachus), [Library of Alexandria](https://en.wikipedia.org/wiki/Library_of_Alexandria).

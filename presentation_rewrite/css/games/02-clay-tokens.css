@@ -1,0 +1,66 @@
+.game-02 .stage { position: relative; flex: 1 1 0; min-height: 0; display: grid; grid-template-columns: 12.5em 1fr 13em; gap: 1em; align-items: stretch; }
+.game-02 .order { align-self: center; display: flex; flex-direction: column; gap: .6em; padding: .8em; }
+.game-02 .order-list { display: flex; flex-wrap: wrap; gap: .45em; }
+.game-02 .cs { width: 3em; height: 3em; border: .12em dashed var(--cat); border-radius: .6em; background: #fff; display: flex; align-items: center; justify-content: center; }
+.game-02 .cs .tk { width: 80%; height: 80%; }
+.game-02 .cs:not(.on) .tk .tk-body { fill: #fff; stroke-opacity: .4; }
+.game-02 .cs:not(.on) .tk .tk-cut { stroke-opacity: .4; fill-opacity: .4; }
+.game-02 .cs.on { border-style: solid; border-color: var(--ink); }
+.game-02 .cs.on .tk { animation: g02Pop .3s cubic-bezier(.2, 1.6, .4, 1); }
+.game-02 .cs.ok { border-color: var(--good); background: var(--good-tint); box-shadow: 0 0 0 .15em var(--good); }
+
+.game-02 .ball-wrap { min-height: 0; display: flex; align-items: center; justify-content: center; }
+.game-02 .ball { height: 100%; max-width: 100%; overflow: visible; }
+.game-02 .shadow { fill: rgba(11, 27, 51, .12); }
+.game-02 .ball-body { fill: url(#g02-clay); stroke: var(--ink); stroke-width: 2; }
+.game-02 .shine { fill: none; stroke: rgba(255, 255, 255, .7); stroke-width: 2.4; stroke-linecap: round; }
+.game-02 .hole { fill: #7A4A27; stroke: var(--ink); stroke-width: 1.6; transform-box: fill-box; transform-origin: center; }
+.game-02 .hole.closed { opacity: 0; }
+.game-02 .lid { opacity: 0; transform-box: fill-box; transform-origin: center; transform: translateY(-40%) scale(1.15); transition: opacity .25s, transform .35s cubic-bezier(.2, 1.4, .4, 1); }
+.game-02 .lid.on { opacity: 1; transform: none; }
+.game-02 .lid-top { fill: #EBB985; stroke: var(--ink); stroke-width: 1.6; }
+.game-02 .seam { fill: none; stroke: #9C6234; stroke-width: 1.2; stroke-linecap: round; }
+.game-02 .qmark { font-weight: 900; font-family: var(--mono); fill: var(--ink); text-anchor: middle; opacity: 0; transition: opacity .3s; }
+.game-02 .qmark.on { opacity: .8; }
+.game-02 .whole.shake { animation: g02Shake .5s linear; transform-box: fill-box; transform-origin: center; }
+.game-02 .whole.gone { opacity: 0; }
+
+.game-02 .mark { transform-box: fill-box; transform-origin: center; animation: g02Press .35s ease-out; }
+.game-02 .mark .tk-body { fill: #A8683A; stroke: #6E3F1D; stroke-width: 2.4; }
+.game-02 .mark .tk-cut { stroke: #6E3F1D; fill: #6E3F1D; stroke-width: 2.2; }
+.game-02 .mark.hl .tk-body { fill: var(--good); stroke: var(--ink); }
+.game-02 .mark.hl .tk-cut { stroke: #fff; fill: #fff; }
+.game-02 .mark.hl { animation: g02Pop .35s cubic-bezier(.2, 1.6, .4, 1); }
+
+.game-02 .halves { opacity: 0; }
+.game-02 .halves.on { opacity: 1; }
+.game-02 .half { fill: url(#g02-clay); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; transform-box: fill-box; transform-origin: center; }
+.game-02 .halves.on .half:first-child { animation: g02SplitL .6s ease-out forwards; }
+.game-02 .halves.on .half:last-child { animation: g02SplitR .6s ease-out forwards; }
+.game-02 .drop { animation: g02Drop .5s cubic-bezier(.3, 1.3, .5, 1) both; transform-box: fill-box; transform-origin: center; }
+
+.game-02 .tk .tk-body { stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.game-02 .tk .tk-cut { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; fill: var(--ink); }
+.game-02 .tk-grain .tk-body { fill: #F76707; }
+.game-02 .tk-sheep .tk-body { fill: #FFC078; }
+.game-02 .tk-oil .tk-body { fill: #FFE8CC; }
+.game-02 .tk-grain .tk-cut { display: none; }
+
+.game-02 .tray { align-self: center; display: flex; flex-direction: column; gap: .5em; padding: .6em; background: var(--paper); transition: opacity .25s; }
+.game-02 .tray.off { opacity: .35; pointer-events: none; }
+.game-02 .tray-btn { display: flex; align-items: center; gap: .8em; padding: .35em .8em; background: #fff; border: .14em solid var(--ink); border-radius: .7em; font: 800 .9em var(--mono); color: var(--ink); text-transform: uppercase; letter-spacing: .06em; transition: transform .12s, background .15s, opacity .2s; }
+.game-02 .tray-btn:hover { transform: translateY(-.06em); background: var(--cat-tint); }
+.game-02 .tray-btn .tk { width: 3.2em; height: 3.2em; flex: none; }
+.game-02 .tray-btn.none { display: none; }
+.game-02 .tray-btn.spent { opacity: .35; }
+
+.game-02 .layer { position: absolute; inset: 0; pointer-events: none; }
+.game-02 .fly { position: absolute; width: 3.2em; height: 3.2em; }
+.game-02 .fly .tk { width: 100%; height: 100%; filter: drop-shadow(0 .2em .2em rgba(11, 27, 51, .3)); }
+
+@keyframes g02Pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes g02Press { 0% { transform: scale(1.7); opacity: 0; } 60% { transform: scale(.85); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes g02Shake { 10% { transform: translateX(-2%) rotate(-2deg); } 30% { transform: translateX(2%) rotate(2deg); } 50% { transform: translateX(-2%) rotate(-3deg); } 70% { transform: translateX(2%) rotate(3deg); } 90% { transform: translateX(-1%); } }
+@keyframes g02SplitL { to { transform: translate(-30%, 4%) rotate(-14deg); } }
+@keyframes g02SplitR { to { transform: translate(30%, 4%) rotate(14deg); } }
+@keyframes g02Drop { from { transform: translateY(-150%) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }

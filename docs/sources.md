@@ -6,7 +6,7 @@
 
 - **Backbone:** the 2024 paper (read in full): Stonebraker & Pavlo, SIGMOD Record 53(2), 2024. All "paper says" statements, the verdict labels, and the SQL-absorption claims (JSON in SQL:2016, SQL/PGQ and SQL/MDA in SQL:2023, vector indexes in 2023) come from it.
 - **Everything else** (pre-1960 history, original papers, product dates) comes from my background knowledge of the literature, cross-checked only by citing the original publications listed below. I did **not** re-read those originals while writing, so treat precise dates and numbers as "very likely right, worth a quick check before quoting on stage". Items I am less sure of are marked **(verify)** in the milestone pages.
-- Image credits are in the `IMG` table inside [index-photos.html](../index-photos.html) (Wikimedia Commons).
+- Image credits are in the `IMG` table inside [index-photos.html](../legacy/index-photos.html) (Wikimedia Commons).
 - Wikipedia links below were checked to exist. They are convenient entry points, not primary evidence.
 
 ## Key references (short names used in the pages)
@@ -25,8 +25,6 @@ Its own numbered references (e.g. "ref. 172") are cited by that number in the mi
 **[Sel79]** P. Selinger et al. *Access Path Selection in a Relational Database Management System.* SIGMOD 1979.
 
 **[Bach73]** C. Bachman. *The Programmer as Navigator.* CACM 16(11), 1973 (Turing Award lecture).
-
-**[Chen76]** P. Chen. *The Entity-Relationship Model: Toward a Unified View of Data.* ACM TODS 1(1), 1976.
 
 **[SB92]** D. Schmandt-Besserat. *Before Writing* (2 vols), University of Texas Press, 1992.
 
@@ -50,9 +48,11 @@ Its own numbered references (e.g. "ref. 172") are cited by that number in the mi
 
 **[PA16]** A. Pavlo, M. Aslett. *What's Really New with NewSQL?* SIGMOD Record 45(2), 2016.
 
+Further references for the impedance-mismatch section ([13](milestones/13-object-oriented-databases.md)) and the [SQL vs. NoSQL vs. NewSQL](sql-nosql-newsql.md) deep dive (CAP, PACELC, BASE, ORM patterns) are listed on those pages.
+
 ## Wikipedia entry points (all checked to exist)
 
-Ishango bone, Lebombo bone, Tally stick, Cuneiform, Proto-cuneiform, Uruk, Pinakes, Callimachus, Library of Alexandria, Domesday Book, Library catalog, Dewey Decimal Classification, Punched card, Herman Hollerith, 1880 and 1890 United States census, IBM 305 RAMAC, Hard disk drive, Magnetic-tape data storage, Gerard Salton, Inverted index, TF-IDF, Vector space model, Information retrieval, Apache Lucene, Elasticsearch, Information Management System, Hierarchical database model, Apollo program, CODASYL, Network model, Charles Bachman, Relational model, Edgar F. Codd, SQL, Donald D. Chamberlin, IBM System R, Ingres, Oracle Database, Entity–relationship model, Database machine, Teradata, Array DBMS, Rasdaman, HDF5, NetCDF, APL, Object database, Object–relational impedance mismatch, Object-relational mapping, XML, JSON, MapReduce, Apache Hadoop, Bigtable, Apache Cassandra, Apache HBase, Column-oriented DBMS, Data warehouse, Key–value database, Dynamo (storage system), Redis, Memcached, Graph database, Neo4j, Document-oriented database, MongoDB, Blockchain, Bitcoin, NewSQL, H-Store, VoltDB, Spanner (database), CockroachDB, Amazon Aurora, Data lake, Data lakehouse, Apache Parquet, Delta Lake, Apache Iceberg, Vector database, Word embedding, SQLite, DuckDB, PostgreSQL, Michael Stonebraker.
+Ishango bone, Lebombo bone, Tally stick, Cuneiform, Proto-cuneiform, Uruk, Pinakes, Callimachus, Library of Alexandria, Library catalog, Dewey Decimal Classification, Punched card, Herman Hollerith, 1880 and 1890 United States census, IBM 305 RAMAC, Hard disk drive, Magnetic-tape data storage, Information Management System, Hierarchical database model, Apollo program, CODASYL, Network model, Charles Bachman, Relational model, Edgar F. Codd, SQL, Donald D. Chamberlin, IBM System R, Ingres, Oracle Database, Array DBMS, Rasdaman, HDF5, NetCDF, APL, Object database, Object–relational impedance mismatch, Object-relational mapping, JSON, MapReduce, Apache Hadoop, Bigtable, Apache Cassandra, Apache HBase, Column-oriented DBMS, Data warehouse, Key–value database, Dynamo (storage system), Redis, Memcached, Graph database, Neo4j, Document-oriented database, MongoDB, Blockchain, Bitcoin, NoSQL, NewSQL, CAP theorem, PACELC theorem, Eventual consistency, Spanner (database), CockroachDB, Amazon Aurora, Data lake, Data lakehouse, Apache Parquet, Delta Lake, Apache Iceberg, Vector database, Word embedding, SQLite, DuckDB, PostgreSQL, Michael Stonebraker.
 
 URL pattern: `https://en.wikipedia.org/wiki/<Title_with_underscores>`.
 

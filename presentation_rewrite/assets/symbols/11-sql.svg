@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+<g stroke="#0B1B33" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M24 18H72Q82 18 82 28V54Q82 64 72 64H40L26 78V64H24Q14 64 14 54V28Q14 18 24 18Z" fill="#A5D8FF"/>
+<text x="48" y="48" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800" font-size="24" text-anchor="middle" fill="#0B1B33" stroke="none">SQL</text>
+<path d="M30 54H66" fill="none" stroke="#1971C2"/>
+</g>
+</svg>

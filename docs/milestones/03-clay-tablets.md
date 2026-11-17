@@ -6,11 +6,15 @@
 |---|---|
 | **Era** | Late Uruk period (Sumer, southern Mesopotamia) |
 | **Verdict** | Ancestor: literally a table |
+| **Category** | **Primitives**: the *record layout* and the first *aggregate* · foreshadows **Model** |
 | **Key artifacts** | Proto-cuneiform administrative tablets from Uruk; later cuneiform ration and livestock accounts |
 | **In the app** | Timeline → "Clay tablet ledger", demo: filter the ledger |
 
 ## Summary
 Records are pressed flat into clay as lines of signs: **who, what, how much**. Writing itself was largely invented for bookkeeping.
+
+## Category
+Tablets give us the **row**: one transaction per line, fixed positions for who, what and how much, plus totals (the first aggregate). That is a storage primitive. The tabular *shape* foreshadows the relational model, but without keys or links between tablets it is not yet a model: each tablet is an island.
 
 ## Context
 - The earliest proto-cuneiform tablets from Uruk (about 3300–3000 BCE) are overwhelmingly administrative: rations, livestock, grain, textiles, labourers. Estimates put administrative texts at around 85–90 % of the earliest corpus ([NDE93]).

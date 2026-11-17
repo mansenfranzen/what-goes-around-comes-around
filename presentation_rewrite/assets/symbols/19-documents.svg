@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+<g stroke="#0B1B33" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M26 12H58L76 30V78Q76 84 70 84H26Q20 84 20 78V18Q20 12 26 12Z" fill="#FFFFFF"/>
+<path d="M58 12V24Q58 30 64 30H76Z" fill="#D0BFFF"/>
+<g font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800" font-size="30" text-anchor="middle" fill="#6741D9" stroke="none">
+<text x="37" y="57">{</text>
+<text x="59" y="57">}</text>
+</g>
+<path d="M29 69H63M29 76H49" fill="none" stroke-width="3.5"/>
+</g>
+</svg>

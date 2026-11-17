@@ -6,11 +6,15 @@
 |---|---|
 | **Era** | Upper Palaeolithic |
 | **Verdict** | Ancestor (a one-column "table") |
+| **Category** | **Primitives**: the *count* |
 | **Key artifacts** | Ishango bone (Congo), Lebombo bone (southern Africa), Věstonice wolf bone (Czechia) |
 | **In the app** | Timeline → "Tally bone", demo: cut notches on a bone |
 
 ## Summary
 Humans started storing information **outside the brain** by carving notches. A tally stores exactly one thing: a number.
+
+## Category
+The tally is the most basic storage primitive: a durable record of one quantity, kept outside the brain. No type, no schema, no query; just persisted state. Every database still has this at its bottom: a stored value that outlives the person who wrote it.
 
 ## Context
 - Hunter-gatherer groups needed to track days, moons, game, perhaps trade. Memory alone does not scale beyond small numbers.

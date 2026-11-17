@@ -1,0 +1,69 @@
+/* Base: tokens, reset, stage, slide transitions, shared chips and the generic reveal mechanism.
+   Layout units are rem; root font-size scales with the viewport so everything fits any 16:9 screen. */
+:root {
+  --ink: #0B1B33;
+  --ink-2: #2C3E5A;
+  --muted: #51627F;
+  --line: #D5DDEA;
+  --paper: #F5F8FC;
+  --bg: #FFFFFF;
+  --bad: #E03131;
+  --bad-tint: #FFE3E3;
+  --good: #099268;
+  --good-tint: #D6F7EC;
+  --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: min(1.667vh, 0.9375vw);
+}
+
+.cat-primitives { --cat: #F76707; --cat-ink: #B84500; --cat-tint: #FFE8D1; }
+.cat-language   { --cat: #1971C2; --cat-ink: #0F5499; --cat-tint: #DCEEFF; }
+.cat-model      { --cat: #6741D9; --cat-ink: #4B2DB3; --cat-tint: #E9E0FF; }
+.cat-synthesis  { --cat: #099268; --cat-ink: #066B4C; --cat-tint: #D6F7EC; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); }
+body { font-family: var(--sans); font-size: 1rem; line-height: 1.35; -webkit-font-smoothing: antialiased; user-select: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+img, svg { display: block; }
+h1, h2, h3, p { margin: 0; }
+
+#stage { position: fixed; inset: 0; overflow: hidden; }
+.slide { position: absolute; inset: 0; overflow: hidden; }
+.slide.enter-fwd { animation: enterFwd .45s cubic-bezier(.2, .7, .2, 1) both; }
+.slide.enter-back { animation: enterBack .45s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes enterFwd { from { opacity: 0; transform: translateX(2.5rem); } to { opacity: 1; transform: none; } }
+@keyframes enterBack { from { opacity: 0; transform: translateX(-2.5rem); } to { opacity: 1; transform: none; } }
+
+/* Generic incremental reveal: views put data-at="N" on anything that appears at step N.
+   Opacity-only so the layout never jumps. */
+[data-at] { opacity: 0; transform: translateY(.7rem); pointer-events: none; transition: opacity .45s ease, transform .45s cubic-bezier(.2, .7, .2, 1); }
+[data-at].on { opacity: 1; transform: none; pointer-events: auto; }
+
+/* Subtle database-flavoured backdrop (faint table grid). Applied per view via .grid-bg */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(11, 27, 51, .045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 27, 51, .045) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+}
+
+/* Chips */
+.chip {
+  display: inline-flex; align-items: center; gap: .4em; white-space: nowrap;
+  font: 700 .78rem/1 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+  padding: .45em .8em; border-radius: 99px; background: var(--cat-tint, var(--paper)); color: var(--cat-ink, var(--ink));
+}
+.chip.solid { background: var(--cat); color: #fff; }
+.chip.year { background: var(--ink); color: #fff; }
+.chip.verdict { background: #fff; border: .12rem solid currentColor; }
+.chip.v-winner { color: #087F5B; background: var(--good-tint); border-color: transparent; }
+.chip.v-ancestor { color: #8A4B00; background: #FFF1D6; border-color: transparent; }
+.chip.v-legacy { color: #495057; background: #E9ECEF; border-color: transparent; }
+.chip.v-niche-survivor { color: #0F5499; background: #DCEEFF; border-color: transparent; }
+.chip.v-absorbed { color: #4B2DB3; background: #E9E0FF; border-color: transparent; }
+.chip.v-dead-end { color: #C92A2A; background: var(--bad-tint); border-color: transparent; }
+.chip.v-converging { color: #A61E8F; background: #FCE3F7; border-color: transparent; }
+
+.mono { font-family: var(--mono); }
+body.game-open { overflow: hidden; }

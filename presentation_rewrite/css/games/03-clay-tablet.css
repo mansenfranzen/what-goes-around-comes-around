@@ -1,0 +1,47 @@
+.game-03 .main { flex: 1 1 0; min-height: 0; display: flex; gap: 1.2em; align-items: stretch; }
+.game-03 .tablet { --rh: 2.9em; flex: 1.7 1 0; min-width: 0; display: flex; flex-direction: column; padding: .8em 1em; border-radius: 1.4em 1.4em 1.8em 1.8em / 1.2em 1.2em 1.6em 1.6em; border: .14em solid #9C6234; background: linear-gradient(160deg, #F6DDBB 0%, #E8BE8C 100%); box-shadow: inset 0 .25em .5em rgba(255, 255, 255, .55), inset 0 -.3em .6em rgba(120, 70, 30, .28), 0 .5em 1em rgba(11, 27, 51, .12); }
+.game-03 .th-row, .game-03 .rw { display: grid; grid-template-columns: 1.5fr 1fr .9fr; align-items: center; }
+.game-03 .th-row { height: 2em; border-bottom: .22em solid #A8683A; box-shadow: 0 .1em 0 rgba(255, 255, 255, .5); margin-bottom: .2em; }
+.game-03 .th { font: 800 .8em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #6E3F1D; background: none; border: 0; padding: 0 .5em; text-align: left; }
+.game-03 .th.c-qty { text-align: right; justify-content: flex-end; display: flex; align-items: center; gap: .5em; cursor: pointer; border-radius: .4em; height: 100%; }
+.game-03 .sortbtn:hover { background: rgba(255, 255, 255, .4); }
+.game-03 .arrow { display: inline-block; width: 0; height: 0; border-left: .35em solid transparent; border-right: .35em solid transparent; border-top: .5em solid #6E3F1D; opacity: .55; }
+.game-03 .sortbtn.up .arrow { border-top: 0; border-bottom: .5em solid #6E3F1D; opacity: 1; }
+.game-03 .sortbtn.down .arrow { opacity: 1; }
+
+.game-03 .rows { position: relative; flex: none; height: calc(8 * var(--rh)); }
+.game-03 .rw { position: absolute; left: 0; right: 0; top: 0; height: var(--rh); transform: translateY(calc(var(--i, 0) * var(--rh))); transition: transform .55s cubic-bezier(.3, .8, .3, 1), opacity .3s, background .25s; border-bottom: .1em solid rgba(156, 98, 52, .45); border-radius: .3em; }
+.game-03 .rw.dim { opacity: .22; }
+.game-03 .rw.hit { background: rgba(255, 255, 255, .6); box-shadow: inset .3em 0 0 var(--cat); }
+.game-03 .c-who { display: flex; align-items: center; gap: .6em; padding-left: .5em; font-weight: 800; }
+.game-03 .av { width: 1.8em; height: 1.8em; border-radius: 50%; color: #fff; font: 800 .9em var(--mono); font-style: normal; display: inline-flex; align-items: center; justify-content: center; border: .12em solid var(--ink); flex: none; }
+.game-03 .c-what { display: flex; align-items: center; padding: 0 .5em; }
+.game-03 .c-what .gl { width: 2.1em; height: 2.1em; }
+.game-03 .rw .c-qty { text-align: right; font: 800 1.35em var(--mono); padding-right: .5em; display: block; }
+.game-03 .rw.add .c-qty { color: var(--good); animation: g03Pop .4s cubic-bezier(.2, 1.6, .4, 1); }
+.game-03 .rw.add { background: var(--good-tint); box-shadow: inset .3em 0 0 var(--good); }
+
+.game-03 .foot { margin-top: auto; display: flex; align-items: center; gap: 1em; border-top: .22em double #A8683A; padding-top: .6em; }
+.game-03 .sum { padding: .4em 1.1em; }
+.game-03 .sigma { font-size: 1.2em; }
+.game-03 .total { font: 900 2em var(--mono); color: #6E3F1D; padding-right: .3em; line-height: 1; }
+.game-03 .total.is-final { color: var(--cat-ink); }
+
+.game-03 .side { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: .8em; justify-content: center; padding: 1em; }
+.game-03 .lbl { font: 800 .8em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--cat-ink); }
+.game-03 .fbs { display: flex; flex-direction: column; gap: .5em; }
+.game-03 .fb { display: flex; align-items: center; gap: .8em; padding: .35em .9em; background: #fff; border: .14em solid var(--ink); border-radius: .7em; font: 800 1em var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink); transition: transform .12s, background .15s; }
+.game-03 .fb:hover { transform: translateY(-.06em); }
+.game-03 .fb.is-on { background: var(--cat); border-color: var(--cat); color: #fff; box-shadow: 0 0 0 .2em var(--cat-tint); }
+.game-03 .fb .gl { width: 2.2em; height: 2.2em; flex: none; background: #fff; border-radius: .5em; padding: .1em; }
+.game-03 .g-code { font-size: .85em; line-height: 1.5; }
+
+.game-03 .gl { overflow: visible; }
+.game-03 .gl-line { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.game-03 .gl-fill { stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.game-03 .gl-gold { fill: #FFD43B; }
+.game-03 .gl-wool { fill: #fff; }
+.game-03 .gl-dark { fill: var(--ink); }
+.game-03 .gl-olive { fill: #94D82D; }
+
+@keyframes g03Pop { from { transform: scale(.4); } to { transform: scale(1); } }

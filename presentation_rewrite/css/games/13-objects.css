@@ -1,0 +1,40 @@
+.game-13 .hid { display: none; }
+.game-13 .world { flex: 1 1 0; min-height: 0; width: 100%; background: var(--cat-tint); border: .14em solid var(--cat); border-radius: .8em; touch-action: none; user-select: none; -webkit-user-select: none; }
+.game-13 .foot { align-items: center; }
+.game-13 .g-btn { min-height: 2.4em; min-width: 7em; }
+.game-13 .cap { font-size: .85em; }
+
+.game-13 .zr { fill: rgba(255, 255, 255, .7); stroke: var(--cat); stroke-width: .6; transition: fill .2s, stroke .2s; }
+.game-13 .zt { font-family: var(--mono); font-weight: 800; letter-spacing: .08em; fill: var(--cat-ink); }
+.game-13 .zone.locked .zr { stroke-dasharray: 2.4 1.8; stroke: #8E7FD1; fill: rgba(255, 255, 255, .35); }
+.game-13 .zone.locked .zt { opacity: .6; }
+.game-13 .zone.over .zr { fill: #FFF3BF; stroke: #F59F00; stroke-width: 1.2; }
+.game-13 .zone.pulse .zr { animation: g13Pulse .9s ease-out; }
+.game-13 .zone.shake { animation: g13Shake .35s linear; }
+
+.game-13 .tn { font-family: var(--mono); font-weight: 800; fill: var(--muted); }
+.game-13 .th { fill: var(--ink); }
+.game-13 .tc { font-family: var(--mono); font-weight: 700; fill: #E6EEFF; }
+.game-13 .rs { fill: #fff; stroke: var(--line); stroke-width: .5; stroke-dasharray: 1.6 1.2; }
+.game-13 .note { font-family: var(--mono); font-weight: 800; fill: var(--muted); }
+.game-13 .note.bad { fill: var(--bad); }
+.game-13 .note.good { fill: var(--good); }
+
+.game-13 .ghost { fill: none; stroke: #8E7FD1; stroke-width: .6; stroke-dasharray: 2.4 1.8; pointer-events: none; }
+.game-13 .shk { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+.game-13 .lbody { fill: var(--ink); }
+.game-13 .lock { pointer-events: none; }
+
+.game-13 .pc { stroke-width: 1; cursor: grab; }
+.game-13 .pc.row { stroke-width: .7; cursor: default; }
+.game-13 .pt { font-family: var(--sans); fill: var(--ink); pointer-events: none; }
+.game-13 .pt.mono { font-family: var(--mono); font-weight: 700; }
+.game-13 .obj.lift { filter: drop-shadow(0 .2em .35em rgba(11, 27, 51, .4)); }
+.game-13 .obj.lift .pc { cursor: grabbing; }
+
+.game-13 .jn { fill: none; stroke: #F59F00; stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 1.8 1.4; opacity: 0; }
+.game-13 .joins.on .jn { opacity: 1; animation: g13March .6s linear infinite; }
+
+@keyframes g13March { to { stroke-dashoffset: -3.2; } }
+@keyframes g13Pulse { 0% { stroke-width: 3.2; stroke: #099268; } 100% { stroke-width: .6; } }
+@keyframes g13Shake { 20% { transform: translateX(-.3em); } 40% { transform: translateX(.3em); } 60% { transform: translateX(-.2em); } 80% { transform: translateX(.15em); } }

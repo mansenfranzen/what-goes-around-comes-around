@@ -1,0 +1,45 @@
+.game-05 .top { min-height: 2.4em; }
+.game-05 .field { flex: 1 1 0; min-height: 0; width: 100%; display: block; touch-action: none; user-select: none; -webkit-user-select: none; overflow: visible; }
+.game-05 .ctl { min-height: 2.8em; }
+.game-05 .g-btn.is-off { display: none; }
+
+/* bound catalogue */
+.game-05 .book { transition: opacity .35s, transform .35s; transform-box: fill-box; transform-origin: center; }
+.game-05 .book.is-gone { opacity: 0; transform: scale(.94); pointer-events: none; }
+.game-05 .bk-page { fill: #FFF9EE; stroke: #9C6234; stroke-width: .6; }
+.game-05 .bk-spine { fill: #9C6234; }
+.game-05 .bk-head { fill: var(--muted); font-weight: 800; font-family: var(--mono); letter-spacing: .12em; }
+.game-05 .bk-row { fill: var(--ink); font-weight: 800; }
+.game-05 .bk-rule { stroke: #D9B77E; stroke-width: .35; }
+.game-05 .stamp { opacity: 0; pointer-events: none; transform-box: fill-box; transform-origin: center; transform: rotate(-8deg); }
+.game-05 .stamp rect { fill: #fff; stroke: var(--bad); stroke-width: .9; }
+.game-05 .stamp text { fill: var(--bad); text-anchor: middle; font-weight: 900; letter-spacing: .06em; }
+.game-05 .stamp.is-on { animation: g05Stamp 1.6s ease-out; }
+@keyframes g05Stamp { 0% { opacity: 0; transform: rotate(-8deg) scale(1.7); } 15% { opacity: 1; transform: rotate(-8deg) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: rotate(-8deg) scale(1); } }
+
+/* drawer */
+.game-05 .drawer { opacity: 0; transition: opacity .4s; pointer-events: none; }
+.game-05 .drawer.is-on { opacity: 1; }
+.game-05 .dr-back { fill: var(--cat-tint); stroke: var(--cat); stroke-width: .7; }
+.game-05 .dr-panel { fill: var(--cat); }
+.game-05 .dr-tag { fill: #fff; stroke: var(--cat-ink); stroke-width: .5; }
+.game-05 .dr-label { fill: var(--ink); text-anchor: middle; font-weight: 900; font-family: var(--mono); letter-spacing: .1em; }
+.game-05 .dr-knob { fill: #fff; stroke: var(--cat-ink); stroke-width: .5; }
+
+/* cards */
+.game-05 .cd { cursor: default; }
+.game-05 .cd-body { fill: #fff; stroke: var(--ink); stroke-width: .6; transition: stroke .25s, fill .25s; }
+.game-05 .cd-ini { fill: var(--ink); font-weight: 900; font-family: var(--mono); }
+.game-05 .cd-name { fill: var(--muted); text-anchor: middle; font-weight: 800; }
+.game-05 .pip { stroke: none; }
+.game-05 .pip-P { fill: #1F6FD6; }
+.game-05 .pip-S { fill: var(--bad); }
+.game-05 .pip-L { fill: var(--ink); }
+.game-05 .cd.is-new { cursor: grab; }
+.game-05 .cd.is-new .cd-body { fill: var(--cat-tint); stroke: var(--cat); stroke-width: 1; }
+.game-05 .cd.is-lift { cursor: grabbing; filter: drop-shadow(0 .5em .6em rgba(11, 27, 51, .3)); }
+.game-05 .cd-body.is-warn { stroke: var(--bad); fill: var(--bad-tint); stroke-width: 1; }
+.game-05 .new-tag { fill: var(--cat-ink); text-anchor: end; font-weight: 900; font-family: var(--mono); letter-spacing: .1em; transition: opacity .3s; pointer-events: none; }
+.game-05 .legend { opacity: 0; transition: opacity .5s; pointer-events: none; }
+.game-05 .legend.is-on { opacity: 1; }
+.game-05 .legend text { fill: var(--ink); font-weight: 800; }

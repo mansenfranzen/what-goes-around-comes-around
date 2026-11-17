@@ -1,0 +1,70 @@
+/* Game panel + shared helpers for every mini game.
+   Contract: a game builds its UI inside .game-root (already sized to the panel, font-size scales with the panel
+   via container units: 1em ~ 2.8% of the shorter panel side). Always size with em / % / flex / grid / SVG viewBox,
+   never px, so the expanded full-screen mode scales automatically. */
+.game-panel {
+  display: flex; flex-direction: column; min-height: 0; background: #fff;
+  border: .14rem solid var(--ink); border-radius: 1.1rem; overflow: hidden;
+  box-shadow: 0 .8rem 2.4rem rgba(11, 27, 51, .10);
+}
+.game-head { display: flex; align-items: center; gap: .7rem; padding: .55rem .8rem; background: var(--paper); border-bottom: .12rem solid var(--ink); }
+.game-badge { font: 800 .72rem var(--mono); letter-spacing: .12em; background: var(--cat, var(--ink)); color: #fff; padding: .35em .7em; border-radius: .5rem; }
+.game-hint { flex: 1; font-weight: 700; font-size: 1rem; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-done { display: none; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--good); color: #fff; font-weight: 900; align-items: center; justify-content: center; }
+.game-done.on { display: inline-flex; animation: gPop .5s cubic-bezier(.2, 1.6, .4, 1); }
+.game-btn { width: 2.3rem; height: 2.3rem; display: inline-flex; align-items: center; justify-content: center; border: .12rem solid var(--ink); background: #fff; border-radius: .6rem; padding: 0; }
+.game-btn:hover { background: var(--ink); color: #fff; }
+.game-stage { position: relative; flex: 1; min-height: 0; container-type: size; background: #fff; }
+.game-root {
+  position: absolute; inset: 0; overflow: hidden; padding: 1em;
+  font-size: calc(2.8cqmin); line-height: 1.3; color: var(--ink);
+  display: flex; flex-direction: column; gap: .8em;
+}
+.game-missing { margin: auto; color: var(--muted); font-weight: 700; }
+.game-placeholder { flex: 1; }
+
+.game-panel.is-full { position: fixed; inset: 0; z-index: 100; border: 0; border-radius: 0; box-shadow: none; animation: gFull .3s cubic-bezier(.2, .7, .2, 1); }
+.game-panel.is-full .game-head { padding: .7rem 1.2rem; }
+@keyframes gFull { from { opacity: .4; transform: scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes gPop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* ---------- shared game helpers (all prefixed g-) ---------- */
+.g-row { display: flex; align-items: center; gap: .7em; }
+.g-col { display: flex; flex-direction: column; gap: .7em; }
+.g-grow { flex: 1; min-width: 0; min-height: 0; }
+.g-center { display: flex; align-items: center; justify-content: center; }
+.g-wrap { flex-wrap: wrap; }
+.g-mono { font-family: var(--mono); }
+.g-btn {
+  border: .14em solid var(--ink); background: var(--ink); color: #fff; border-radius: .6em; padding: .5em 1em;
+  font-weight: 800; font-size: 1em; line-height: 1.1; transition: transform .12s ease, background .15s ease;
+}
+.g-btn:hover { transform: translateY(-.06em); }
+.g-btn:active { transform: translateY(.04em); }
+.g-btn.alt { background: #fff; color: var(--ink); }
+.g-btn.cat { background: var(--cat); border-color: var(--cat); }
+.g-btn.on { background: var(--cat); border-color: var(--cat); color: #fff; }
+.g-btn[disabled] { opacity: .35; pointer-events: none; }
+.g-card { background: #fff; border: .14em solid var(--ink); border-radius: .8em; padding: .6em .9em; }
+.g-tint { background: var(--cat-tint); border-color: var(--cat); }
+.g-label { font: 800 .8em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.g-stat { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.g-stat b { font: 900 2.6em var(--mono); color: var(--cat-ink, var(--ink)); }
+.g-stat span { font: 800 .8em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .3em; }
+.g-msg { font-weight: 800; min-height: 1.4em; }
+.g-msg.good { color: var(--good); }
+.g-msg.bad { color: var(--bad); }
+.g-code { font-family: var(--mono); font-weight: 700; background: var(--ink); color: #E6EEFF; border-radius: .6em; padding: .6em .9em; white-space: pre; }
+.g-code .k { color: #FFB86B; } .g-code .s { color: #8CE99A; } .g-code .n { color: #74C0FC; }
+.g-range { width: 100%; accent-color: var(--cat); height: 1.6em; cursor: pointer; }
+.g-table { border-collapse: collapse; font-family: var(--mono); font-weight: 700; }
+.g-table th { text-align: left; font-size: .7em; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: .14em solid var(--ink); padding: .3em .7em; }
+.g-table td { padding: .3em .7em; border-bottom: .08em solid var(--line); }
+.g-pop { animation: gPop .35s cubic-bezier(.2, 1.6, .4, 1) both; }
+.g-shake { animation: gShake .35s linear; }
+.g-pulse { animation: gPulse .9s ease-out; }
+.g-hl { background: #FFF3BF; outline: .12em solid #F59F00; }
+@keyframes gShake { 20% { transform: translateX(-.35em); } 40% { transform: translateX(.35em); } 60% { transform: translateX(-.25em); } 80% { transform: translateX(.2em); } }
+@keyframes gPulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--cat) 60%, transparent); } 100% { box-shadow: 0 0 0 1.2em transparent; } }
+.g-draggable { cursor: grab; touch-action: none; }
+.g-draggable:active { cursor: grabbing; }

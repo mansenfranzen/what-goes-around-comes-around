@@ -1,0 +1,49 @@
+.game-21 .modes { display: flex; gap: .4em; }
+.game-21 .msg { flex: 1; min-width: 0; min-height: 2.6em; display: flex; align-items: center; justify-content: flex-end; text-align: right; }
+
+.game-21 .scene { flex: 1 1 0; min-height: 0; width: 100%; background: var(--paper); border: .14em solid var(--line); border-radius: .8em; }
+.game-21 .zl { font-family: var(--mono); font-weight: 800; letter-spacing: .04em; fill: var(--muted); }
+
+.game-21 .bucket, .game-21 .disks { transition: opacity .5s; }
+.game-21 .bucket.off, .game-21 .disks.off { opacity: 0; }
+.game-21 .bx { fill: var(--cat-tint); stroke: var(--cat); stroke-width: .7; }
+.game-21 .disk { fill: #fff; stroke: var(--ink); stroke-width: .5; transition: opacity .3s; }
+.game-21 .disk.hide { opacity: 0; }
+
+.game-21 .ck { fill: #FFD8A8; stroke: var(--cat-ink); stroke-width: .45; }
+.game-21 .ck.busy { fill: #FFA94D; animation: g21Busy .5s ease-in-out infinite alternate; }
+.game-21 .ck.done { fill: var(--cat); }
+@keyframes g21Busy { from { opacity: .55; } to { opacity: 1; } }
+
+.game-21 .rd { display: none; stroke: var(--cat-ink); stroke-width: .5; stroke-dasharray: 1.2 1; stroke-linecap: round; animation: g21Flow .4s linear infinite; }
+.game-21 .rd.on { display: block; }
+@keyframes g21Flow { to { stroke-dashoffset: -2.2; } }
+
+.game-21 .node { transition: transform .6s cubic-bezier(.3, .7, .2, 1), opacity .35s; }
+.game-21 .node.hide { opacity: 0; }
+.game-21 .nbody { fill: #fff; stroke: var(--ink); stroke-width: .8; transition: fill .3s, stroke .3s; }
+.game-21 .led { fill: #C5CFDF; }
+.game-21 .nslot { fill: var(--line); }
+.game-21 .bbg { fill: var(--line); }
+.game-21 .bar { fill: var(--cat); }
+.game-21 .node.ghost { opacity: .4; }
+.game-21 .node.ghost .nbody { stroke-dasharray: 1.6 1.2; stroke: var(--muted); fill: none; }
+.game-21 .node.idle .nbody { fill: #fff; stroke: var(--cat); stroke-dasharray: 1.6 1.2; }
+.game-21 .node.on .nbody { fill: var(--cat-tint); stroke: var(--cat-ink); }
+.game-21 .node.on .led { fill: var(--good); }
+.game-21 .node.rebal .nbody { fill: var(--bad-tint); stroke: var(--bad); }
+.game-21 .node.rebal .led { fill: var(--bad); animation: g21Busy .3s ease-in-out infinite alternate; }
+.game-21 .node.warm .nbody { animation: g21Busy .25s ease-in-out infinite alternate; }
+
+.game-21 .coin { font-family: var(--mono); font-weight: 900; fill: var(--bad); animation: g21Rise 1.3s ease-out forwards; }
+@keyframes g21Rise { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-8px); opacity: 0; } }
+
+.game-21 .ctl { flex: 0 0 auto; display: flex; align-items: center; gap: 1.4em; }
+.game-21 .dial { flex: 1 1 12em; min-width: 0; }
+.game-21 .dn { font: 800 .8em var(--mono); letter-spacing: .08em; color: var(--muted); }
+.game-21 .dial b { font: 900 1.3em var(--mono); color: var(--cat-ink); }
+.game-21 .g-stat { min-width: 5.2em; }
+.game-21 .g-stat b { font-size: 1.7em; }
+.game-21 .g-stat span { font-size: .8em; }
+.game-21 .g-stat.burn b { color: var(--bad); }
+.game-21 .run { min-width: 8em; min-height: 2.6em; }

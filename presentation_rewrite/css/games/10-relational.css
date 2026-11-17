@@ -1,0 +1,48 @@
+.game-10 .hid { display: none; }
+.game-10 .rel { flex: 1 1 0; min-height: 0; width: 100%; background: var(--cat-tint); border: .14em solid var(--cat); border-radius: .8em; touch-action: none; user-select: none; -webkit-user-select: none; }
+.game-10 .foot { align-items: center; }
+.game-10 .g-btn { min-height: 2.4em; }
+.game-10 .cap { font-size: .85em; opacity: .35; transition: opacity .3s; }
+.game-10 .cap.on { opacity: 1; }
+
+.game-10 .ttl { font-family: var(--mono); font-weight: 800; letter-spacing: .08em; fill: var(--cat-ink); }
+.game-10 .th { fill: var(--ink); }
+.game-10 .col { font-family: var(--mono); font-weight: 700; fill: #E6EEFF; }
+.game-10 .tb { fill: #fff; stroke: var(--ink); stroke-width: .5; }
+.game-10 .slt { fill: none; stroke: var(--line); stroke-width: .5; stroke-dasharray: 2 1.6; }
+
+.game-10 .row .bg { fill: #fff; stroke: var(--line); stroke-width: .3; transition: fill .2s; }
+.game-10 .row text { fill: var(--ink); font-weight: 700; }
+.game-10 .row text.oid { font-family: var(--mono); fill: var(--muted); }
+.game-10 .row text.bn { fill: #fff; font-family: var(--mono); font-weight: 800; pointer-events: none; }
+.game-10 .row .badge { stroke: #fff; stroke-width: .5; pointer-events: none; }
+.game-10 .row text { pointer-events: none; }
+.game-10 .grab { fill: transparent; cursor: grab; }
+.game-10 .crow .bg { pointer-events: none; }
+.game-10 .orow:not(.linked) .sock { animation: g10Sock 1.4s ease-in-out infinite; }
+.game-10 .sock { fill: #fff; stroke: var(--ink); stroke-width: .7; cursor: crosshair; transition: r .15s, fill .2s; }
+.game-10 .sock:hover { fill: var(--cat-tint); stroke-width: 1; }
+.game-10 .orow.linked .sock { fill: var(--ink); }
+.game-10 .orow.linked .grab { cursor: default; }
+.game-10 .row.bad .bg { animation: g10Bad .6s ease-out; }
+.game-10 .row.flash .bg { animation: g10Flash 1s ease-out; }
+
+.game-10 .wire { fill: none; stroke-width: 1.3; stroke-linecap: round; pointer-events: none; }
+.game-10 .wire.drag { stroke-dasharray: 2.4 1.8; opacity: .85; }
+.game-10 .wire.gone { animation: g10Fade .3s ease-out forwards; }
+.game-10 .wire.done { stroke-dasharray: 1; animation: g10Draw .45s ease-out both; }
+
+.game-10 .join-arrow { fill: none; stroke: var(--line); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s; }
+.game-10 .join-arrow.on { stroke: var(--cat); stroke-width: 1.4; }
+
+.game-10 .res { transform-box: fill-box; transform-origin: center; animation: g10Pop .4s cubic-bezier(.2, 1.5, .4, 1) both; }
+.game-10 .res .bg { fill: #fff; stroke: var(--ink); stroke-width: .5; }
+.game-10 .res text { font-weight: 700; fill: var(--ink); }
+.game-10 .res.flash .bg { animation: g10Flash 1s ease-out; }
+
+@keyframes g10Sock { 50% { r: 2.7; } }
+@keyframes g10Draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes g10Fade { to { opacity: 0; } }
+@keyframes g10Pop { from { transform: scale(.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes g10Bad { 0% { fill: #FFC9C9; stroke: var(--bad); stroke-width: 1; } 100% { fill: #fff; } }
+@keyframes g10Flash { 0% { fill: #FFE066; } 100% { fill: #fff; } }

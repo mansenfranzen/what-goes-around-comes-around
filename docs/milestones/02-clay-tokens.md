@@ -6,11 +6,15 @@
 |---|---|
 | **Era** | Neolithic Near East, ~8000–3000 BCE |
 | **Verdict** | Ancestor (first schema: type + quantity) |
+| **Category** | **Primitives**: *type* + quantity (the seed of a schema) |
 | **Key artifacts** | Plain and complex clay tokens; hollow clay envelopes (*bullae*), e.g. from Susa (Louvre) |
 | **In the app** | Timeline → "Clay tokens", demo: add tokens and seal an envelope |
 
 ## Summary
 Small clay shapes stood for specific goods. One token = one unit of one kind of thing. Counting gained a **type system**.
+
+## Category
+Tokens add the second primitive: a **type** (what) next to the count (how many). Shape = data type, envelope = record, impressions on the outside = metadata. This is the seed of a **schema**: an agreement, made in advance, about what a stored value means.
 
 ## Context
 - Denise Schmandt-Besserat catalogued thousands of tokens from Near Eastern sites and proposed that they were an accounting system that preceded and led to writing.

@@ -1,0 +1,42 @@
+.game-08 .tree { flex: 1 1 0; min-height: 0; width: 100%; background: var(--cat-tint); border: .14em solid var(--cat); border-radius: .8em; }
+.game-08 .g-stat b { font-size: 1.7em; }
+.game-08 .g-msg { font-size: 1em; line-height: 1.25; }
+.game-08 .slots { display: flex; gap: .35em; align-items: center; }
+.game-08 .slot { width: 1.1em; height: 1.1em; border-radius: 50%; border: .16em dashed var(--cat); background: #fff; transition: background .2s, border-color .2s; }
+.game-08 .slot.on { background: #FFD43B; border: .16em solid #F59F00; animation: g08Pop .4s cubic-bezier(.2, 1.6, .4, 1); }
+
+.game-08 .hid { display: none; }
+.game-08 .hit { cursor: pointer; }
+.game-08 .edge { fill: none; stroke: var(--cat); stroke-width: .7; stroke-dasharray: 1.6 1.2; opacity: .55; }
+.game-08 .edge.walked { stroke-dasharray: none; stroke-width: 1.5; opacity: 1; stroke-linecap: round; }
+.game-08 .edge.fresh { animation: g08Fade .4s ease-out; }
+@keyframes g08Fade { from { opacity: 0; } }
+
+.game-08 .nd { transform-box: fill-box; transform-origin: center; }
+.game-08 .nd.pop { animation: g08Pop .4s cubic-bezier(.2, 1.6, .4, 1); }
+.game-08 .nd .box { fill: #fff; stroke: var(--cat); stroke-width: 1; transition: fill .2s, stroke .2s; }
+.game-08 .nd .lbl { fill: var(--ink); font-weight: 800; font-family: var(--sans); pointer-events: none; }
+.game-08 .nd.d0 .box { fill: var(--ink); stroke: var(--ink); }
+.game-08 .nd.d0 .lbl { fill: #fff; }
+.game-08 .nd.d1 .box { fill: var(--cat); }
+.game-08 .nd.d1 .lbl { fill: #fff; }
+.game-08 .nd.d2 .box { fill: #D0BFFF; }
+.game-08 .hit:hover .box { stroke-width: 1.7; }
+.game-08 .nd.seen .box { stroke-width: 1.5; }
+.game-08 .nd.d3.seen .box { fill: #EEF1F7; stroke: var(--muted); }
+.game-08 .nd.d3.found .box { fill: #FFD43B; stroke: #F59F00; stroke-width: 1.7; }
+.game-08 .nd.found .lbl { fill: var(--ink); }
+.game-08 .nd.shake { animation: g08Shake .3s linear; }
+.game-08 .nd.hint .box { animation: g08Hint 1.1s ease-in-out infinite; }
+.game-08 .plus { fill: #fff; stroke: var(--cat); stroke-width: .8; }
+.game-08 .plus-mark { stroke: var(--cat-ink); stroke-width: .8; stroke-linecap: round; }
+.game-08 .nd.open .plus, .game-08 .nd.open .plus-mark { display: none; }
+.game-08 .nd.d0 .plus { stroke: #fff; fill: var(--ink); }
+.game-08 .nd.d0 .plus-mark { stroke: #fff; }
+
+.game-08 .copy-line { fill: none; stroke: #F59F00; stroke-width: 1; stroke-dasharray: 2 1.4; stroke-linecap: round; animation: g08Fade .5s ease-out; }
+.game-08 .copy-lbl { fill: #B26A00; font-weight: 800; font-family: var(--sans); animation: g08Fade .5s ease-out; }
+
+@keyframes g08Pop { from { transform: scale(.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes g08Shake { 25% { transform: translateX(-1px); } 75% { transform: translateX(1px); } }
+@keyframes g08Hint { 0%, 100% { stroke-width: 1; } 50% { stroke-width: 2.6; stroke: #F59F00; } }

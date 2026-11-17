@@ -1,0 +1,51 @@
+.game-07 .top { min-height: 2.4em; }
+.game-07 .field { flex: 1 1 0; min-height: 0; width: 100%; display: block; user-select: none; -webkit-user-select: none; touch-action: manipulation; overflow: visible; }
+.game-07 .bot { min-height: 2.8em; gap: 1em; }
+.game-07 .g-btn.is-off { display: none; }
+.game-07 .ph1 .p2, .game-07 .ph2 .p1 { display: none; }
+.game-07 .hold { min-width: 8.5em; touch-action: none; user-select: none; -webkit-user-select: none; }
+.game-07 .hold.is-held { background: var(--cat); border-color: var(--cat); color: #fff; transform: translateY(.04em); }
+
+.game-07 .cap { fill: var(--muted); font-weight: 800; font-family: var(--mono); letter-spacing: .1em; }
+.game-07 .cap.end { text-anchor: end; }
+.game-07 .cap.mid { text-anchor: middle; fill: var(--cat-ink); }
+.game-07 .big { fill: var(--ink); font-weight: 900; font-family: var(--mono); text-anchor: end; }
+.game-07 .big.tg { text-anchor: start; fill: var(--cat-ink); }
+.game-07 .target { fill: var(--cat-tint); stroke: var(--cat); stroke-width: .8; }
+.game-07 .ln-t { fill: var(--ink); font-weight: 800; font-family: var(--mono); }
+.game-07 .ln-t.end { text-anchor: end; }
+.game-07 .ln-bg { fill: var(--line); }
+.game-07 .tm-bar { fill: var(--ink); }
+.game-07 .dk-bar { fill: var(--cat); }
+
+/* tape */
+.game-07 .band { fill: var(--ink); }
+.game-07 .rc { fill: #F6EAD6; stroke: none; }
+.game-07 .rc-t { fill: var(--ink); text-anchor: middle; font-weight: 900; font-family: var(--mono); }
+.game-07 .rcg.is-target .rc { fill: #FFD3A8; }
+.game-07 .rcg.is-target .rc-t { fill: var(--cat-ink); }
+.game-07 .rcg.is-hit .rc { fill: var(--good); }
+.game-07 .rcg.is-hit .rc-t { fill: #fff; }
+.game-07 .win { fill: none; stroke: var(--cat); stroke-width: 1.2; }
+.game-07 .spool circle { fill: #fff; stroke: var(--ink); stroke-width: .8; }
+.game-07 .spool .sp-hub { fill: var(--ink); }
+.game-07 .spool line { stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; }
+
+/* disk */
+.game-07 .rim { fill: #fff; stroke: var(--ink); stroke-width: .8; }
+.game-07 .dc { fill: #fff; stroke: none; cursor: pointer; }
+.game-07 .dc.alt { fill: #E6EBF4; }
+.game-07 .dc:hover { fill: var(--cat-tint); }
+.game-07 .dc.is-seen { fill: #CBD3DF; }
+.game-07 .dc.is-hit { fill: var(--good); }
+.game-07 .sheen { fill: none; stroke: var(--cat); stroke-opacity: .09; pointer-events: none; transform-box: fill-box; transform-origin: center; animation: g07Spin 2.6s linear infinite; }
+@keyframes g07Spin { to { transform: rotate(360deg); } }
+.game-07 .hub { fill: var(--ink); stroke: #fff; stroke-width: .6; }
+.game-07 .hub.is-hit { fill: var(--good); }
+.game-07 .hub-t { fill: #fff; text-anchor: middle; font-weight: 900; font-family: var(--mono); pointer-events: none; }
+.game-07 .axis { pointer-events: none; }
+.game-07 .sc-t { fill: var(--ink); text-anchor: middle; font-weight: 900; font-family: var(--mono); }
+.game-07 .tr-t { fill: var(--cat-ink); text-anchor: middle; font-weight: 900; font-family: var(--mono); paint-order: stroke; stroke: #fff; stroke-width: .5; }
+.game-07 .arm { stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; pointer-events: none; }
+.game-07 .arm-h { fill: var(--cat); stroke: var(--ink); stroke-width: .8; pointer-events: none; }
+.game-07 .pivot { fill: var(--ink); pointer-events: none; }

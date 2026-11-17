@@ -1,0 +1,49 @@
+.game-12 .hid { display: none; }
+.game-12 .main { flex: 1 1 0; min-height: 0; display: flex; gap: .8em; }
+.game-12 .view { flex: 1 1 0; min-width: 0; background: var(--cat-tint); border: .14em solid var(--cat); border-radius: .8em; padding: .4em; display: flex; }
+.game-12 .cube { flex: 1 1 0; width: 100%; height: 100%; min-height: 0; }
+.game-12 .side { flex: 0 0 14em; min-height: 0; display: flex; flex-direction: column; gap: .5em; }
+.game-12 .box { padding: .45em .7em; }
+.game-12 .g-btn { min-height: 2.5em; }
+.game-12 .timebar { align-items: center; }
+.game-12 .timebar .g-range { flex: 1 1 0; }
+.game-12 .tlab { flex: 0 0 4.2em; font-family: var(--mono); font-weight: 800; }
+
+.game-12 .ro { margin-top: .3em; padding: .45em .6em; font-size: .85em; white-space: nowrap; }
+.game-12 .ro b { color: #FFB86B; }
+.game-12 .ro sub { font-size: .7em; }
+.game-12 .nums { display: flex; align-items: center; gap: .25em; margin-top: .35em; }
+.game-12 .nums .nl { flex: 0 0 3.4em; font-size: .72em; font-weight: 800; color: var(--muted); font-family: var(--mono); }
+.game-12 .nums i { flex: 1 1 0; min-width: 0; height: 1.5em; line-height: 1.5em; text-align: center; font-style: normal; font-family: var(--mono); font-weight: 800; font-size: .85em; border-radius: .3em; background: var(--line); color: var(--muted); }
+.game-12 .nums i.val { background: var(--cat); color: #fff; }
+.game-12 .nums i.imp { background: transparent; border: .1em dashed var(--line); }
+.game-12 .chk { display: flex; align-items: center; justify-content: space-between; gap: .6em; }
+.game-12 .chk b { font-size: 1.5em; font-weight: 900; }
+.game-12 .mini { display: grid; grid-template-columns: 1fr 1fr; gap: .15em; width: 2.6em; height: 2.6em; }
+.game-12 .mini i { background: var(--line); border-radius: .2em; transition: background .2s; }
+.game-12 .mini i.on { background: var(--cat); }
+
+.game-12 .cell { stroke: rgba(11, 27, 51, .12); stroke-width: .3; cursor: pointer; transition: fill .18s; }
+.game-12 .cell:hover { stroke: var(--ink); stroke-width: .8; }
+.game-12 .num { font-family: var(--mono); font-weight: 700; fill: var(--ink); pointer-events: none; }
+.game-12 .num.hi { fill: #fff; }
+.game-12 .tk { font-family: var(--mono); font-weight: 700; fill: var(--muted); pointer-events: none; }
+.game-12 .axis { font-family: var(--mono); font-weight: 800; letter-spacing: .08em; fill: var(--cat-ink); pointer-events: none; }
+.game-12 .frame { fill: none; stroke: var(--ink); stroke-width: 1; pointer-events: none; }
+.game-12 .dim { fill: #fff; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.game-12 .dim.on { opacity: .62; }
+.game-12 .selring { fill: none; stroke: var(--ink); stroke-width: 1.5; pointer-events: none; }
+.game-12 .town { pointer-events: none; }
+.game-12 .tring { fill: none; stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2.2 1.4; }
+.game-12 .house { fill: var(--ink); }
+.game-12 .town.storm .tring { stroke: var(--bad); stroke-width: 1.8; stroke-dasharray: none; animation: g12Ring .9s ease-out infinite; }
+.game-12 .town.storm .house { fill: #fff; }
+
+.game-12 .rbg { fill: transparent; transition: fill .15s; }
+.game-12 .rbg.now { fill: #fff; stroke: var(--ink); stroke-width: .6; }
+.game-12 .slt { fill: none; stroke: var(--line); stroke-width: .5; stroke-dasharray: 1.6 1.2; }
+.game-12 .bar { stroke: rgba(11, 27, 51, .25); stroke-width: .3; transition: width .25s; }
+.game-12 .rnum { font-family: var(--mono); font-weight: 800; fill: var(--ink); }
+.game-12 .rnum.hot { fill: var(--bad); }
+
+@keyframes g12Ring { 0% { stroke-width: 3.2; } 100% { stroke-width: 1.4; } }

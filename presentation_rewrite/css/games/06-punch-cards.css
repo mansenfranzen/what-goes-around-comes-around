@@ -1,0 +1,63 @@
+.game-06 .top { min-height: 2.4em; }
+.game-06 .field { flex: 1 1 0; min-height: 0; width: 100%; display: block; user-select: none; -webkit-user-select: none; touch-action: manipulation; overflow: visible; }
+.game-06 .bot { min-height: 2.8em; }
+.game-06 .bot.is-off { visibility: hidden; }
+.game-06 .ph1 .p2, .game-06 .ph2 .p1 { display: none; }
+.game-06 .is-off { display: none; }
+.game-06 .bot.is-off { display: flex; }
+
+/* the card */
+.game-06 .card { transform-box: fill-box; transform-origin: center; }
+.game-06 .cd-body { fill: #FFF6DF; stroke: var(--ink); stroke-width: .6; }
+.game-06 .card.is-mine .cd-body { fill: var(--cat-tint); stroke: var(--cat); stroke-width: 1; }
+.game-06 .cd-head { fill: var(--cat-ink); font-weight: 900; font-family: var(--mono); letter-spacing: .1em; }
+.game-06 .cd-grp { fill: var(--muted); font-weight: 800; font-family: var(--mono); letter-spacing: .08em; }
+.game-06 .cd-sep { stroke: var(--line); stroke-width: .5; }
+.game-06 .cell { cursor: pointer; }
+.game-06 .cl { fill: #fff; stroke: #8A97AB; stroke-width: .4; }
+.game-06 .cl-t { fill: var(--ink); text-anchor: middle; font-weight: 800; font-family: var(--mono); pointer-events: none; }
+.game-06 .ph1 .cell:not(.is-hole):hover .cl { fill: var(--cat-tint); stroke: var(--cat); }
+.game-06 .cell.is-hole .cl { fill: var(--ink); stroke: var(--ink); }
+.game-06 .cell.is-hole .cl-t { opacity: 0; }
+.game-06 .cell.is-bad .cl { fill: var(--bad-tint); stroke: var(--bad); stroke-width: .8; }
+.game-06 .chad { fill: #FFF6DF; stroke: var(--ink); stroke-width: .3; transform-box: fill-box; transform-origin: center; animation: g06Chad .7s ease-in forwards; pointer-events: none; }
+@keyframes g06Chad { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(420%) rotate(50deg); opacity: 0; } }
+
+/* the person */
+.game-06 .head { fill: #F2C9A0; stroke: var(--ink); stroke-width: .6; }
+.game-06 .shirt { fill: var(--cat); stroke: var(--ink); stroke-width: .6; }
+.game-06 .shirt.alt { fill: #1F6FD6; }
+.game-06 .hat ellipse, .game-06 .hat path { fill: #9C6234; stroke: var(--ink); stroke-width: .5; }
+.game-06 .who { fill: var(--ink); text-anchor: middle; font-weight: 900; }
+.game-06 .who2 { fill: var(--muted); text-anchor: middle; font-weight: 800; font-family: var(--mono); }
+.game-06 .arrow { fill: var(--cat); }
+
+/* tabulator */
+.game-06 .bin-t { fill: var(--muted); text-anchor: middle; font-weight: 800; font-family: var(--mono); letter-spacing: .1em; }
+.game-06 .bin-t.where { text-anchor: start; fill: var(--cat-ink); }
+.game-06 .hp { fill: #FFF6DF; stroke: var(--ink); stroke-width: .5; }
+.game-06 .hp-ghost { fill: none; stroke: var(--line); stroke-width: .5; stroke-dasharray: 2 1.5; }
+.game-06 .hp-n { fill: var(--ink); text-anchor: middle; font-weight: 900; font-family: var(--mono); }
+.game-06 .bin { fill: #fff; stroke: var(--ink); stroke-width: .6; }
+.game-06 .bin.ok { fill: var(--good-tint); stroke: var(--good); }
+.game-06 .cnt { fill: var(--good); text-anchor: middle; font-weight: 900; font-family: var(--mono); }
+.game-06 .rest-n { fill: var(--muted); text-anchor: middle; font-weight: 900; font-family: var(--mono); }
+.game-06 .pin { cursor: pointer; }
+.game-06 .pz { fill: none; pointer-events: all; }
+.game-06 .pn-stem { fill: #C5CEDB; transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(.25); transition: transform .2s; }
+.game-06 .pn-head { fill: #fff; stroke: #8A97AB; stroke-width: .5; }
+.game-06 .pin:hover .pn-head { stroke: var(--cat); }
+.game-06 .pin.is-on .pn-stem { fill: var(--cat); transform: scaleY(1); }
+.game-06 .pin.is-on .pn-head { fill: var(--cat); stroke: var(--cat-ink); }
+.game-06 .pin.is-pass .pn-stem, .game-06 .pin.is-pass .pn-head { fill: var(--good); stroke: var(--good); }
+.game-06 .pin.is-block .pn-stem, .game-06 .pin.is-block .pn-head { fill: var(--bad); stroke: var(--bad); }
+.game-06 .fly rect { fill: #FFF6DF; stroke: var(--ink); stroke-width: .5; }
+.game-06 .fly.ok rect { fill: var(--good-tint); stroke: var(--good); }
+.game-06 .fly.no { opacity: .55; }
+.game-06 .fly.mine rect { stroke: var(--cat); stroke-width: 1.1; }
+
+/* lanes */
+.game-06 .ln-bg { fill: var(--line); }
+.game-06 .ln-m { fill: var(--cat); }
+.game-06 .ln-h { fill: var(--ink); }
+.game-06 .ln-t { fill: var(--ink); font-weight: 800; font-family: var(--mono); }
