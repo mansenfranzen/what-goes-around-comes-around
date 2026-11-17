@@ -23,7 +23,7 @@ DB.addView('timeline', function (slide, director) {
   var nodes = ms.map(function (m, i) {
     var plus = h('span', { class: 'plus', title: 'Zoom in', on: { click: function (e) { e.stopPropagation(); zoomCluster(nd); } } });
     var btn = h('button', {
-      class: 'tl-node off cat-' + m.category, 'data-id': m.id, title: m.title + ' (' + m.year + ')',
+      class: 'tl-node off cat-' + m.category + (i % 2 ? ' below' : ' above'), 'data-id': m.id, title: m.title + ' (' + m.year + ')',
       on: { click: function () { if (performance.now() < (DB.suppressClick || 0)) return; director.goTo('m' + m.id); } }
     },
       h('i', { class: 'stem' }),
@@ -65,6 +65,7 @@ DB.addView('timeline', function (slide, director) {
     R = parseFloat(getComputedStyle(document.documentElement).fontSize) || 18;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     svgTop.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    assignYearRows();
   }
   function pad() { return 6 * R; }
   var YMIN = -20000, YMAX = 2030; // linear axis range; the view never zooms or pans past it (beyond the edge padding)
@@ -103,14 +104,21 @@ DB.addView('timeline', function (slide, director) {
 
   /* ----- rendering ----- */
   var NODE_W = 6.8, TXT_H = 1.4, BADGE = 4.7, STEM0 = 1.5;
-  var MAXS = 1.55;
-  // Grow the nodes until every third neighbour would touch, so the timeline fills the screen.
+  var MAXS = 1.55, CROSS = .55; // CROSS: min distance (in node widths) from a far node's stem to the near node beside it
+  /* Every milestone keeps a fixed lane (i % 4: above-near, below-near, above-far, below-far), so icons never hop between rows
+     when zooming or panning. Same-lane neighbours are i, i+4; same-side neighbours (near/far) are i, i+2. */
+  function edgeRoom() { return NODE_W * R * MAXS / 2; } // view margin in which nodes must not fold while they could be seen
+  // Grow the nodes as far as the lane neighbours allow, so the timeline fills the screen. Pairs outside the view count less
+  // the farther out they are (gently, over a few hundred px), so the size changes smoothly while panning.
   function nodeScale() {
-    var xs = [];
-    nodes.forEach(function (nd) { var x = xOf(nd.i); if (x > -NODE_W * R && x < W + NODE_W * R) xs.push(x); });
-    var m3 = Infinity;
-    for (var i = 0; i + 3 < xs.length; i++) m3 = Math.min(m3, xs[i + 3] - xs[i]);
-    return DB.clamp(m3 / (NODE_W * R * 1.08), 1, MAXS);
+    var n = Math.min(st.step, N), w0 = edgeRoom(), u = NODE_W * R * 1.08, s = MAXS, xs = [];
+    for (var i = 0; i < n; i++) xs.push(xOf(i));
+    function room(a, b, f) {
+      var out = Math.max(0, -w0 - xs[b], xs[a] - W - w0) * .15;
+      s = Math.min(s, (xs[b] - xs[a] + out) / (f * u));
+    }
+    for (var a = 0; a + 2 < n; a++) { room(a, a + 2, CROSS); if (a + 4 < n) room(a, a + 4, 1); }
+    return Math.max(1, s);
   }
   function render() {
     var axisY = H * 0.545, S = nodeScale(), w = NODE_W * R * S;
@@ -124,40 +132,23 @@ DB.addView('timeline', function (slide, director) {
   }
 
   function layoutNodes(axisY, w, S) {
-    var hn = (BADGE + TXT_H) * R * S, gap = .35 * R, s0 = STEM0 * R * S;
+    var hn = (BADGE + TXT_H) * R * S, gap = .35 * R, s0 = STEM0 * R * S, w0 = edgeRoom();
     var sb = Math.max(s0, DB.lerp(2.6, 3.9, st.t) * R); // below the axis, leave room for the year labels (2 rows on logical)
-    var lanes = [
-      { above: true, stem: s0, right: -1e9 }, { above: false, stem: sb, right: -1e9 },
-      { above: true, stem: s0 + hn + .45 * R, right: -1e9 }, { above: false, stem: sb + hn + .45 * R, right: -1e9 }
-    ];
-    var last = null;
+    var stems = [s0, sb, s0 + hn + .45 * R, sb + hn + .45 * R]; // per lane
+    var right = [-1e9, -1e9, -1e9, -1e9], lastX = right.slice(), last = null;
+    // Folding runs over all revealed nodes (not just the visible ones), so it never depends on the pan position.
     nodes.forEach(function (nd) {
-      nd.cluster = []; nd.x = xOf(nd.i); nd.folded = false;
-      nd.shown = nd.i < st.step && nd.x > -w && nd.x < W + w;
-    });
-    nodes.forEach(function (nd) {
-      var el = nd.el;
-      if (!nd.shown) { el.classList.add('off'); el.classList.remove('hid'); return; }
-      el.classList.remove('off');
-      var lane = null, li = -1;
-      for (var j = 0; j < lanes.length; j++) {
-        if (nd.x - w / 2 < lanes[j].right + gap) continue;
-        // near lanes first; within a tier take the least recently used lane so nodes alternate
-        var better = li < 0 || ((j < 2) !== (li < 2) ? j < 2 : lanes[j].right < lanes[li].right);
-        if (better) { lane = lanes[j]; li = j; }
-      }
-      if (!lane) { // no room: fold into the previous visible node as "+N"
-        el.classList.add('hid'); nd.folded = true;
-        if (last) last.cluster.push(nd);
-        return;
-      }
-      el.classList.remove('hid');
-      lane.right = nd.x + w / 2;
-      last = nd;
-      el.classList.toggle('above', lane.above);
-      el.classList.toggle('below', !lane.above);
-      el.style.setProperty('--stem', lane.stem + 'px');
-      el.style.transform = 'translate(' + (nd.x - w / 2) + 'px,' + (lane.above ? axisY - lane.stem - hn : axisY) + 'px)';
+      var L = nd.i % 4, x = nd.x = xOf(nd.i), el = nd.el, revealed = nd.i < st.step;
+      nd.cluster = [];
+      nd.shown = revealed && x > -w && x < W + w;
+      // fold into the previous visible node as "+N" if it overlaps its lane, or a far stem would cross the near node beside it
+      nd.folded = revealed && (x - w / 2 < right[L] + gap || x - lastX[(L + 2) % 4] < CROSS * w);
+      if (revealed && !nd.folded) { right[L] = x + w / 2; lastX[L] = x; last = nd; }
+      else if (nd.folded && last && x > -w0 && x < W + w0) last.cluster.push(nd); // folds far outside the view are not counted
+      el.classList.toggle('off', !nd.shown);
+      el.classList.toggle('hid', nd.shown && nd.folded);
+      el.style.setProperty('--stem', stems[L] + 'px');
+      el.style.transform = 'translate(' + (DB.clamp(x, -W, 2 * W) - w / 2) + 'px,' + (L % 2 ? axisY : axisY - stems[L] - hn) + 'px)';
     });
     nodes.forEach(function (nd) {
       var n = nd.cluster.length;
@@ -175,10 +166,22 @@ DB.addView('timeline', function (slide, director) {
     arrow.setAttribute('d', 'M' + (tip - 1.3 * R) + ' ' + (axisY - .7 * R) + 'L' + tip + ' ' + axisY + 'L' + (tip - 1.3 * R) + ' ' + (axisY + .7 * R) + 'Z');
   }
 
+  var YEAR_CW = .66 * 1.1; // year label character width (in rem)
+  // Logical-scale year labels use 2 rows under the axis. Each milestone's row is fixed (assigned at the fitted zoom), so labels never hop.
+  var yearRow = [];
+  function assignYearRows() {
+    var k = fitLog().k, cw = YEAR_CW * R, right = [-1e9, -1e9];
+    yearRow = ms.map(function (m, i) {
+      var x = i * k, half = m.year.length * cw / 2;
+      var r = right[0] < x - half ? 0 : right[1] < x - half ? 1 : right[0] <= right[1] ? 0 : 1;
+      right[r] = x + half + .6 * R;
+      return r;
+    });
+  }
   // Year labels under the axis: regular ticks on the linear scale, each milestone's year on the logical one (cross-faded).
   function drawTicks(axisY) {
     clear(gTicks);
-    var cw = .66 * 1.1 * R, ys = [axisY + 1.85 * R, axisY + 3.2 * R];
+    var cw = YEAR_CW * R, ys = [axisY + 1.85 * R, axisY + 3.2 * R];
     function tick(g, x, y, txt) {
       g.append(S('line', { class: 'tl-tick', x1: x, x2: x, y1: axisY - .6 * R, y2: axisY + .6 * R }),
         S('text', { class: 'tl-tick-label', x: x, y: y, 'text-anchor': 'middle' }, txt));
@@ -194,12 +197,12 @@ DB.addView('timeline', function (slide, director) {
     }
     if (oLog > .02) {
       var gm = S('g', { opacity: oLog }), right = [-1e9, -1e9];
-      nodes.forEach(function (nd) {
-        if (!nd.shown || nd.folded) return;
-        var txt = nd.m.year, half = txt.length * cw / 2, r = right[0] < nd.x - half ? 0 : right[1] < nd.x - half ? 1 : -1;
-        if (r < 0) return;
+      nodes.forEach(function (nd) { // collisions over all revealed nodes (pan-independent); only when zoomed out past the fit
+        if (nd.i >= st.step || nd.folded) return;
+        var txt = nd.m.year, half = txt.length * cw / 2, r = yearRow[nd.i];
+        if (nd.x - half < right[r]) return;
         right[r] = nd.x + half + .6 * R;
-        tick(gm, nd.x, ys[r], txt);
+        if (nd.shown) tick(gm, nd.x, ys[r], txt);
       });
       gTicks.append(gm);
     }
