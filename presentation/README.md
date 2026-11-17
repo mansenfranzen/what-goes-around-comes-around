@@ -116,7 +116,7 @@ Rules (the same game runs in a ~1100×640 panel and full screen):
 
 ## Views, in one paragraph each
 
-- **timeline** (`js/views/timeline.js`): DOM nodes (symbol + year + label, 4 lanes, overflow folds into a "+N" badge that zooms in) over an SVG axis. `st.t` blends linear (0) and logical (1) scale; markers come from `content/markers.js`. Wheel/drag/buttons zoom and pan; clicking a node opens the milestone. Presentation mode reveals one node per step.
+- **timeline** (`js/views/timeline.js`): DOM nodes (symbol + year + label, 4 lanes, overflow folds into a "+N" badge that zooms in) over an SVG axis. `st.t` blends linear (0) and logical (1) scale; markers come from `content/markers.js`. Wheel/drag/buttons zoom and pan; clicking a node opens the milestone. Presentation mode starts on the linear scale and reveals one node per step; each step animates the camera (`presentFrame`) forward to the newest milestone and zooms in as milestones cluster into shorter time spans (the zoom never widens again; tune `CAM`). Exploration mode starts on the logical scale, fitted.
 - **milestone**: identical layout for all: symbol next to the title, photo, three sections, game, takeaway, adjacent links via edge menus.
 - **transition**: the issue the previous milestone cannot solve, then the trigger for the next one.
 - **bigpicture**: mascot "Rowie" (SVG viewBox 1000×1020). Pieces pop in per step in timeline order; the last step runs a query through the pieces. All geometry and wording are in `content/bigpicture.js`.

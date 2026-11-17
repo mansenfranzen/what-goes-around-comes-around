@@ -1,5 +1,6 @@
 /* Timeline view: two blendable scales (linear = real distances, logical = equal spacing), zoom, pan, jump to start/end,
    vertical markers, step-by-step reveal (presentation) or everything at once (exploration).
+   Presentation starts linear and moves/zooms the camera to each newly revealed milestone (presentFrame); exploration starts logical.
    Milestone data: DB.milestones, markers: DB.markers (content/markers.js).
    Positions: x = lerp(linearX, logicalX, t). Each scale keeps its own view {c: center, k: px per year | px per milestone}. */
 DB.addView('timeline', function (slide, director) {
