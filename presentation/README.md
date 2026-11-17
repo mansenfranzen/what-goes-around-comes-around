@@ -53,7 +53,7 @@ tools/                serve.mjs · shot.mjs · icon-sheet.html (all symbols on o
 
 ## Presentation flow, steps and modes
 
-Slides: `landing` (2 steps) → `timeline` (23 steps, one milestone per step) → for each milestone `m` (3 steps) then `t` transition (2 steps) → `bigpicture` (24 steps: 23 pieces, then a query run).
+Slides: `landing` (2 steps) → `timeline` (24 steps: one milestone per step on the linear scale, then the switch to the logical scale) → for each milestone `m` (3 steps) then `t` transition (2 steps) → `bigpicture` (24 steps: 23 pieces, then a query run).
 
 - **Presentation mode**: content appears step by step. Forward = click, →, Space, Enter, PageDown. Back = ←, PageUp, Backspace. Going back onto the previous slide shows it fully revealed.
 - **Exploration mode**: everything visible, free navigation. Switch with the corner toggle (hidden; appears when the pointer nears the top-right corner) or `E`. The choice is stored in `localStorage.dbtm.mode`; `?mode=explore` overrides.
@@ -116,7 +116,7 @@ Rules (the same game runs in a ~1100×640 panel and full screen):
 
 ## Views, in one paragraph each
 
-- **timeline** (`js/views/timeline.js`): DOM nodes (symbol + year + label, 4 lanes, overflow folds into a "+N" badge that zooms in) over an SVG axis. `st.t` blends linear (0) and logical (1) scale; markers come from `content/markers.js`. Wheel/drag/buttons zoom and pan; clicking a node opens the milestone. Presentation mode starts on the linear scale and reveals one node per step; each step animates the camera (`presentFrame`) forward to the newest milestone and zooms in as milestones cluster into shorter time spans (the zoom never widens again; tune `CAM`). Exploration mode starts on the logical scale, fitted.
+- **timeline** (`js/views/timeline.js`): DOM nodes (symbol + label, 4 lanes, overflow folds into a "+N" badge that zooms in) over an SVG axis. Years appear only as axis labels (`drawTicks`, drawn above the stems): regular ticks on the linear scale, each milestone's `year` on the logical scale. `st.t` blends linear (0) and logical (1) scale; markers come from `content/markers.js`. Wheel/drag/buttons zoom and pan; clicking a node opens the milestone. Presentation mode starts on the linear scale and reveals one node per step; each step animates the camera (`presentFrame`) forward to the newest milestone and zooms in as milestones cluster into shorter time spans (the zoom never widens again; tune `CAM`); the last step switches to the logical scale before the first milestone. Exploration mode starts on the logical scale, fitted.
 - **milestone**: identical layout for all: symbol next to the title, photo, three sections, game, takeaway, adjacent links via edge menus.
 - **transition**: the issue the previous milestone cannot solve, then the trigger for the next one.
 - **bigpicture**: mascot "Rowie" (SVG viewBox 1000×1020). Pieces pop in per step in timeline order; the last step runs a query through the pieces. All geometry and wording are in `content/bigpicture.js`.

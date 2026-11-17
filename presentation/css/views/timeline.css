@@ -5,8 +5,8 @@
 .tl-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .tl-axis { stroke: var(--ink); stroke-width: .42rem; stroke-linecap: round; }
 .tl-arrow { fill: var(--ink); }
-.tl-tick { stroke: var(--ink); stroke-width: .14rem; }
-.tl-tick-label { font: 700 .74rem var(--mono); fill: var(--muted); paint-order: stroke; stroke: #fff; stroke-width: .35rem; }
+.tl-tick { stroke: var(--ink); stroke-width: .2rem; }
+.tl-tick-label { font: 800 1.1rem var(--mono); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: .6rem; stroke-linejoin: round; }
 .mk-line { stroke: var(--muted); stroke-width: .12rem; stroke-dasharray: .5rem .6rem; opacity: .6; }
 .mk-line.strong { stroke: var(--ink); stroke-width: .2rem; stroke-dasharray: none; opacity: 1; }
 .mk-label rect { fill: #fff; stroke: var(--ink); stroke-width: .12rem; }
@@ -30,11 +30,10 @@
   border: .17em solid var(--cat); box-shadow: 0 .3em 0 var(--cat-tint); transition: transform .2s ease, background .2s ease;
 }
 .tl-node .badge img { width: 100%; height: 100%; pointer-events: none; }
-.tl-node .txt { display: flex; flex-direction: column; align-items: center; height: 2.5em; padding-top: .2em; line-height: 1.1; }
+.tl-node .txt { display: flex; flex-direction: column; align-items: center; height: 1.4em; padding-top: .2em; line-height: 1.1; }
 .tl-node.above .txt { justify-content: flex-end; padding: 0 0 .2em; }
-.tl-node .yr { font: 800 .86em var(--mono); color: var(--ink); white-space: nowrap; }
 .tl-node .nm { font: 700 .8em var(--sans); color: var(--ink-2); white-space: nowrap; }
-.tl-node .yr, .tl-node .nm { text-shadow: 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff; }
+.tl-node .nm { text-shadow: 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff; }
 .tl-node:hover .badge { transform: scale(1.12); background: var(--cat-tint); }
 .tl-node.pulse .badge { animation: nodePop .8s cubic-bezier(.2, 1.5, .4, 1); }
 .tl-node.pulse::after { content: ""; position: absolute; left: 50%; width: 4.7em; height: 4.7em; margin-left: -2.35em; border-radius: 1.2em; animation: nodeRing 1s ease-out; pointer-events: none; }

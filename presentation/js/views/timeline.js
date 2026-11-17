@@ -1,6 +1,7 @@
 /* Timeline view: two blendable scales (linear = real distances, logical = equal spacing), zoom, pan, jump to start/end,
    vertical markers, step-by-step reveal (presentation) or everything at once (exploration).
-   Presentation starts linear and moves/zooms the camera to each newly revealed milestone (presentFrame); exploration starts logical.
+   Presentation starts linear and moves/zooms the camera to each newly revealed milestone (presentFrame); its last step switches
+   to logical. Exploration starts logical. Years are labelled on the axis only (linear: regular ticks, logical: milestone years).
    Milestone data: DB.milestones, markers: DB.markers (content/markers.js).
    Positions: x = lerp(linearX, logicalX, t). Each scale keeps its own view {c: center, k: px per year | px per milestone}. */
 DB.addView('timeline', function (slide, director) {
@@ -12,21 +13,22 @@ DB.addView('timeline', function (slide, director) {
   var anim = null, tScaleTween = null, unreveal = null;
 
   /* ----- DOM ----- */
-  var svg = S('svg', { class: 'tl-svg' });
+  var svg = S('svg', { class: 'tl-svg' }), svgTop = S('svg', { class: 'tl-svg' }); // svgTop: year labels drawn over the stems
   var gMarks = S('g'), gTicks = S('g'), gPills = S('g');
   var axis = S('line', { class: 'tl-axis' }), arrow = S('path', { class: 'tl-arrow' });
-  svg.append(gMarks, gTicks, axis, arrow, gPills);
+  svg.append(gMarks, axis, arrow, gPills);
+  svgTop.append(gTicks);
   var nodesEl = h('div', { class: 'tl-nodes' });
 
   var nodes = ms.map(function (m, i) {
     var plus = h('span', { class: 'plus', title: 'Zoom in', on: { click: function (e) { e.stopPropagation(); zoomCluster(nd); } } });
     var btn = h('button', {
-      class: 'tl-node off cat-' + m.category, 'data-id': m.id, title: m.title,
+      class: 'tl-node off cat-' + m.category, 'data-id': m.id, title: m.title + ' (' + m.year + ')',
       on: { click: function () { if (performance.now() < (DB.suppressClick || 0)) return; director.goTo('m' + m.id); } }
     },
       h('i', { class: 'stem' }),
       h('span', { class: 'badge' }, h('img', { src: DB.symbolURL(m), alt: '', draggable: false })),
-      h('span', { class: 'txt' }, h('b', { class: 'yr', text: m.year }), h('small', { class: 'nm', text: m.short || m.title })),
+      h('span', { class: 'txt' }, h('small', { class: 'nm', text: m.short || m.title })),
       plus);
     var nd = { m: m, i: i, el: btn, plus: plus, x: 0, cluster: [] };
     nodesEl.append(btn);
@@ -55,13 +57,14 @@ DB.addView('timeline', function (slide, director) {
     h('div', { class: 'legend' }, legend));
   unreveal = DB.menus.edgeReveal(dock, function (x, y, w, hh) { return y > hh - 84; });
 
-  var el = h('div', { class: 'view-timeline grid-bg' }, svg, nodesEl, dock);
+  var el = h('div', { class: 'view-timeline grid-bg' }, svg, nodesEl, svgTop, dock);
 
   /* ----- geometry ----- */
   function measure() {
     W = el.clientWidth || innerWidth; H = el.clientHeight || innerHeight;
     R = parseFloat(getComputedStyle(document.documentElement).fontSize) || 18;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svgTop.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   }
   function pad() { return 6 * R; }
   function fitLin() { return { c: (pos[0] + pos[N - 1]) / 2, k: (W - 2 * pad()) / (pos[N - 1] - pos[0]) }; }
@@ -96,7 +99,7 @@ DB.addView('timeline', function (slide, director) {
   }
 
   /* ----- rendering ----- */
-  var NODE_W = 6.8, TXT_H = 2.5, BADGE = 4.7, STEM0 = 1.5;
+  var NODE_W = 6.8, TXT_H = 1.4, BADGE = 4.7, STEM0 = 1.5;
   var MAXS = 1.55;
   // Grow the nodes until every third neighbour would touch, so the timeline fills the screen.
   function nodeScale() {
@@ -111,6 +114,7 @@ DB.addView('timeline', function (slide, director) {
     nodesEl.style.setProperty('--s', S.toFixed(3));
     layoutNodes(axisY, w, S);
     drawAxis(axisY);
+    drawTicks(axisY);
     drawMarkers();
     drawPills(axisY);
     segBtns.forEach(function (b) { b.classList.toggle('on', Number(b.dataset.s) === st.target); });
@@ -118,13 +122,14 @@ DB.addView('timeline', function (slide, director) {
 
   function layoutNodes(axisY, w, S) {
     var hn = (BADGE + TXT_H) * R * S, gap = .35 * R, s0 = STEM0 * R * S;
+    var sb = Math.max(s0, DB.lerp(2.6, 3.9, st.t) * R); // below the axis, leave room for the year labels (2 rows on logical)
     var lanes = [
-      { above: true, stem: s0, right: -1e9 }, { above: false, stem: s0, right: -1e9 },
-      { above: true, stem: s0 + hn + .45 * R, right: -1e9 }, { above: false, stem: s0 + hn + .45 * R, right: -1e9 }
+      { above: true, stem: s0, right: -1e9 }, { above: false, stem: sb, right: -1e9 },
+      { above: true, stem: s0 + hn + .45 * R, right: -1e9 }, { above: false, stem: sb + hn + .45 * R, right: -1e9 }
     ];
     var last = null;
     nodes.forEach(function (nd) {
-      nd.cluster = []; nd.x = xOf(nd.i);
+      nd.cluster = []; nd.x = xOf(nd.i); nd.folded = false;
       nd.shown = nd.i < st.step && nd.x > -w && nd.x < W + w;
     });
     nodes.forEach(function (nd) {
@@ -139,7 +144,7 @@ DB.addView('timeline', function (slide, director) {
         if (better) { lane = lanes[j]; li = j; }
       }
       if (!lane) { // no room: fold into the previous visible node as "+N"
-        el.classList.add('hid');
+        el.classList.add('hid'); nd.folded = true;
         if (last) last.cluster.push(nd);
         return;
       }
@@ -164,17 +169,35 @@ DB.addView('timeline', function (slide, director) {
   function drawAxis(axisY) {
     axis.setAttribute('x1', 0); axis.setAttribute('x2', W - 1.2 * R); axis.setAttribute('y1', axisY); axis.setAttribute('y2', axisY);
     arrow.setAttribute('d', 'M' + (W - 1.8 * R) + ' ' + (axisY - .7 * R) + 'L' + (W - .5 * R) + ' ' + axisY + 'L' + (W - 1.8 * R) + ' ' + (axisY + .7 * R) + 'Z');
+  }
+
+  // Year labels under the axis: regular ticks on the linear scale, each milestone's year on the logical one (cross-faded).
+  function drawTicks(axisY) {
     clear(gTicks);
-    var o = 1 - DB.clamp(st.t * 1.8, 0, 1);
-    if (o <= 0.02) return;
-    gTicks.setAttribute('opacity', o);
-    var k = st.lin.k, raw = 130 / k, p = Math.pow(10, Math.floor(Math.log10(raw))), step = p;
-    [1, 2, 5, 10].some(function (m) { step = m * p; return step >= raw; });
-    var y0 = st.lin.c - W / 2 / k, y1 = st.lin.c + W / 2 / k;
-    for (var y = Math.ceil(y0 / step) * step; y <= y1; y += step) {
-      var x = xLin(y);
-      gTicks.append(S('line', { class: 'tl-tick', x1: x, x2: x, y1: axisY - .45 * R, y2: axisY + .45 * R }),
-        S('text', { class: 'tl-tick-label', x: x, y: axisY + 1.5 * R, 'text-anchor': 'middle' }, fmtYear(Math.round(y))));
+    var cw = .66 * 1.1 * R, ys = [axisY + 1.85 * R, axisY + 3.2 * R];
+    function tick(g, x, y, txt) {
+      g.append(S('line', { class: 'tl-tick', x1: x, x2: x, y1: axisY - .6 * R, y2: axisY + .6 * R }),
+        S('text', { class: 'tl-tick-label', x: x, y: y, 'text-anchor': 'middle' }, txt));
+    }
+    var oLin = 1 - DB.clamp(st.t * 1.8, 0, 1), oLog = DB.clamp((st.t - .45) / .55, 0, 1);
+    if (oLin > .02) {
+      var gl = S('g', { opacity: oLin }), k = st.lin.k, y0 = st.lin.c - W / 2 / k, y1 = st.lin.c + W / 2 / k;
+      var raw = ((y0 < 0 ? 10 : 4) * cw + 1.6 * R) / k, p = Math.pow(10, Math.floor(Math.log10(raw))), step = p;
+      [1, 2, 5, 10].some(function (m) { step = m * p; return step >= raw; });
+      step = Math.max(1, step);
+      for (var y = Math.ceil(y0 / step) * step; y <= y1; y += step) tick(gl, xLin(y), ys[0], fmtYear(Math.round(y)));
+      gTicks.append(gl);
+    }
+    if (oLog > .02) {
+      var gm = S('g', { opacity: oLog }), right = [-1e9, -1e9];
+      nodes.forEach(function (nd) {
+        if (!nd.shown || nd.folded) return;
+        var txt = nd.m.year, half = txt.length * cw / 2, r = right[0] < nd.x - half ? 0 : right[1] < nd.x - half ? 1 : -1;
+        if (r < 0) return;
+        right[r] = nd.x + half + .6 * R;
+        tick(gm, nd.x, ys[r], txt);
+      });
+      gTicks.append(gm);
     }
   }
 
@@ -332,18 +355,20 @@ DB.addView('timeline', function (slide, director) {
       if (!inited) {
         measure();
         st.present = !opts.explore;
-        if (st.present) st.t = st.target = 0; // presentation reveals on the linear scale
+        if (st.present) st.t = st.target = step > N ? 1 : 0; // presentation reveals on the linear scale, then switches to logical
         st.lin = st.present ? presentFrame(step) : fitLin(); st.log = fitLog();
         inited = true;
       }
       var prev = st.step;
       st.step = step;
       if (st.present && !opts.instant && step !== prev) {
+        var logical = step > N;
         st.touched = false;
-        if (activeKey() === 'lin') animateTo('lin', presentFrame(step), 1100);
+        setScale(logical ? 1 : 0);
+        if (logical) animateTo('log', fitLog(), 800); else animateTo('lin', presentFrame(step), 1100);
       }
       render();
-      if (!opts.instant && step > prev) {
+      if (!opts.instant && step > prev && step <= N) {
         var nd = nodes[step - 1];
         nd.el.classList.remove('pulse'); void nd.el.offsetWidth; nd.el.classList.add('pulse');
       }

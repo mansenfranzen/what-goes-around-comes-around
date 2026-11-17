@@ -9,7 +9,7 @@
     var ms = DB.milestones;
     slides = [
       { id: 'landing', kind: 'landing', hash: '#/landing', steps: 2 },
-      { id: 'timeline', kind: 'timeline', hash: '#/timeline', steps: ms.length }
+      { id: 'timeline', kind: 'timeline', hash: '#/timeline', steps: ms.length + 1 } // last step: switch to the logical scale
     ];
     ms.forEach(function (m, i) {
       slides.push({ id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 3, ref: m, n: i });
