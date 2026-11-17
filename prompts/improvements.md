@@ -1,0 +1,1 @@
+In presentation mode, the timeline should be linear, not logical. When revealing each milestone, the timeline view should move forward and zoom in for later milestones that are clustered around much smaller time windows.

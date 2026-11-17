@@ -1,9 +1,0 @@
-{
-  "name": "db-time-machine",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "start": "node serve.mjs",
-    "test": "node --test tests/content.test.mjs"
-  }
-}

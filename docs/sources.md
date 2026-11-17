@@ -6,7 +6,7 @@
 
 - **Backbone:** the 2024 paper (read in full): Stonebraker & Pavlo, SIGMOD Record 53(2), 2024. All "paper says" statements, the verdict labels, and the SQL-absorption claims (JSON in SQL:2016, SQL/PGQ and SQL/MDA in SQL:2023, vector indexes in 2023) come from it.
 - **Everything else** (pre-1960 history, original papers, product dates) comes from my background knowledge of the literature, cross-checked only by citing the original publications listed below. I did **not** re-read those originals while writing, so treat precise dates and numbers as "very likely right, worth a quick check before quoting on stage". Items I am less sure of are marked **(verify)** in the milestone pages.
-- Image credits are in the `IMG` table inside [index-photos.html](../legacy/index-photos.html) (Wikimedia Commons).
+- Credits for the current presentation's images are in [Image credits](../presentation/assets/images/CREDITS.md).
 - Wikipedia links below were checked to exist. They are convenient entry points, not primary evidence.
 
 ## Key references (short names used in the pages)

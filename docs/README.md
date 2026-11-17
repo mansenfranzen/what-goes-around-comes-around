@@ -1,6 +1,6 @@
 # DB Time Machine: Speaker Notes
 
-Companion notes for the interactive presentation ([index-photos.html](../legacy/index-photos.html), with a picture-free variant in [index.html](../legacy/index.html)). One page per milestone, 23 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
+Companion notes for the [interactive presentation](../presentation/index.html). One page per milestone, 23 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
 
 Backbone of the whole story: Stonebraker & Pavlo, *"What Goes Around Comes Around… And Around"*, SIGMOD Record 53(2), June 2024 ([PDF](https://db.cs.cmu.edu/papers/2024/whatgoesaround-sigmodrec2024.pdf)), the sequel to the 2005 chapter of the same name. Its thesis: the relational model (RM) plus SQL keeps winning; challengers either die, stay niche, or get absorbed into SQL. Everything before 1960 is context I added; see [sources.md](sources.md) for what comes from where and how sure I am.
 
