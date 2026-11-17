@@ -67,7 +67,12 @@ DB.addView('timeline', function (slide, director) {
     svgTop.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   }
   function pad() { return 6 * R; }
-  function fitLin() { return { c: (pos[0] + pos[N - 1]) / 2, k: (W - 2 * pad()) / (pos[N - 1] - pos[0]) }; }
+  var YMIN = -20000, YMAX = 2030; // linear axis range; the view never zooms or pans past it (beyond the edge padding)
+  function fitLin() { return { c: (YMIN + YMAX) / 2, k: (W - 2 * pad()) / (YMAX - YMIN) }; }
+  function clampLin(v) {
+    var k = DB.clamp(v.k, fitLin().k, MAXK.lin), half = (W / 2 - pad()) / k;
+    return { c: DB.clamp(v.c, YMIN + half, YMAX - half), k: k, anchor: v.anchor };
+  }
   function fitLog() { return { c: (N - 1) / 2, k: (W - 2 * pad()) / (N - 1) }; }
   var MAXK = { lin: 600, log: 700 };
 
@@ -83,8 +88,8 @@ DB.addView('timeline', function (slide, director) {
   function activeKey() { return st.target >= 0.5 ? 'log' : 'lin'; }
 
   /* Presentation camera (linear scale): follow the newest revealed milestone. The window covers it and the two before it,
-     but never widens again, so the view moves forward and zooms in as milestones cluster; FLOOR keeps ~20 years readable. */
-  var CAM = { FLOOR: 24, FILL: .62, AT: .72, EDGE: .05 };
+     but never widens again, so the view moves forward and zooms in as milestones cluster; FLOOR keeps ~30 years (2000–2030 at the end). */
+  var CAM = { FLOOR: 30, FILL: .62, AT: .72 };
   function presentFrame(step) {
     var i = DB.clamp(step - 1, 0, N - 1), span = Infinity;
     for (var j = 0; j <= i; j++) {
@@ -92,10 +97,8 @@ DB.addView('timeline', function (slide, director) {
       span = Math.min(span, (pos[b] - pos[Math.max(0, b - 2)]) / CAM.FILL);
     }
     span = Math.max(CAM.FLOOR, span);
-    var c = pos[i] + (.5 - CAM.AT) * span; // newest milestone sits at AT of the usable width
-    c = Math.min(c, pos[N - 1] + (CAM.EDGE - .5) * span);
-    c = Math.max(c, pos[0] + (.5 - CAM.EDGE) * span);
-    return { c: c, k: (W - 2 * pad()) / span, anchor: pos[i] };
+    // newest milestone sits at AT of the usable width
+    return clampLin({ c: pos[i] + (.5 - CAM.AT) * span, k: (W - 2 * pad()) / span, anchor: pos[i] });
   }
 
   /* ----- rendering ----- */
@@ -166,9 +169,10 @@ DB.addView('timeline', function (slide, director) {
   function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
   function fmtYear(y) { return y < 0 ? Math.abs(y).toLocaleString('en') + ' BCE' : y === 0 ? '0' : String(y); }
 
-  function drawAxis(axisY) {
-    axis.setAttribute('x1', 0); axis.setAttribute('x2', W - 1.2 * R); axis.setAttribute('y1', axisY); axis.setAttribute('y2', axisY);
-    arrow.setAttribute('d', 'M' + (W - 1.8 * R) + ' ' + (axisY - .7 * R) + 'L' + (W - .5 * R) + ' ' + axisY + 'L' + (W - 1.8 * R) + ' ' + (axisY + .7 * R) + 'Z');
+  function drawAxis(axisY) { // linear: from YMIN to the arrow at YMAX; logical: full width
+    var x0 = DB.lerp(Math.max(0, xLin(YMIN)), 0, st.t), tip = DB.lerp(Math.min(W - .5 * R, xLin(YMAX) + .7 * R), W - .5 * R, st.t);
+    axis.setAttribute('x1', x0); axis.setAttribute('x2', tip - .7 * R); axis.setAttribute('y1', axisY); axis.setAttribute('y2', axisY);
+    arrow.setAttribute('d', 'M' + (tip - 1.3 * R) + ' ' + (axisY - .7 * R) + 'L' + tip + ' ' + axisY + 'L' + (tip - 1.3 * R) + ' ' + (axisY + .7 * R) + 'Z');
   }
 
   // Year labels under the axis: regular ticks on the linear scale, each milestone's year on the logical one (cross-faded).
@@ -181,7 +185,7 @@ DB.addView('timeline', function (slide, director) {
     }
     var oLin = 1 - DB.clamp(st.t * 1.8, 0, 1), oLog = DB.clamp((st.t - .45) / .55, 0, 1);
     if (oLin > .02) {
-      var gl = S('g', { opacity: oLin }), k = st.lin.k, y0 = st.lin.c - W / 2 / k, y1 = st.lin.c + W / 2 / k;
+      var gl = S('g', { opacity: oLin }), k = st.lin.k, y0 = Math.max(YMIN, st.lin.c - W / 2 / k), y1 = Math.min(YMAX, st.lin.c + W / 2 / k);
       var raw = ((y0 < 0 ? 10 : 4) * cw + 1.6 * R) / k, p = Math.pow(10, Math.floor(Math.log10(raw))), step = p;
       [1, 2, 5, 10].some(function (m) { step = m * p; return step >= raw; });
       step = Math.max(1, step);
@@ -243,8 +247,9 @@ DB.addView('timeline', function (slide, director) {
   /* ----- view control ----- */
   function clampView(key) {
     var v = st[key];
-    v.k = DB.clamp(v.k, (key === 'lin' ? fitLin() : fitLog()).k * .6, MAXK[key]);
-    v.c = key === 'lin' ? DB.clamp(v.c, pos[0], pos[N - 1]) : DB.clamp(v.c, 0, N - 1);
+    if (key === 'lin') { var t = clampLin(v); v.c = t.c; v.k = t.k; return; }
+    v.k = DB.clamp(v.k, fitLog().k * .6, MAXK.log);
+    v.c = DB.clamp(v.c, 0, N - 1);
   }
   // With target.anchor (a value on screen before and after), that value glides straight to its new x while zooming.
   function animateTo(key, target, ms) {
@@ -267,7 +272,7 @@ DB.addView('timeline', function (slide, director) {
     var val = v.c + (px - W / 2) / v.k, nk = DB.clamp(v.k * f, lim, MAXK[key]);
     var target = { c: val - (px - W / 2) / nk, k: nk };
     st.touched = true;
-    if (animate) animateTo(key, { c: DB.clamp(target.c, key === 'lin' ? pos[0] : 0, key === 'lin' ? pos[N - 1] : N - 1), k: nk }, 350);
+    if (animate) animateTo(key, key === 'lin' ? clampLin(target) : { c: DB.clamp(target.c, 0, N - 1), k: nk }, 350);
     else { if (anim) anim.cancel(); v.c = target.c; v.k = nk; clampView(key); render(); }
   }
   function fit(animate) {
@@ -278,7 +283,7 @@ DB.addView('timeline', function (slide, director) {
   function jump(where) {
     var key = activeKey(), span = W - 2 * pad(), t;
     st.touched = true;
-    if (key === 'lin') t = where === 'start' ? { c: -10100, k: span / 21000 } : { c: 1995, k: span / 70 };
+    if (key === 'lin') t = clampLin(where === 'start' ? { c: YMIN, k: span / 21000 } : { c: YMAX, k: span / 70 });
     else t = where === 'start' ? { c: 3, k: span / 6 } : { c: N - 4, k: span / 6 };
     animateTo(key, t, 900);
   }
@@ -288,7 +293,8 @@ DB.addView('timeline', function (slide, director) {
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), range = Math.max(hi - lo, key === 'lin' ? .5 : .5);
     var k = DB.clamp((W - 2 * pad()) * .7 / range, st[key].k * 1.8, MAXK[key]);
     st.touched = true;
-    animateTo(key, { c: (lo + hi) / 2, k: k }, 700);
+    var t = { c: (lo + hi) / 2, k: k };
+    animateTo(key, key === 'lin' ? clampLin(t) : t, 700);
   }
   function setScale(target) {
     if (st.target === target) return;
