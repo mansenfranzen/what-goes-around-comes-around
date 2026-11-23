@@ -1,0 +1,20 @@
+.game-15 .requests { display: flex; flex-wrap: wrap; gap: .4em; }
+.game-15 .g-btn, .game-15 select { min-height: 2.2em; }
+.game-15 label { font-weight: 800; }
+.game-15 select { font: inherit; color: var(--ink); background: white; border: .12em solid var(--ink); border-radius: .3em; padding: 0 .4em; }
+.game-15 .request { font: 700 .92em var(--mono); color: var(--cat-ink); overflow-wrap: anywhere; }
+.game-15 .lanes { flex: 1; min-height: 0; display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); align-content: start; gap: .35em; }
+.game-15 .lane { display: grid; grid-template-columns: 4.6em minmax(0, 1fr); align-items: center; gap: .55em; border-bottom: .1em solid var(--line); }
+.game-15 .queue { display: flex; flex-wrap: wrap; gap: .25em; }
+.game-15 .queue span { padding: .2em .35em; border: .1em solid var(--cat); border-radius: .25em; background: var(--cat-tint); font: 700 .9em var(--mono); }
+.game-15 .queue .match, .game-15 .queue .saved { color: white; border-color: var(--good); background: var(--good); }
+.game-15 .queue .failed { border-color: var(--bad); color: var(--bad); background: white; }
+.game-15 .g-msg { min-height: 2.8em; }
+
+@container (max-aspect-ratio: 2/3) {
+	.game-15 { font-size: min(5.5cqmin, 2.1cqh); }
+	.game-15 .requests { display: grid; }
+	.game-15 .g-btn, .game-15 select { min-height: 2.6em; }
+	.game-15 .lanes { grid-template-rows: repeat(4, minmax(min-content, 1fr)); }
+	.game-15 .lane { grid-template-columns: 1fr; align-content: center; gap: .3em; }
+}
