@@ -8,7 +8,7 @@
 | **Verdict** | Legacy: still running, nobody starts new apps on it |
 | **Category** | **Model**: the first commercial data model (hierarchy wired into storage) · secondary: **Language** (navigational DL/I calls) |
 | **Key systems** | IBM Information Management System (IMS), first built for NASA's Apollo/Saturn V parts lists, released 1968 |
-| **In the app** | Timeline → "IMS", demo: find "Fuel valve of Engine J-2" by walking a tree |
+| **In the app** | Timeline → "IMS", demo: which assembly uses Acme's pump? |
 
 ## Summary
 Data stored as **trees**: parent record → child records. You enter at the root and walk down.
@@ -42,7 +42,7 @@ Rocket
 
 ## How to explain it
 - **Analogy:** a file system of folders. To find anything you must know the path.
-- **Demo:** the app asks you to find the J-2 fuel valve; you can only start at the root, and you notice "Fuel valve" and "Pump" are stored twice.
+- **Demo:** find the pump under Suppliers → Acme, then look under Assemblies → Tank. The two branches contain separate copies of the same part. Keep the question for the CODASYL slide.
 - **What it was good at:** the one access path that was designed. **What hurt:** (1) many-to-many relationships need copies or special "logical relationships"; (2) applications know the physical structure, so reorganizing data **breaks programs**.
 - **Paper's point on stickiness:** IMS persists because migrating data is expensive and risky, *not* because it is better. "No start-up would willingly choose to build a new application on IMS."
 

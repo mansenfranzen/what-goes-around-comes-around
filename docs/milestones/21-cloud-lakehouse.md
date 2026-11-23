@@ -1,6 +1,6 @@
-# 21 · Cloud databases and lakehouses (2013 →)
+# 21 · Cloud databases and lakehouses (2012 →)
 
-[← 19 Document databases](19-document-databases.md) · [Index](../README.md) · [Next → 22 Vector databases](22-vector-databases.md)
+[← 18 Graph databases](18-graph-databases.md) · [Index](../README.md) · [Next → 16 Columnar storage](16-columnar-warehouses.md)
 
 | | |
 |---|---|
@@ -44,11 +44,11 @@ Scale compute up or down per query. Multiple engines (SQL, DataFrame, ML) read t
 ## Relational lens
 The model is unchanged; the **architecture** was rebuilt. Note again: the big changes were inside relational systems.
 
-## Coming from… [19 Document databases](19-document-databases.md)
-Choosing JSON instead of rows does not tell you who runs the machines or what to do with idle capacity. The bridge is operational, not a claim that document databases invented lakehouses: warehouses and batch jobs also had bursts of compute over data they needed to retain. Compare [columnar warehouses](16-columnar-warehouses.md) and [MapReduce](14-mapreduce-hadoop.md).
+## Coming from… [18 Graph databases](18-graph-databases.md)
+The nightly graph analysis ends, but its data must persist. Separating compute and storage addresses this operational problem regardless of the data model. The 2012 marker is BigQuery's general availability, not the birth of cloud storage.
 
-## Leading to… [22 Vector databases](22-vector-databases.md)
-**What changed in the workload:** data lakes now serve not only SQL analysts but **data scientists and ML engineers**, increasingly building models that convert text, images and records into **embeddings**. A new query type emerges (find the *nearest* items to this vector), which neither traditional indexes nor SQL predicates handle well. By 2022 the arrival of ChatGPT made this a mainstream developer need.
+## Leading to… [16 Columnar storage](16-columnar-warehouses.md)
+Renting more workers can finish a query sooner, but each still pays to fetch bytes. When a report sums prices, storing prices together means workers can leave names and addresses unread.
 
 ## Sources
 - [SP24] §3.2 and §3.3 (refs 121 Snowflake, 167 data lakes, 93 lakehouse, 55 Parquet, 53/140 ORC, 11 Arrow, 92/6/5 Delta/Iceberg/Hudi, 159 pandas, 181/61/177/198 Dask/Polars/Modin/Bodo, 154 statistics problem, 97/105/163 adaptive processing, 153/101 cloud vendor disputes).

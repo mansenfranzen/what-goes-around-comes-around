@@ -25,11 +25,12 @@ DB.manifest = {
     '13-objects',
     '14-mapreduce',
     '15-nosql',
-    '16-columnar',
     '17-key-value',
-    '18-graph',
     '19-documents',
+    '18-graph',
     '21-cloud',
+    '16-columnar',
+    '20-open-table-formats',
     '22-vectors',
     '23-sql-absorbs'
   ]

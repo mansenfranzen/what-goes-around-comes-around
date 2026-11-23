@@ -24,6 +24,7 @@ DB.bigpicture = {
     '18': { x: 500, y: 60, r: 44, role: 'Paths over relations (SQL/PGQ)' },
     '19': { x: 620, y: 446, r: 44, role: 'JSON columns for flexible shapes' },
     '21': { x: 500, y: 958, r: 50, role: 'Elastic, serverless storage and compute' },
+    '20': { x: 625, y: 846, r: 44, role: 'Snapshots: which files form one table version' },
     '22': { x: 580, y: 188, r: 44, role: 'Nearest-neighbour vector index' },
     '23': { x: 905, y: 112, r: 52, role: 'Swap the guts, keep the SQL interface' }
   },
@@ -35,6 +36,7 @@ DB.bigpicture = {
       { id: '11', label: 'Declarative question' },
       { id: '10', label: 'Plan over relations' },
       { id: '04', label: 'Look up the catalog' },
+      { id: '20', label: 'Skip files using snapshot metadata' },
       { id: '05', label: 'Use the index' },
       { id: '16', label: 'Read only 2 columns' },
       { id: '06', label: 'Filter: WHERE' },

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 240" font-family="sans-serif" text-anchor="middle" fill="#0B1B33">
+  <title>Two sets meet at each shared part record</title>
+  <g fill="none" stroke-width="5">
+    <path stroke="#6741D9" d="M190 47 65 120 M190 47 195 120 M190 47 330 120 M515 47 465 120 M515 47 595 120"/>
+    <path stroke="#D9480F" d="M65 120 190 200 M465 120 190 200 M195 120 455 200 M595 120 455 200 M330 120 605 200"/>
+  </g>
+  <g fill="#6741D9"><rect x="134" y="18" width="112" height="36" rx="18"/><rect x="459" y="18" width="112" height="36" rx="18"/></g>
+  <g fill="#D9480F"><rect x="134" y="184" width="112" height="36" rx="18"/><rect x="399" y="184" width="112" height="36" rx="18"/><rect x="561" y="184" width="88" height="36" rx="18"/></g>
+  <g font-size="22" fill="white" font-weight="bold">
+    <text x="190" y="44">Acme</text><text x="515" y="44">Orbit</text>
+    <text x="190" y="210">Engine</text><text x="455" y="210">Tank</text><text x="605" y="210">Hull</text>
+  </g>
+  <g fill="#fff" stroke="#0B1B33" stroke-width="3">
+    <rect x="20" y="100" width="90" height="40" rx="7"/><rect x="150" y="100" width="90" height="40" rx="7" fill="#FFEC99"/>
+    <rect x="285" y="100" width="90" height="40" rx="7"/><rect x="420" y="100" width="90" height="40" rx="7"/><rect x="550" y="100" width="90" height="40" rx="7"/>
+  </g>
+  <g font-size="22"><text x="65" y="128">valve</text><text x="195" y="128">pump</text><text x="330" y="128">seal</text><text x="465" y="128">nut</text><text x="595" y="128">bolt</text></g>
+  <g font-size="17" font-weight="bold" text-anchor="start"><text x="12" y="42" fill="#6741D9">Suppliers</text><text x="12" y="209" fill="#B84500">Assemblies</text></g>
+</svg>

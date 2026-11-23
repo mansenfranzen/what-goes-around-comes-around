@@ -1,6 +1,6 @@
 # DB Time Machine: Speaker Notes
 
-Companion notes for the [interactive presentation](../presentation/index.html). One page per milestone, 22 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
+Companion notes for the [interactive presentation](../presentation/index.html). One page per milestone, 23 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
 
 Backbone of the whole story: Stonebraker & Pavlo, *"What Goes Around Comes Around… And Around"*, SIGMOD Record 53(2), June 2024 ([PDF](https://db.cs.cmu.edu/papers/2024/whatgoesaround-sigmodrec2024.pdf)), the sequel to the 2005 chapter of the same name. Its thesis: the relational model (RM) plus SQL keeps winning; challengers either die, stay niche, or get absorbed into SQL. Everything before 1960 is context I added; see [sources.md](sources.md) for what comes from where and how sure I am.
 
@@ -46,11 +46,12 @@ How to say it on stage: **"Primitives are how we store, language is how we ask, 
 | 13 | [Object-oriented DBs](milestones/13-object-oriented-databases.md) | late 1980s | Model · Language | Absorbed |
 | 14 | [MapReduce / Hadoop](milestones/14-mapreduce-hadoop.md) | 2003–2014 | Language · Primitives | Dead end |
 | 15 | [The rise of NoSQL](milestones/15-rise-of-nosql.md) | 2005–2009 | Primitives · Language | Enduring trade-off |
-| 16 | [Columnar warehouses](milestones/16-columnar-warehouses.md) | 2005 → | Primitives | Winner (inside RM) |
-| 17 | [Key-value stores](milestones/17-key-value-stores.md) | 2003–07 | Primitives · Model | Niche survivor |
-| 18 | [Graph databases](milestones/18-graph-databases.md) | 2007 → | Model · Language | Converging |
+| 17 | [Key-value stores](milestones/17-key-value-stores.md) | 2007 | Primitives · Model | Niche survivor |
 | 19 | [Document DBs / NoSQL](milestones/19-document-databases.md) | 2009 → | Model · Language | Converging |
-| 21 | [Cloud & lakehouse](milestones/21-cloud-lakehouse.md) | 2013 → | Primitives · Language | Winner |
+| 18 | [Graph databases](milestones/18-graph-databases.md) | 2010 → | Model · Language | Converging |
+| 21 | [Cloud databases](milestones/21-cloud-lakehouse.md) | 2012 | Primitives · Language | Winner |
+| 16 | [Columnar storage](milestones/16-columnar-warehouses.md) | 2013 | Primitives | Winner (inside RM) |
+| 20 | [Open table formats](milestones/20-open-table-formats.md) | 2018 | Primitives | Adopted |
 | 22 | [Vector databases](milestones/22-vector-databases.md) | 2019 → | Primitives · Model | Converging |
 | 23 | [SQL absorbs again](milestones/23-sql-absorbs-again.md) | 2023 → | All three (synthesis) | Winner |
 
@@ -76,12 +77,13 @@ The timeline is chronological; the *causal* story has a few threads. This table 
 | 12 → 13 | Arrays serve a niche; mainstream developers have objects | Object databases |
 | 13 → 14 | OODBs lose; absorbed as object-relational + ORMs. The next pain is volume, not shape | Google's MapReduce |
 | 14 → 15 | A batch job cannot serve a live request for one record | Early NoSQL stores route online reads and writes by key |
-| 15 → 16 | One key finds one cart, not a total across all sales | Columnar warehouses keep SQL and scan only the columns they need |
-| 16 → 17 | Warehouses solve analytics; online apps need speed and uptime | Simple key-value stores |
-| 17 → 18 | A blob per key hides relationships | Graph databases add edges |
-| 18 → 19 | Two ways to add structure back to KV: edges or nesting | Document databases (and the NoSQL/NewSQL debate) |
-| 19 → 21 | Document shape does not solve the cost of an always-on cluster | Cloud engines separate persistent storage from compute rented for a job |
-| 21 → 22 | Lakehouses serve SQL and ML; ML brings embeddings | Vector databases |
+| 15 → 17 | Sharding spreads requests, but what does a cart service actually need? | Get and put by key |
+| 17 → 19 | A blob per key hides fields | Document stores query inside the value |
+| 19 → 18 | Friendships cross document boundaries | Graph databases store edges between records |
+| 18 → 21 | Relationship queries leave machines idle between runs | Cloud warehouses scale compute independently of storage |
+| 21 → 16 | More workers still read unwanted bytes | Parquet scans just the columns a query needs |
+| 16 → 20 | A million footers are costly to check, and cannot identify a committed table version | Manifests prune files at scale; atomic commits publish consistent snapshots |
+| 20 → 22 | A consistent snapshot does not find records by meaning | Embeddings and nearest-neighbour indexes |
 | 22 → 23 | New data type, new "model" | A new SQL index and type: the loop repeats |
 
 ## Three suggested story arcs

@@ -1,0 +1,89 @@
+.game-20 .top { flex: 0 0 auto; }
+.game-20 .g-code { font-size: .95em; padding: .45em .8em; }
+.game-20 .legend { display: flex; align-items: center; gap: .45em; font: 700 .8em var(--mono); color: var(--muted); white-space: nowrap; }
+.game-20 .legend .sw { width: 2em; height: 1.3em; flex: none; }
+.game-20 .legend .sw + .sw { margin-left: .8em; }
+.game-20 .sw .fb { fill: #fff; stroke: var(--muted); stroke-width: 2; }
+.game-20 .sw .ft { fill: #DCE3EE; }
+.game-20 .sw.opened .ft { fill: var(--cat); }
+.game-20 .run { min-width: 9.5em; min-height: 2.4em; }
+.game-20 .msg { flex: 0 0 auto; text-align: center; }
+
+.game-20 .scene { flex: 1 1 0; min-height: 0; width: 100%; background: var(--paper); border: .14em solid var(--line); border-radius: .8em; }
+.game-20 .split { stroke: var(--line); stroke-width: 3; stroke-dasharray: 8 7; }
+
+/* lane header + counters */
+.game-20 .tag { fill: var(--ink); }
+.game-20 .tag-t { fill: #fff; font-family: var(--mono); font-weight: 900; }
+.game-20 .ttl { fill: var(--ink); font-family: var(--sans); font-weight: 800; }
+.game-20 .sub { fill: var(--muted); font-family: var(--sans); font-weight: 700; }
+.game-20 .num { fill: var(--ink); font-family: var(--mono); font-weight: 900; }
+.game-20 .unit { fill: var(--muted); font-family: var(--sans); font-weight: 700; }
+.game-20 .lane-a.fin .num { fill: var(--bad); }
+.game-20 .lane-b.fin .num { fill: var(--good); }
+
+/* engine */
+.game-20 .eng rect { fill: var(--ink); transition: fill .3s; }
+.game-20 .eng-t { fill: #fff; font-family: var(--mono); font-weight: 800; }
+.game-20 .eng.busy rect { animation: g20Busy .6s ease-in-out infinite alternate; }
+.game-20 .eng.fin rect { fill: var(--good); }
+@keyframes g20Busy { from { fill: var(--ink); } to { fill: #3A5378; } }
+
+/* folder of Parquet files */
+.game-20 .fold { fill: #fff; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 9 6; }
+.game-20 .fold.flash { animation: g20Flash .7s ease-out; }
+@keyframes g20Flash { from { fill: var(--cat-tint); stroke: var(--cat); } }
+.game-20 .fold-bg { fill: var(--paper); }
+.game-20 .fold-t { fill: var(--muted); font-family: var(--mono); font-weight: 800; }
+
+.game-20 .file { transition: opacity .4s; }
+.game-20 .file .fb { fill: #fff; stroke: #C3CEDF; stroke-width: 2; transition: fill .3s, stroke .3s; }
+.game-20 .file .ft { fill: #DCE3EE; transition: fill .25s; transform-box: fill-box; transform-origin: center; }
+.game-20 .file .fr { fill: #9AA8BF; font-family: var(--mono); font-weight: 800; transition: fill .3s; }
+.game-20 .file.seen .fr { fill: var(--ink); }
+.game-20 .file.opened .ft { fill: var(--cat); animation: g20Pop .35s cubic-bezier(.2, 1.6, .4, 1); }
+.game-20 .file.skip .fr { fill: #9AA8BF; }
+.game-20 .file.skip .fb { stroke: var(--line); }
+.game-20 .file.match .fb { fill: var(--good-tint); stroke: var(--good); stroke-width: 3; }
+.game-20 .file.match .fr { fill: var(--good); }
+.game-20 .file.read .fb { fill: var(--good); stroke: var(--good); }
+.game-20 .file.read .fr { fill: #fff; }
+@keyframes g20Pop { from { transform: scale(1.8); } to { transform: none; } }
+
+/* Iceberg metadata tree */
+.game-20 .cap { fill: var(--muted); font-family: var(--mono); font-weight: 800; letter-spacing: .08em; }
+.game-20 .edge { fill: none; stroke: #C3CEDF; stroke-width: 3; }
+.game-20 .meta .box, .game-20 .mf .box { fill: #fff; stroke: var(--ink); stroke-width: 2; transition: fill .3s; }
+.game-20 .meta-t, .game-20 .mf-t { fill: var(--ink); font-family: var(--mono); font-weight: 800; transition: fill .3s; }
+.game-20 .meta.read .box, .game-20 .mf.read .box { fill: var(--ink); }
+.game-20 .meta.read .meta-t, .game-20 .mf.read .mf-t { fill: #fff; }
+.game-20 .ml .box { fill: #fff; stroke: var(--ink); stroke-width: 2; transition: fill .3s; }
+.game-20 .ml.read .box { fill: var(--ink); }
+.game-20 .cell { transition: opacity .4s; }
+.game-20 .cell rect { fill: #EEF2F8; transition: fill .3s; }
+.game-20 .cell-t { fill: #9AA8BF; font-family: var(--mono); font-weight: 800; }
+.game-20 .ml.read .cell rect { fill: #fff; }
+.game-20 .ml.read .cell-t { fill: var(--ink); }
+.game-20 .cell .strike { stroke: var(--bad); stroke-width: 3; stroke-linecap: round; opacity: 0; transition: opacity .3s; }
+.game-20 .cell.out { opacity: .45; }
+.game-20 .cell.out .strike { opacity: 1; }
+.game-20 .ml.read .cell.hit rect { fill: var(--good-tint); stroke: var(--good); stroke-width: 3; }
+.game-20 .ml.read .cell.hit .cell-t { fill: var(--good); }
+.game-20 .col { transition: opacity .5s; }
+.game-20 .col.pruned { opacity: .16; }
+.game-20 .band { fill: var(--cat-tint); opacity: 0; transition: opacity .4s; }
+.game-20 .col.chosen .band { opacity: 1; }
+
+/* requests: a dot travels the path, then leaves a trail */
+.game-20 .live { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.game-20 .live.file { stroke: var(--cat); }
+.game-20 .live.data { stroke: var(--good); }
+.game-20 .dot { fill: var(--ink); stroke: #fff; stroke-width: 2.5; }
+.game-20 .dot.file { fill: var(--cat); }
+.game-20 .dot.data { fill: var(--good); }
+.game-20 .trail { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.game-20 .lane-a .trail { stroke: var(--cat); stroke-width: 2; opacity: .45; }
+.game-20 .lane-a .trail.meta { stroke: var(--ink); opacity: .35; }
+.game-20 .lane-a .trail.data { stroke: var(--good); stroke-width: 4; opacity: 1; }
+.game-20 .lane-b .trail { stroke: var(--ink); stroke-width: 5; }
+.game-20 .lane-b .trail.data { stroke: var(--good); }

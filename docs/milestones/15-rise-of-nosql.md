@@ -1,6 +1,6 @@
 # 15 · The rise of NoSQL (2005–2009)
 
-[← 14 MapReduce / Hadoop](14-mapreduce-hadoop.md) · [Index](../README.md) · [Next → 16 Columnar warehouses](16-columnar-warehouses.md)
+[← 14 MapReduce / Hadoop](14-mapreduce-hadoop.md) · [Index](../README.md) · [Next → 17 Key-value stores](17-key-value-stores.md)
 
 | | |
 |---|---|
@@ -32,8 +32,8 @@ The bargain was not “SQL cannot scale.” It was “we know the operations we 
 ## Coming from… [14 MapReduce / Hadoop](14-mapreduce-hadoop.md)
 A batch job can rebuild the web index overnight. A live service needs to update one page or fetch one cart now. Specific keyed operations made it practical to spread that online traffic across a cluster.
 
-## Leading to… [16 Columnar warehouses](16-columnar-warehouses.md)
-Now ask for total sales rather than one cart. No single key names that answer. A columnar warehouse optimizes for this other workload: keep SQL and read the price column across many rows.
+## Leading to… [17 Key-value stores](17-key-value-stores.md)
+Sharding routes a cart request to one machine. What does that machine need to support? For a cart fetched by ID, a get/put interface is enough.
 
 ## Sources
 - DeCandia et al., [Dynamo: Amazon's Highly Available Key-value Store](https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html) (SOSP 2007), §§2.1–2.2, 3.3, 4.1–4.2 and 6.4: the query and transaction limits, tail-latency targets, partitioning, and the measured effect of skipping a routing hop.

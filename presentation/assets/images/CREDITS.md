@@ -12,7 +12,8 @@ All images come from Wikimedia Commons and are stored locally. Raster photos are
 | 06 | 06-punch-cards.jpg | Hollerith punched card | Unknown author | Public domain | [File:Hollerith Punched Card.jpg](https://commons.wikimedia.org/wiki/File:Hollerith_Punched_Card.jpg) |
 | 07 | 07-ramac-disk.jpg | IBM RAMAC 305 disk platter | Deep silence (Mikaël Restoux) | CC BY 2.5 | [File:RAMAC 305 disk.JPG](https://commons.wikimedia.org/wiki/File:RAMAC_305_disk.JPG) |
 | 08 | 08-ims.jpg | Apollo 11 Saturn V on Launch Pad 39A | NASA | Public domain | [File:The Apollo 11 Saturn V on Launch Pad 39A.jpg](https://commons.wikimedia.org/wiki/File:The_Apollo_11_Saturn_V_on_Launch_Pad_39A.jpg) |
-| 09 | 09-codasyl.png | Network data model diagram | U.S. Department of Transportation | Public domain | [File:Network Model.svg](https://commons.wikimedia.org/wiki/File:Network_Model.svg) |
+| 09 | 09-codasyl.svg | Suppliers and assemblies linked through shared part records | DB Time Machine | Original diagram | — |
+| 09 (unused) | 09-codasyl.png | Network data model diagram | U.S. Department of Transportation | Public domain | [File:Network Model.svg](https://commons.wikimedia.org/wiki/File:Network_Model.svg) |
 | 10 | 10-relational.png | Relational model diagram | U.S. Department of Transportation | Public domain | [File:Relational Model.svg](https://commons.wikimedia.org/wiki/File:Relational_Model.svg) |
 | 11 | 11-sql.png | Anatomy of an SQL statement | SqlPac (modified by Ferdna) | CC BY-SA 3.0 | [File:SQL ANATOMY wiki.svg](https://commons.wikimedia.org/wiki/File:SQL_ANATOMY_wiki.svg) |
 | 12 | 12-arrays.png | Three-dimensional array diagram | Tropwine | CC BY 4.0 | [File:3D array diagram.svg](https://commons.wikimedia.org/wiki/File:3D_array_diagram.svg) |

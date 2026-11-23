@@ -27,15 +27,15 @@ Trees (IMS) cannot cleanly express many-to-many data: a part in many assemblies,
 Let any record be linked into any number of **sets**. Each set has one owner record and an ordered list of member records. Use **currency indicators** (where you "are" in each set) and commands to move.
 
 ```
-FIND FIRST supplier
+FIND Acme
 FIND NEXT part WITHIN supplies
 FIND NEXT part WITHIN supplies
-FIND OWNER WITHIN supplies          // jump to another owner (the shared part)
+FIND OWNER WITHIN used-in           // from pump to Tank
 ```
 
 ## How to explain it
 - **Analogy:** a subway map where you give turn-by-turn directions. Fast if the route is known; awful if the map changes.
-- **Demo:** the app steps a cursor through a supplier/part network. A part shared by two suppliers is stored once.
+- **Demo:** ask the IMS question again: which assembly uses Acme's pump? Follow the supplies chain to the pump and switch to its used-in owner, Tank. Unlike the tree, both paths touch the same pump record. Re-sort the chain and replay the program to see the cost of depending on pointer order.
 - **Key sentence:** "The programmer is the query planner."
 - **Why it hurt:** schema changes require program rewrites; code is verbose and low-level; the user must understand pointer structure.
 
@@ -52,5 +52,5 @@ IMS gave fast tree traversal and left many-to-many awkward. CODASYL **fixes the 
 - [Bach73] C. Bachman, "The Programmer as Navigator", CACM 1973.
 - [SH05] on network model; [SP24] §2.8 on graph DBMSs and Neo4j's CODASYL-like pointers.
 - [Wikipedia: CODASYL](https://en.wikipedia.org/wiki/CODASYL), [Network model](https://en.wikipedia.org/wiki/Network_model), [Charles Bachman](https://en.wikipedia.org/wiki/Charles_Bachman).
-- Image: Charles Bachman (2006), Gary.Cherlet, CC BY-SA 3.0, Wikimedia Commons.
+- Image: original supplier–part–assembly network diagram, DB Time Machine.
 - Confidence: high; exact report years vary by source (1969 draft, 1971 DBTG report).

@@ -1,6 +1,6 @@
-# 18 · Graph databases (2007 →)
+# 18 · Graph databases (2010 →)
 
-[← 17 Key-value stores](17-key-value-stores.md) · [Index](../README.md) · [Next → 19 Document DBs / NoSQL](19-document-databases.md)
+[← 19 Document databases](19-document-databases.md) · [Index](../README.md) · [Next → 21 Cloud databases](21-cloud-lakehouse.md)
 
 | | |
 |---|---|
@@ -41,11 +41,11 @@ Pointer-chase from node to neighbours instead of joining tables.
 ## Relational lens
 RDBMS options: vendor graph extensions (SQL Server, Oracle), translation layers (Neptune over Aurora MySQL; Apache AGE for OpenCypher on PostgreSQL), and finally **SQL/PGQ** in **SQL:2023**, which standardizes graph pattern matching in SQL. This "further narrows the functionality difference between RDBMSs and native graph DBMSs".
 
-## Coming from… [17 Key-value stores](17-key-value-stores.md)
-KV stores treat items as unrelated blobs. Graph databases are the answer to "but my data is all about *connections*". It is the first path that adds structure back to KV **by adding edges**.
+## Coming from… [19 Document databases](19-document-databases.md)
+Embedding works when a record owns its children. Friendships cross profiles: storing the whole neighborhood inside each profile repeats data. A graph represents those connections as edges instead.
 
-## Leading to… [19 Document DBs / NoSQL](19-document-databases.md)
-**What graphs did not address:** most application developers still wanted to store a *record per object* (user, product, order), already nested, without joins at all. Rather than adding edges, the document camp **adds nesting** to the value: JSON instead of a blob. This became the center of the NoSQL boom (and it matched the developer's mental model of JSON in JavaScript web apps).
+## Leading to… [21 Cloud databases](21-cloud-lakehouse.md)
+A graph answers a question about relationships. It does not answer an operational question: can we release the compute after the nightly analysis and keep the data?
 
 ## Sources
 - [SP24] §2.8 (refs 44 Neo4j, 74 TigerGraph, 32 JanusGraph, 26 Giraph, 78 Turi, 45 Neptune, 10 AGE, 3 and 50 SQL Server/Oracle graph, 196 SQL/PGQ in DuckDB, 126 GQL, 160 distributed vs single node, 132/168 worst-case optimal joins, 100 factorized execution).

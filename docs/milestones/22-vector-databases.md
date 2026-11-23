@@ -1,6 +1,6 @@
 # 22 · Vector databases (2019 →)
 
-[← 21 Cloud & lakehouse](21-cloud-lakehouse.md) · [Index](../README.md) · [Next → 23 SQL absorbs again](23-sql-absorbs-again.md)
+[← 20 Open table formats](20-open-table-formats.md) · [Index](../README.md) · [Next → 23 SQL absorbs again](23-sql-absorbs-again.md)
 
 | | |
 |---|---|
@@ -42,8 +42,8 @@ Index vectors with ANN structures (graph-based, quantization, partitioning) so t
 ## Relational lens
 The extendable type system of relational databases absorbs vectors via a new type and index. The paper predicts this "should soon provide native support" and render specialized databases unnecessary.
 
-## Coming from… [21 Cloud & lakehouse](21-cloud-lakehouse.md)
-Cloud and lakehouse gave organizations a shared pool of data with ML-friendly access (DataFrames, Python). That pool plus modern ML turned text, images and records into vectors at scale. Also: the **bag-of-words vectors** of 1960s information retrieval (Gerard Salton's SMART system and its vector space model, the ancestor of every search engine) have become **learned embeddings**. Text search ran as a parallel track all along; here it rejoins the database story.
+## Coming from… [20 Open table formats](20-open-table-formats.md)
+A snapshot identifies a consistent set of records. Finding the records closest in meaning calls for embeddings and a similarity index instead.
 
 ## Leading to… [23 SQL absorbs again](23-sql-absorbs-again.md)
 **What vector databases leave open:** exactly the things the paper has been saying all along: metadata filtering, transactions, joins, governance, existing data. Those are core RDBMS strengths, so every established DBMS responds by adding a vector type and index. This pattern (new model → "feature" in SQL) is the story's final lesson.

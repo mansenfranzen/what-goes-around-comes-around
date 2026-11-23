@@ -1,6 +1,6 @@
-# 16 · Columnar warehouses (2005 →)
+# 16 · Columnar warehouses (2013 →)
 
-[← 15 The rise of NoSQL](15-rise-of-nosql.md) · [Index](../README.md) · [Next → 17 Key-value stores](17-key-value-stores.md)
+[← 21 Cloud databases](21-cloud-lakehouse.md) · [Index](../README.md) · [Next → 20 Open table formats](20-open-table-formats.md)
 
 | | |
 |---|---|
@@ -41,11 +41,11 @@ Benefits (paper): (1) better **compression**, since a block holds one type and m
 ## Relational lens
 It *is* relational. This is the poster child for the paper's second theme: "the major advancements have been in the RM systems, primarily driven by changing hardware characteristics."
 
-## Coming from… [15 The rise of NoSQL](15-rise-of-nosql.md)
-A key lookup fetches the whole cart for one shopper. An analyst wants the price from every sale, not every field from one record. Columnar engines specialized for that access pattern while keeping SQL. A warehouse *column store* is a physical layout, not the *column-family* API of a store like Bigtable.
+## Coming from… [21 Cloud databases](21-cloud-lakehouse.md)
+Cloud workers share storage. A Parquet reader can fetch just the columns its query needs. The 2013 stop marks Parquet, not the invention of column stores.
 
-## Leading to… [17 Key-value stores](17-key-value-stores.md)
-**What columnar did not address:** it solves *analytics* (read-heavy, scan-heavy). Meanwhile the *online* side of web companies had a different pain: millions of concurrent small reads and writes with predictable latency, session data, shopping carts, caches. Traditional RDBMSs of the 2000s struggled to scale horizontally for that. Internet companies responded by building much simpler systems that did far less: key-value stores.
+## Leading to… [20 Open table formats](20-open-table-formats.md)
+Parquet describes one file. Checking individual footers for a matching sale becomes expensive as the file count grows, and no footer says whether a replacement file was committed. Table metadata lets engines prune whole groups of files and read a consistent version across a multi-file update.
 
 ## Sources
 - [SP24] §3.1 (refs 87 compression, 106/147 vectorized engines, 148/149 Kimball, 94 Redshift, 162 BigQuery, 121 Snowflake).

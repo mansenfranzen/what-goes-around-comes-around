@@ -1,6 +1,6 @@
 # 19 · Document databases and NoSQL (2009 →)
 
-[← 18 Graph databases](18-graph-databases.md) · [Index](../README.md) · [Next → 21 Cloud & lakehouse](21-cloud-lakehouse.md)
+[← 17 Key-value stores](17-key-value-stores.md) · [Index](../README.md) · [Next → 18 Graph databases](18-graph-databases.md)
 
 | | |
 |---|---|
@@ -55,11 +55,11 @@ Recall [the rise of NoSQL](15-rise-of-nosql.md): designing for a known access pa
 ## Relational lens
 Absorbed or converging: JSON columns (PostgreSQL JSONB, MySQL JSON), SQL:2016 JSON, SQL-like NoSQL languages. The paper adds a business remark: marketing matters. "Never underestimate the value of good marketing for bad products": Oracle in the 1980s, MySQL in the 2000s, MongoDB in the 2010s bought time with early traction to fix engineering debt.
 
-## Coming from… [18 Graph databases](18-graph-databases.md)
-Both graphs and documents start from the KV store's missing structure. Graphs add **edges between** items; documents add **nesting inside** an item. In practice document stores won far more developer mindshare, because JSON mapped directly onto application code.
+## Coming from… [17 Key-value stores](17-key-value-stores.md)
+A key names a whole cart, not a field inside it. A document store can index nested fields and find every cart that contains a particular item.
 
-## Leading to… [21 Cloud & lakehouse](21-cloud-lakehouse.md)
-The documents from a nightly import must last all day; the machines doing the import need not. A document model solves a data-shape problem, not the cost of keeping a cluster provisioned. That distinction sets up the cloud stop: keep the data in object storage and scale compute independently.
+## Leading to… [18 Graph databases](18-graph-databases.md)
+Embedding works when a record owns its children. Friendships cross profiles: storing the whole neighborhood inside each profile repeats data. A graph represents those connections as edges instead.
 
 ## Sources
 - [SP24] §2.3 (refs 110 NoSQL, 179 BASE, 41 MongoDB, 116 denormalization 1970s, 56 PartiQL, 15 CQL, 9 AQL, 72 SQL++, 42 MongoDB SQL, 165/178 SQL JSON, 153 MongoDB vs Amazon) and §4 (marketing).

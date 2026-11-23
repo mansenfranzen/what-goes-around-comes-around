@@ -5,11 +5,11 @@
   var COLOR = { sup: '#6741D9', use: '#F76707' };
   var SETNAME = { sup: 'supplies', use: 'used-in' };
   var BASE = {
-    acme: { kind: 'owner', set: 'sup', name: 'Acme', x: 49, y: 13, hw: 14, hh: 5 },
-    orbit: { kind: 'owner', set: 'sup', name: 'Orbit', x: 130.5, y: 13, hw: 14, hh: 5 },
-    engine: { kind: 'owner', set: 'use', name: 'Engine', x: 30, y: 101, hw: 14, hh: 5 },
-    tank: { kind: 'owner', set: 'use', name: 'Tank', x: 88, y: 101, hw: 14, hh: 5 },
-    hull: { kind: 'owner', set: 'use', name: 'Hull', x: 146, y: 101, hw: 14, hh: 5 }
+    Acme: { kind: 'owner', set: 'sup', name: 'Acme', x: 49, y: 13, hw: 14, hh: 5 },
+    Orbit: { kind: 'owner', set: 'sup', name: 'Orbit', x: 130.5, y: 13, hw: 14, hh: 5 },
+    Engine: { kind: 'owner', set: 'use', name: 'Engine', x: 30, y: 101, hw: 14, hh: 5 },
+    Tank: { kind: 'owner', set: 'use', name: 'Tank', x: 88, y: 101, hw: 14, hh: 5 },
+    Hull: { kind: 'owner', set: 'use', name: 'Hull', x: 146, y: 101, hw: 14, hh: 5 }
   };
   ['valve', 'pump', 'seal', 'nut', 'bolt'].forEach(function (p) { BASE[p] = { kind: 'part', name: p, y: PART_Y, hw: 11, hh: 4.6 }; });
   var CMDS = [
@@ -28,13 +28,12 @@
   DB.addGame('09', {
     hint: 'You are the query planner: hop along the pointers',
     mount: function (root, api) {
-      var chains, pos = {}, cur = 'acme', program = [], stage = 'play', reorganised = false;
+      var chains = DB.partsCatalog(), pos = {}, cur = 'Acme', program = [], stage = 'play', reorganised = false;
       var busy = false, tw = null, timers = [];
-      chains = { sup: { acme: ['valve', 'pump', 'seal'], orbit: ['nut', 'bolt'] }, use: { engine: ['valve', 'nut'], tank: ['pump', 'bolt'], hull: ['seal'] } };
 
       function layout() {
         var i = 0;
-        ['acme', 'orbit'].forEach(function (o) { chains.sup[o].forEach(function (p) { pos[p] = { x: SLOTS[i++], y: PART_Y }; }); });
+        Object.keys(chains.sup).forEach(function (o) { chains.sup[o].forEach(function (p) { pos[p] = { x: SLOTS[i++], y: PART_Y }; }); });
         Object.keys(BASE).forEach(function (id) { if (BASE[id].kind === 'owner') pos[id] = { x: BASE[id].x, y: BASE[id].y }; });
       }
       layout();
@@ -102,7 +101,7 @@
           h('b', {}, 'FIND ' + c.verb), h('span', {}, 'WITHIN ' + SETNAME[c.set]));
       });
       var listing = h('div', { class: 'g-code listing' });
-      var missionText = h('p', {}, 'Which assembly uses Acme\'s 2nd part?');
+      var missionText = h('p', {}, 'Which assembly uses Acme’s pump? Follow the same part into the used-in set.');
       var startBtn = h('button', { class: 'g-btn alt', on: { click: restart } }, 'Start over');
       var stageBtn = h('button', { class: 'g-btn cat hid', on: { click: stageAction } }, '');
       root.append(
@@ -116,7 +115,7 @@
 
       function renderListing(active, bad) {
         listing.textContent = '';
-        ['FIND ' + BASE.acme.name.toUpperCase()].concat(program.map(function (c) { return 'FIND ' + c.verb + ' WITHIN ' + SETNAME[c.set]; })).forEach(function (t, i) {
+        ['FIND ACME'].concat(program.map(function (c) { return 'FIND ' + c.verb + ' WITHIN ' + SETNAME[c.set]; })).forEach(function (t, i) {
           listing.append(h('div', { class: 'ln' + (i === active ? ' run' : '') + (bad && i === program.length ? ' bad' : '') }, t));
         });
         listing.scrollTop = listing.scrollHeight;
@@ -155,7 +154,7 @@
         program.push(c);
         renderListing(-1);
         setMsg('FIND ' + c.verb + ' WITHIN ' + SETNAME[c.set] + ' -> ' + BASE[to].name);
-        moveTo(c, to, function () { if (cur === 'tank') found(); });
+        moveTo(c, to, function (from) { if (from === 'pump' && cur === 'Tank') found(); });
       }
 
       function found() {
@@ -164,7 +163,7 @@
           return;
         }
         stage = 'saved'; setCmds(false);
-        setMsg('Found it: Tank, with ' + program.length + ' commands. Program saved.', 'good');
+        setMsg('Tank uses Acme’s pump. Two sets, one pump record. Program saved.', 'good');
         stageBtn.textContent = 'Reorganise storage'; stageBtn.classList.remove('hid'); stageBtn.classList.add('g-pop');
       }
 
@@ -178,7 +177,7 @@
         busy = true; stageBtn.classList.add('hid');
         var old = {};
         Object.keys(pos).forEach(function (k) { old[k] = { x: pos[k].x, y: pos[k].y }; });
-        chains.sup.acme = ['pump', 'valve', 'seal'];
+        chains.sup.Acme.sort();
         layout();
         var goal = {};
         Object.keys(pos).forEach(function (k) { goal[k] = { x: pos[k].x, y: pos[k].y }; });
@@ -198,7 +197,7 @@
 
       function run() {
         stage = 'run'; stageBtn.classList.add('hid'); startBtn.classList.add('off');
-        cur = 'acme'; markCur(); placeCursor(pos.acme);
+        cur = 'Acme'; markCur(); placeCursor(pos.Acme);
         renderListing(0);
         setMsg('Running ' + program.length + ' saved commands...');
         var i = 0;
@@ -215,7 +214,7 @@
 
       function end() {
         stage = 'ran'; startBtn.classList.remove('off'); startBtn.classList.remove('alt'); startBtn.classList.add('cat'); startBtn.textContent = 'Rewrite the program';
-        var ok = cur === 'tank';
+        var ok = cur === 'Tank';
         renderListing(-1, !ok);
         if (ok) setMsg('Still works (lucky!). Rewrite it anyway.', 'good');
         else { setMsg('Wanted Tank, got ' + BASE[cur].name + '. The program is broken.', 'bad'); curG.classList.add('bad'); }
@@ -226,7 +225,7 @@
       function restart() {
         if (busy && stage === 'run') return;
         if (tw) tw.cancel();
-        tw = null; busy = false; cur = 'acme'; program = []; stage = 'play';
+        tw = null; busy = false; cur = 'Acme'; program = []; stage = 'play';
         curG.classList.remove('bad'); startBtn.classList.add('alt'); startBtn.classList.remove('cat'); startBtn.textContent = 'Start over';
         stageBtn.classList.add('hid'); setCmds(true);
         placeCursor(pos[cur]); markCur(); renderListing(-1);

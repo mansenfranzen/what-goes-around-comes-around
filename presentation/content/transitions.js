@@ -51,7 +51,7 @@ DB.transitions.push(
   {
     from: '08',
     question: 'A part with two parents?',
-    exhibit: 'Stage 1 > Engine > Fuel valve\nStage 2 > Engine > Fuel valve (copy)\none valve, two parents: not a tree',
+    exhibit: 'Suppliers > Acme > pump\nAssemblies > Tank > pump (copy)\none part, two paths',
     stuck: 'A tree gives every record exactly one parent, so shared parts get copied.',
     trigger: 'Let any record have many owners, and the tree becomes a web.'
   },
@@ -99,44 +99,51 @@ DB.transitions.push(
   },
   {
     from: '15',
-    question: 'Fast for one cart. What about every sale?',
-    exhibit: 'get(cart_id)\nSELECT SUM(price) FROM sales;',
-    stuck: 'A key points to one record. A sales total needs one field from millions of records.',
-    trigger: 'Keep SQL, but store prices together so the warehouse can read just that column.'
-  },
-  {
-    from: '16',
-    question: 'Millions of carts, answered instantly?',
-    exhibit: 'GET cart:8812   → ?\nSET session:41  → ?\n× millions, all at once',
-    stuck: 'Warehouses are loaded in batches and read-only; carts need millions of tiny live writes.',
-    trigger: 'Strip the database down to almost nothing: just a key and a value.'
+    question: 'Which operation actually needs to scale?',
+    exhibit: 'cart:8812 → the contents of one cart',
+    stuck: 'Sharding spreads the traffic, but it does not define what a client can ask.',
+    trigger: 'Give the client just two operations for its cart: get and put by key.'
   },
   {
     from: '17',
+    question: 'Which carts contain a pen?',
+    exhibit: 'get(cart:8812) → { items: […] }\nfind all carts where items include "pen" → ?',
+    stuck: 'A key finds one cart, but the store cannot see fields inside an opaque value.',
+    trigger: 'Keep the nested record and let the database query its fields.'
+  },
+  {
+    from: '19',
     question: 'Who are Alice\'s friends\' friends?',
-    exhibit: 'get(alice) → friends: [bob, carol]\nget(bob)   → friends: [dave]\nget(carol) → … one more round trip',
-    stuck: 'A key-value store sees only opaque blobs: relationships need many trips and client-side joins.',
+    exhibit: 'Alice: { friends: [Bob, Carol] }\nBob: { friends: [Dave] }\nWho is two hops away?',
+    stuck: 'Nesting keeps one profile together. A friendship path crosses many profiles.',
     trigger: 'Make the links themselves first-class: nodes, edges, and a way to walk them.'
   },
   {
     from: '18',
-    question: 'One customer, one record, zero joins?',
-    exhibit: '{ name: "Ada", orders: [ … ] }\n← the JSON my app already has',
-    stuck: 'Graphs add edges between items, but most apps just want each record, nested, joinless.',
-    trigger: 'Add nesting instead of edges: keep the JSON the app already has.'
-  },
-  {
-    from: '19',
-    question: 'The import is over. Why keep the cluster running?',
-    exhibit: 'nightly import: 2 hours\nstored documents: needed all day',
-    stuck: 'A flexible document format does not help a team pay for a burst of compute without also buying storage.',
-    trigger: 'Keep the data in object storage. Rent compute when there is work to do.'
+    question: 'The graph query is over. Why keep the machines running?',
+    exhibit: 'nightly analysis: 2 hours\nstored relationships: needed all year',
+    stuck: 'Choosing a graph model does not solve the cost of idle compute.',
+    trigger: 'Keep data in shared storage and rent compute when there is work to do.'
   },
   {
     from: '21',
+    question: 'Why fetch addresses to add up prices?',
+    exhibit: 'SELECT SUM(price) FROM sales;\nneeded: price · not needed: name, address, …',
+    stuck: 'Renting more workers does not reduce the bytes each worker has to fetch.',
+    trigger: 'Group values by column inside each Parquet file so a worker can read just prices.'
+  },
+  {
+    from: '16',
+    question: 'Which of a million files holds sale 742?',
+    exhibit: 'WHERE sale_id = 742\n→ open 1,000,000 footers?',
+    stuck: 'Each Parquet footer only describes its own file.',
+    trigger: 'Table metadata lists every file\'s ranges: one index for all files.'
+  },
+  {
+    from: '20',
     question: 'Which text means the same as this?',
     exhibit: 'word = \'cat\'     → finds "cat"\nmeaning ≈ \'cat\'  → dog? truck?',
-    stuck: 'Lakehouses serve SQL and DataFrames, but indexes and predicates match values, not meaning.',
+    stuck: 'A snapshot identifies the right records, not the ones closest in meaning.',
     trigger: 'ML turns text and images into long lists of numbers. Nearby numbers, nearby meaning.'
   },
   {

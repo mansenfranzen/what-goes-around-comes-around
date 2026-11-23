@@ -1,6 +1,6 @@
 # 17 · Key-value stores (2003–07)
 
-[← 16 Columnar warehouses](16-columnar-warehouses.md) · [Index](../README.md) · [Next → 18 Graph databases](18-graph-databases.md)
+[← 15 The rise of NoSQL](15-rise-of-nosql.md) · [Index](../README.md) · [Next → 19 Document databases](19-document-databases.md)
 
 | | |
 |---|---|
@@ -42,11 +42,11 @@ Hash the key to choose a node or bucket. The DBMS does not look inside the value
 ## Relational lens
 A KV store is a two-column table. If the application grows, the relational option offers a path forward, and embedded RDBMSs (SQLite, DuckDB) are full-featured alternatives. So a relational system can be "better even for simple applications".
 
-## Coming from… [16 Columnar warehouses](16-columnar-warehouses.md)
-Columnar showed that specialization works when workload is understood. KV stores are the **opposite extreme**: strip functionality to the bone to maximize speed and availability for a narrow OLTP workload.
+## Coming from… [15 The rise of NoSQL](15-rise-of-nosql.md)
+Sharding routes a cart request to one machine. What does that machine need to support? For a cart fetched by ID, a get/put interface is enough.
 
-## Leading to… [18 Graph databases](18-graph-databases.md)
-**What KV could not do:** capture *relationships* between things. Opaque blobs hide structure, so "who are Alice's friends' friends?" means many round trips and client-side joins. Two directions add structure back to KV: **edges** (the graph model, next) and **nested fields** (the document model, after that). Chronologically both arrive around 2007–2009; conceptually each starts with "a key-value store isn't enough".
+## Leading to… [19 Document databases](19-document-databases.md)
+A key names a whole cart, not a field inside it. A document store can index nested fields and find every cart that contains a particular item.
 
 ## Sources
 - [SP24] §2.2 (refs 131 Memcached, 67 Redis, 125 Dynamo, 170 BerkeleyDB, 37 LevelDB, 68 RocksDB, 129 DynamoDB, 9 Aerospike, 71 SQLite, 180 DuckDB, 120/138 WiredTiger).

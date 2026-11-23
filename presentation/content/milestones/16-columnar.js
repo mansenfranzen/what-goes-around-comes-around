@@ -3,14 +3,14 @@ DB.addMilestone({
   slug: 'columnar',
   title: 'Columnar Storage',
   short: 'Columnar',
-  year: '2005',
-  pos: 2005,
+  year: '2013',
+  pos: 2013,
   category: 'primitives',
   verdict: 'Winner',
   concept: 'COLUMN STORE',
   today: 'SELECT SUM(price) FROM sales',
   problem: 'Analysts summing one column of dozens still made row stores read every column from disk.',
-  solution: 'Store each column contiguously: read only what you need, compress well, and process in tight loops.',
+  solution: 'A Parquet file groups values by column. Read price without reading names or addresses; use row-group statistics to skip more data.',
   relevance: 'Same tables, same SQL, new engine: today\'s warehouses (Redshift, BigQuery, Snowflake) all use column storage.',
   takeaway: 'Swap the storage, keep the SQL.'
 });
