@@ -1,21 +1,21 @@
 # SQL vs. NoSQL vs. NewSQL
 
-[← Index](README.md) · Belongs to stop [19 Document DBs / NoSQL](milestones/19-document-databases.md); referenced from [20](milestones/20-blockchain-databases.md) and [21](milestones/21-cloud-lakehouse.md).
+[← Index](README.md) · Companion to [15 The rise of NoSQL](milestones/15-rise-of-nosql.md) and [19 Document databases](milestones/19-document-databases.md).
 
 A deep dive for the Q&A and for an optional 5-minute segment at stop 19. It replaces the former stand-alone NewSQL milestone: NewSQL is told here as the *resolution* of the NoSQL story rather than as its own stop.
 
 ## The one-sentence version
-**NoSQL gave up the relational model and SQL to get scale-out; NewSQL showed you could get scale-out without giving up either; and by the 2020s the two camps had converged on "distributed SQL with flexible types".**
+**Early NoSQL stores made known requests easier to scale by narrowing the query interface or the guarantees that needed coordination. Distributed SQL kept a general query engine and cross-shard transactions for workloads that needed them.**
 
 In the talk's three categories:
 
 | | Primitives (storage & access) | Language (declarative querying) | Model (relations, keys, logical/physical split) |
 |---|---|---|---|
 | **Classic SQL** (1970s →) | Single node, B-trees, write-ahead log, locking | SQL | Relational |
-| **NoSQL** (2009 →) | **Rebuilt:** partitioning, replication, quorums, log-structured storage | **Dropped:** get/put APIs, later SQL-like again | **Dropped:** key-value, wide-column, document, graph |
+| **Early NoSQL** | Partitioning and replication tailored to the workload | Keyed APIs or model-specific queries, often without general SQL | Key-value, wide-column, document, graph |
 | **NewSQL** (2011 →) | **Rebuilt:** auto-sharding, consensus replication, distributed transactions | **Kept:** SQL | **Kept:** relational |
 
-NoSQL's real problem was in the *primitives* column (a single machine cannot hold or serve web-scale OLTP). It "fixed" it by also discarding the other two columns. NewSQL fixed only the column that was broken. That is the strongest single argument for the talk's thesis.
+The two choices were independent. A keyed API removed the need to build a compiler and optimizer for arbitrary SQL; a one-key write contract removed the need to coordinate a commit across shards. Dynamo made both choices for services such as shopping carts. A distributed SQL engine can also route a keyed lookup to one shard, but it must support the other queries and guarantees it advertises.
 
 ## Timeline and naming
 
@@ -24,7 +24,7 @@ NoSQL's real problem was in the *primitives* column (a single machine cannot hol
 | 1970s–2000s | Relational DBMSs dominate OLTP and OLAP; scale = bigger machine, read replicas, or manual sharding of MySQL/PostgreSQL in application code |
 | 1998 | Carlo Strozzi names his lightweight relational database without an SQL interface "NoSQL" (unrelated to the later movement) |
 | 2000 / 2002 | Eric Brewer's **CAP** conjecture (PODC keynote); proved by Gilbert & Lynch (2002) |
-| 2004–2007 | Google Bigtable (2004, paper 2006), Amazon Dynamo (paper 2007): the two blueprints of NoSQL |
+| 2005–2007 | Google Bigtable (in production April 2005, paper 2006) and Amazon Dynamo (paper 2007): two influential designs that predated the movement's name |
 | 2008–2009 | Cassandra (open-sourced by Facebook/Meta), HBase, MongoDB (2009), CouchDB, Redis |
 | 2009 | Johan Oskarsson reuses "NoSQL" as the name of a meetup on open-source distributed, non-relational databases; the label sticks |
 | 2011 | Matthew Aslett (451 Group) coins **"NewSQL"** |
@@ -41,7 +41,7 @@ It is easy to mock NoSQL in hindsight. Present the *environmental requirements* 
 
 1. **Write scale beyond one machine.** Web companies had OLTP workloads (sessions, carts, feeds, messages) that outgrew the largest affordable server. Read replicas do not help with writes. Manually sharding MySQL worked but moved routing, rebalancing and cross-shard queries into application code.
 2. **Always-on across data centers.** For Amazon, a cart that cannot accept "add item" during a network partition loses money. Dynamo was explicitly designed to stay writable and resolve conflicts later.
-3. **Predictable low latency.** Simple get/put by key on one partition is fast and easy to reason about; complex queries are not.
+3. **Predictable latency for familiar requests.** With `get(cart_id)`, the key tells the store where to look. There is no need to compile a general declarative query or optimize joins that could move data between machines. Separately, avoiding transactions across shards saves the cost of coordinating a commit. An application needing either feature must now do more work itself.
 4. **Schema agility.** Weekly releases with changing fields; `ALTER TABLE` on a large table was slow and locked tables on many 2000s systems.
 5. **Developer experience.** JSON in JavaScript apps mapped directly onto JSON documents (the impedance mismatch again, see [13](milestones/13-object-oriented-databases.md)).
 6. **Cost and licensing.** Commercial RDBMS licences priced per core; open-source RDBMSs of the time did not scale out natively.
@@ -53,7 +53,7 @@ The paper's reading (§2.3): "The inability of OLTP RDBMSs to scale out in the 2
 | Family | Model | Typical systems | Stop |
 |--------|-------|-----------------|------|
 | Key-value | key → opaque value | Memcached, Redis, Dynamo/DynamoDB, Riak | [17](milestones/17-key-value-stores.md) |
-| Wide-column (column family) | row key → sparse column families | Bigtable, HBase, Cassandra | [15](milestones/15-bigtable-column-family.md) |
+| Wide-column (column family) | row key → sparse column families | Bigtable, HBase, Cassandra | Not a separate stop |
 | Document | key → nested JSON | MongoDB, CouchDB, Couchbase | [19](milestones/19-document-databases.md) |
 | Graph | nodes and edges with properties | Neo4j, JanusGraph, Neptune | [18](milestones/18-graph-databases.md) |
 
@@ -172,10 +172,11 @@ COMMIT;                                          -- atomic across nodes
 - [SP24] §2.2 (key-value), §2.3 (document, NoSQL, BASE, convergence), §2.4 (column family), §3.4 (NewSQL, adoption), §4 (marketing).
 - [PA16] A. Pavlo, M. Aslett, "What's Really New with NewSQL?", SIGMOD Record 45(2), 2016 (three NewSQL groups).
 - [Corb12] Spanner, OSDI 2012; D. Bacon et al., "Spanner: Becoming a SQL System", SIGMOD 2017; J. Shute et al., "F1: A Distributed SQL Database That Scales", VLDB 2013.
-- [DeC07] Dynamo, SOSP 2007; [Chang06] Bigtable, OSDI 2006.
+- [DeCandia et al., Dynamo](https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store), SOSP 2007; [Chang et al., Bigtable](https://www.usenix.org/legacy/event/osdi06/tech/chang/chang_html/), OSDI 2006; [Shute et al., F1](https://research.google/pubs/f1-a-distributed-sql-database-that-scales/), VLDB 2013.
+- [Martin Fowler, Nosql Definition](https://martinfowler.com/bliki/NosqlDefinition.html), 2012 (the 2009 meetup and the breadth of the term).
 - E. Brewer, "Towards Robust Distributed Systems", PODC 2000 keynote; S. Gilbert, N. Lynch, "Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services", SIGACT News 2002; E. Brewer, "CAP Twelve Years Later", IEEE Computer 2012.
 - D. Abadi, "Consistency Tradeoffs in Modern Distributed Database System Design" (PACELC), IEEE Computer 2012.
 - D. Pritchett, "BASE: An Acid Alternative", ACM Queue 2008.
 - P. Sadalage, M. Fowler, *NoSQL Distilled*, Addison-Wesley, 2012 (aggregate orientation).
 - [Wikipedia: NoSQL](https://en.wikipedia.org/wiki/NoSQL), [NewSQL](https://en.wikipedia.org/wiki/NewSQL), [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem), [PACELC theorem](https://en.wikipedia.org/wiki/PACELC_theorem), [Eventual consistency](https://en.wikipedia.org/wiki/Eventual_consistency), [Spanner (database)](https://en.wikipedia.org/wiki/Spanner_(database)), [CockroachDB](https://en.wikipedia.org/wiki/CockroachDB), [Jepsen](https://jepsen.io/analyses).
-- Confidence: high on the paper-based claims and on the CAP/PACELC/consensus mechanics. Product release years and naming anecdotes (Strozzi 1998, Oskarsson 2009, Aslett 2011) are from memory **(verify)** before quoting on stage. Isolation-level mappings per product are simplified; defaults change across versions.
+- Confidence: the Bigtable production date, Dynamo's availability goal, F1's trade-off and the 2009 meetup are sourced above. Other product dates and the origin of the NewSQL name are worth verifying before quoting. Isolation-level mappings are simplified; defaults change across versions.

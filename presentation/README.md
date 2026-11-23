@@ -53,7 +53,7 @@ tools/                serve.mjs · shot.mjs · icon-sheet.html (all symbols on o
 
 ## Presentation flow, steps and modes
 
-Slides: `landing` (2 steps) → `timeline` (24 steps: one milestone per step on the linear scale, then the switch to the logical scale) → for each milestone `m` (3 steps) then `t` transition (2 steps) → `bigpicture` (24 steps: 23 pieces, then a query run).
+Slides: `landing` (2 steps) → `timeline` (one reveal per milestone on the linear scale, then the switch to the logical scale) → for each milestone `m` (3 steps) then `t` transition (2 steps) → `bigpicture` (one piece per milestone, then a query run).
 
 - **Presentation mode**: content appears step by step. Forward = click, →, Space, Enter, PageDown. Back = ←, PageUp, Backspace. Going back onto the previous slide shows it fully revealed.
 - **Exploration mode**: everything visible, free navigation. Switch with the corner toggle (hidden; appears when the pointer nears the top-right corner) or `E`. The choice is stored in `localStorage.dbtm.mode`; `?mode=explore` overrides.
@@ -84,7 +84,7 @@ DB.transitions.push({ from: '05', question: '…', exhibit: '…', stuck: '…',
 
 // content/images.js
 DB.images['05'] = { file: 'assets/images/05-card-catalog.jpg', alt: '…', credit: '…', source: 'https://…' };
-// .png/.svg are shown with "contain", .jpg with "cover". No images of people.
+// .png/.svg are shown with "contain", .jpg with "cover" unless contain: true. No images of people.
 ```
 
 **Add a milestone**: append the slug to `content/manifest.js`, then create `content/milestones/NN-slug.js`, `content/transitions.js` entry (`from` = the new id, and update the previous entry's `trigger` to point to it), `assets/symbols/NN-slug.svg`, image (optional), game files and a piece in `content/bigpicture.js`. Nothing else changes: the timeline, progress dots, edges and big picture derive from the list.

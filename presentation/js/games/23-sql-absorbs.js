@@ -10,7 +10,7 @@
     { id: '22', sql: 'emb VECTOR(3)', msg: 'Vector database: now a column type and index.' },
     { id: '14', sql: 'GROUP BY word', msg: 'MapReduce: now a parallel GROUP BY.' },
     { id: '13', sql: 'CREATE TYPE addr', msg: 'Object database: now a user-defined type.' },
-    { id: '20', sql: 'LEDGER TABLE', msg: 'Blockchain: now an append-only ledger table.' },
+    { id: '15', sql: 'PARTITION BY HASH', msg: 'NoSQL and distributed SQL can both route records by key.' },
     { id: '21', sql: "FROM 's3://lake'", msg: 'Cloud data lake: now a table over object storage.' }
   ];
   var FINAL = 'Nothing replaced SQL, but everything changed inside it.';

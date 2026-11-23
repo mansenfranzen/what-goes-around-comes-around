@@ -17,10 +17,10 @@
   DB.addGame('01', {
     hint: 'One animal, one notch: carve as each one crosses the gate',
     mount: function (root, api) {
-      var rnd = DB.rng(11), round = 1, notches = 0, run = null, raf = 0, last = null;
+      var rnd = DB.rng(11), notches = 0, run = null, raf = 0;
 
-      var title = h('span', { class: 'g-label' }, 'Herd 1 / 2');
-      var msg = h('div', { class: 'g-msg' }, 'Open the gate and count the herd on the bone.');
+      var title = h('span', { class: 'g-label' }, 'Mixed herd');
+      var msg = h('div', { class: 'g-msg' }, 'Open the gate and count the sheep and goats.');
       var gateG = S('g', { class: 'gate' },
         S('rect', { class: 'zone', x: GATE - 4, y: 4, width: 8, height: 40, rx: 2 }),
         S('line', { class: 'post', x1: GATE - 4, y1: 12, x2: GATE - 4, y2: 42 }), S('line', { class: 'post', x1: GATE + 4, y1: 12, x2: GATE + 4, y2: 42 }),
@@ -64,16 +64,16 @@
       function start() {
         cancelAnimationFrame(raf);
         notches = 0; drawNotches(); field.textContent = '';
-        var n = round === 1 ? 6 + Math.floor(rnd() * 5) : 10 + Math.floor(rnd() * 6), at = 0.3;
+        var n = 10 + Math.floor(rnd() * 6), at = 0.3;
         var animals = [];
         for (var i = 0; i < n; i++) {
-          var kind = round === 2 && rnd() < 0.45 ? 'goat' : 'sheep', g = animal(kind);
+          var kind = i === 0 ? 'sheep' : (i === 1 || rnd() < 0.45 ? 'goat' : 'sheep'), g = animal(kind);
           field.append(g);
           animals.push({ g: g, at: at, y: 28 + rnd() * 8, crossed: false });
           at += 0.6 + rnd() * 0.55;
         }
         run = { animals: animals, t0: performance.now(), crossed: 0, n: n };
-        last = null;
+        api.done(false);
         startBtn.disabled = true; carveBtn.disabled = false;
         msg.className = 'g-msg'; msg.textContent = 'Carve one notch each time an animal crosses the gate.';
         raf = requestAnimationFrame(frame);
@@ -97,13 +97,10 @@
         if (diff !== 0) {
           msg.className = 'g-msg bad g-shake';
           msg.textContent = (diff > 0 ? 'Too many notches (+' : 'Missed ') + Math.abs(diff) + (diff > 0 ? ').' : ' notch' + (diff === -1 ? '' : 'es') + '.') + ' Try again.';
-          startBtn.textContent = 'Same herd size, again';
-        } else if (round === 1) {
-          msg.className = 'g-msg good'; msg.textContent = notches + ' notches = ' + notches + ' sheep. The bone remembers!';
-          round = 2; title.textContent = 'Herd 2 / 2'; startBtn.textContent = 'Next: a mixed herd';
+          startBtn.textContent = 'Try again';
         } else {
           msg.className = 'g-msg good'; msg.textContent = notches + ' notches… sheep or goats? The bone cannot say.';
-          startBtn.textContent = 'Play again'; round = 2; api.done(true);
+          startBtn.textContent = 'Play again'; api.done(true);
         }
       }
 

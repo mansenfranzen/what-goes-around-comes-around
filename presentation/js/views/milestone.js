@@ -10,7 +10,7 @@ DB.addView('milestone', function (slide) {
 
   var photo;
   if (m.image) {
-    var contain = /\.(png|svg)$/i.test(m.image.file);
+    var contain = m.image.contain || /\.(png|svg)$/i.test(m.image.file);
     photo = h('figure', { class: 'ms-photo' + (contain ? ' contain' : ''), title: m.image.credit || '' },
       h('img', { src: imageSrc(m.image), alt: m.image.alt || m.title }),
       m.image.credit ? h('figcaption', { text: m.image.credit }) : null);

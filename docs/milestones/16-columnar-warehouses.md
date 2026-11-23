@@ -1,6 +1,6 @@
 # 16 · Columnar warehouses (2005 →)
 
-[← 15 Bigtable](15-bigtable-column-family.md) · [Index](../README.md) · [Next → 17 Key-value stores](17-key-value-stores.md)
+[← 15 The rise of NoSQL](15-rise-of-nosql.md) · [Index](../README.md) · [Next → 17 Key-value stores](17-key-value-stores.md)
 
 | | |
 |---|---|
@@ -41,8 +41,8 @@ Benefits (paper): (1) better **compression**, since a block holds one type and m
 ## Relational lens
 It *is* relational. This is the poster child for the paper's second theme: "the major advancements have been in the RM systems, primarily driven by changing hardware characteristics."
 
-## Coming from… [15 Bigtable](15-bigtable-column-family.md)
-Two things happened around 2004–2006 under similar-sounding names: Google's *column-family* NoSQL model (new data model, no SQL, niche) and the *column store* (same model, new engine, market winner). Contrast them to teach the audience the difference between **changing the model** and **changing the implementation**.
+## Coming from… [15 The rise of NoSQL](15-rise-of-nosql.md)
+A key lookup fetches the whole cart for one shopper. An analyst wants the price from every sale, not every field from one record. Columnar engines specialized for that access pattern while keeping SQL. A warehouse *column store* is a physical layout, not the *column-family* API of a store like Bigtable.
 
 ## Leading to… [17 Key-value stores](17-key-value-stores.md)
 **What columnar did not address:** it solves *analytics* (read-heavy, scan-heavy). Meanwhile the *online* side of web companies had a different pain: millions of concurrent small reads and writes with predictable latency, session data, shopping carts, caches. Traditional RDBMSs of the 2000s struggled to scale horizontally for that. Internet companies responded by building much simpler systems that did far less: key-value stores.

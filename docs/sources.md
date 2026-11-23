@@ -5,7 +5,8 @@
 ## How the notes were built
 
 - **Backbone:** the 2024 paper (read in full): Stonebraker & Pavlo, SIGMOD Record 53(2), 2024. All "paper says" statements, the verdict labels, and the SQL-absorption claims (JSON in SQL:2016, SQL/PGQ and SQL/MDA in SQL:2023, vector indexes in 2023) come from it.
-- **Everything else** (pre-1960 history, original papers, product dates) comes from my background knowledge of the literature, cross-checked only by citing the original publications listed below. I did **not** re-read those originals while writing, so treat precise dates and numbers as "very likely right, worth a quick check before quoting on stage". Items I am less sure of are marked **(verify)** in the milestone pages.
+- **NoSQL:** [The rise of NoSQL](milestones/15-rise-of-nosql.md) uses the Dynamo authors' workload and latency requirements, F1 as a distributed SQL counterexample, and Fowler's history of the name.
+- **Other background** (pre-1960 history, original papers, product dates) was not independently rechecked while writing the notes. Verify precise dates and numbers before quoting them on stage; uncertain details are marked **(verify)** in the milestone pages.
 - Credits for the current presentation's images are in [Image credits](../presentation/assets/images/CREDITS.md).
 - Wikipedia links below were checked to exist. They are convenient entry points, not primary evidence.
 
@@ -32,9 +33,13 @@ Its own numbered references (e.g. "ref. 172") are cited by that number in the mi
 
 **[Dean04]** J. Dean, S. Ghemawat. *MapReduce: Simplified Data Processing on Large Clusters.* OSDI 2004.
 
-**[Chang06]** F. Chang et al. *Bigtable: A Distributed Storage System for Structured Data.* OSDI 2006.
+**[Chang06]** F. Chang et al. [Bigtable: A Distributed Storage System for Structured Data](https://www.usenix.org/legacy/event/osdi06/tech/chang/chang_html/). OSDI 2006. Sections 3 and 9 explain why the original API stopped at single-row transactions; §10 discusses query optimization.
 
-**[DeC07]** G. DeCandia et al. *Dynamo: Amazon's Highly Available Key-value Store.* SOSP 2007.
+**[DeC07]** G. DeCandia et al. [Dynamo: Amazon's Highly Available Key-value Store](https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store). SOSP 2007. Tail-latency targets, primary-key access and the decision not to support multi-item transactions.
+
+**[Fowler12]** M. Fowler. [Nosql Definition](https://martinfowler.com/bliki/NosqlDefinition.html), 2012. The June 2009 meetup and the several systems gathered under the label.
+
+**[Shute13]** J. Shute et al. [F1: A Distributed SQL Database That Scales](https://research.google/pubs/f1-a-distributed-sql-database-that-scales/). VLDB 2013. Distributed SQL over Spanner; the authors describe the latency cost of synchronous replication.
 
 **[Corb12]** J. Corbett et al. *Spanner: Google's Globally-Distributed Database.* OSDI 2012.
 
@@ -52,7 +57,7 @@ Further references for the impedance-mismatch section ([13](milestones/13-object
 
 ## Wikipedia entry points (all checked to exist)
 
-Ishango bone, Lebombo bone, Tally stick, Cuneiform, Proto-cuneiform, Uruk, Pinakes, Callimachus, Library of Alexandria, Library catalog, Dewey Decimal Classification, Punched card, Herman Hollerith, 1880 and 1890 United States census, IBM 305 RAMAC, Hard disk drive, Magnetic-tape data storage, Information Management System, Hierarchical database model, Apollo program, CODASYL, Network model, Charles Bachman, Relational model, Edgar F. Codd, SQL, Donald D. Chamberlin, IBM System R, Ingres, Oracle Database, Array DBMS, Rasdaman, HDF5, NetCDF, APL, Object database, Object–relational impedance mismatch, Object-relational mapping, JSON, MapReduce, Apache Hadoop, Bigtable, Apache Cassandra, Apache HBase, Column-oriented DBMS, Data warehouse, Key–value database, Dynamo (storage system), Redis, Memcached, Graph database, Neo4j, Document-oriented database, MongoDB, Blockchain, Bitcoin, NoSQL, NewSQL, CAP theorem, PACELC theorem, Eventual consistency, Spanner (database), CockroachDB, Amazon Aurora, Data lake, Data lakehouse, Apache Parquet, Delta Lake, Apache Iceberg, Vector database, Word embedding, SQLite, DuckDB, PostgreSQL, Michael Stonebraker.
+Ishango bone, Lebombo bone, Tally stick, Cuneiform, Proto-cuneiform, Uruk, Pinakes, Callimachus, Library of Alexandria, Library catalog, Dewey Decimal Classification, Punched card, Herman Hollerith, 1880 and 1890 United States census, IBM 305 RAMAC, Hard disk drive, Magnetic-tape data storage, Information Management System, Hierarchical database model, Apollo program, CODASYL, Network model, Charles Bachman, Relational model, Edgar F. Codd, SQL, Donald D. Chamberlin, IBM System R, Ingres, Oracle Database, Array DBMS, Rasdaman, HDF5, NetCDF, APL, Object database, Object–relational impedance mismatch, Object-relational mapping, JSON, MapReduce, Apache Hadoop, Bigtable, Apache Cassandra, Apache HBase, Column-oriented DBMS, Data warehouse, Key–value database, Dynamo (storage system), Redis, Memcached, Graph database, Neo4j, Document-oriented database, MongoDB, NoSQL, NewSQL, CAP theorem, PACELC theorem, Eventual consistency, Spanner (database), CockroachDB, Amazon Aurora, Data lake, Data lakehouse, Apache Parquet, Delta Lake, Apache Iceberg, Vector database, Word embedding, SQLite, DuckDB, PostgreSQL, Michael Stonebraker.
 
 URL pattern: `https://en.wikipedia.org/wiki/<Title_with_underscores>`.
 

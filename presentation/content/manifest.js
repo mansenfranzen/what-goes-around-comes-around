@@ -24,12 +24,11 @@ DB.manifest = {
     '12-arrays',
     '13-objects',
     '14-mapreduce',
-    '15-bigtable',
+    '15-nosql',
     '16-columnar',
     '17-key-value',
     '18-graph',
     '19-documents',
-    '20-blockchain',
     '21-cloud',
     '22-vectors',
     '23-sql-absorbs'

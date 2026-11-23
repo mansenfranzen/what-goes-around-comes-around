@@ -46,5 +46,5 @@ Tablets made data durable and plentiful. Plentiful data created the need for **a
 
 ## Sources
 - [Wikipedia: Pinakes](https://en.wikipedia.org/wiki/Pinakes), [Callimachus](https://en.wikipedia.org/wiki/Callimachus), [Library of Alexandria](https://en.wikipedia.org/wiki/Library_of_Alexandria).
-- Image: *The Burning of the Library at Alexandria in 391 AD* (illustration), Ambrose Dudley, public domain, Wikimedia Commons. It is a later artist's imagination, not a contemporary picture.
+- Image: [Case of scrolls](https://commons.wikimedia.org/wiki/File:Invention_of_Printing_p043a.jpg), from T. L. De Vinne's *The Invention of Printing* (1876), p. 43, public domain. Ask which roll contains the work you need without opening them all. This is an illustration of the lookup problem, not a surviving case or catalog from Alexandria.
 - Confidence: Callimachus' role is well attested; the "120 books" figure comes from the Byzantine *Suda* lexicon; scroll counts are uncertain.

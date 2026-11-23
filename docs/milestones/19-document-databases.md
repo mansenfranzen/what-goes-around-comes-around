@@ -1,6 +1,6 @@
 # 19 · Document databases and NoSQL (2009 →)
 
-[← 18 Graph databases](18-graph-databases.md) · [Index](../README.md) · [Next → 20 Blockchain databases](20-blockchain-databases.md)
+[← 18 Graph databases](18-graph-databases.md) · [Index](../README.md) · [Next → 21 Cloud & lakehouse](21-cloud-lakehouse.md)
 
 | | |
 |---|---|
@@ -43,7 +43,7 @@ This is the stop where the audience will ask "so which one should I use?". The s
 | **Transactions** | ACID | Often BASE / eventual (single-record atomicity) | ACID, distributed |
 | **Scaling** | Vertical; read replicas; manual sharding | Horizontal, automatic partitioning | Horizontal, automatic partitioning + consensus |
 
-In terms of the three categories: **NoSQL sacrificed the model and the language to fix the primitives (scale); NewSQL showed the primitives could be fixed without sacrificing either.** That sentence is the whole debate.
+Recall [the rise of NoSQL](15-rise-of-nosql.md): designing for a known access pattern made scale-out easier, but narrowed what the database promised. The document model makes the unit of that promise concrete: one nested record.
 
 ## How to explain it
 - **Analogy:** a folder per customer with everything inside, vs. a filing cabinet with one drawer per topic.
@@ -58,10 +58,8 @@ Absorbed or converging: JSON columns (PostgreSQL JSONB, MySQL JSON), SQL:2016 JS
 ## Coming from… [18 Graph databases](18-graph-databases.md)
 Both graphs and documents start from the KV store's missing structure. Graphs add **edges between** items; documents add **nesting inside** an item. In practice document stores won far more developer mindshare, because JSON mapped directly onto application code.
 
-## Leading to… [20 Blockchain databases](20-blockchain-databases.md)
-**What NoSQL left open:** dropping ACID and SQL pushed consistency checks, joins and query planning into application code. The industry's answer came from two sides: NewSQL systems and Google's Spanner (2012) delivered scale-out *with* SQL and ACID, and NoSQL vendors added transactions and SQL-like languages. Tell that in two sentences here and point to the [deep dive](../sql-nosql-newsql.md) for questions.
-**Timeline note, said honestly:** the next stop is not a causal successor. Blockchain appears in 2009, the same year NoSQL branding took off, as another example of "rethink the database from scratch". We include it as a **cautionary tale** about a hyped idea.
-If you need a bridge sentence: *"NoSQL reconsidered the data model; blockchain reconsiders who you trust."*
+## Leading to… [21 Cloud & lakehouse](21-cloud-lakehouse.md)
+The documents from a nightly import must last all day; the machines doing the import need not. A document model solves a data-shape problem, not the cost of keeping a cluster provisioned. That distinction sets up the cloud stop: keep the data in object storage and scale compute independently.
 
 ## Sources
 - [SP24] §2.3 (refs 110 NoSQL, 179 BASE, 41 MongoDB, 116 denormalization 1970s, 56 PartiQL, 15 CQL, 9 AQL, 72 SQL++, 42 MongoDB SQL, 165/178 SQL JSON, 153 MongoDB vs Amazon) and §4 (marketing).

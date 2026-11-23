@@ -1,6 +1,6 @@
 # 21 · Cloud databases and lakehouses (2013 →)
 
-[← 20 Blockchain databases](20-blockchain-databases.md) · [Index](../README.md) · [Next → 22 Vector databases](22-vector-databases.md)
+[← 19 Document databases](19-document-databases.md) · [Index](../README.md) · [Next → 22 Vector databases](22-vector-databases.md)
 
 | | |
 |---|---|
@@ -44,8 +44,8 @@ Scale compute up or down per query. Multiple engines (SQL, DataFrame, ML) read t
 ## Relational lens
 The model is unchanged; the **architecture** was rebuilt. Note again: the big changes were inside relational systems.
 
-## Coming from… [20 Blockchain databases](20-blockchain-databases.md)
-Thematically, blockchain spread trust across strangers; the cloud concentrates it in one provider and wins on economics. Causally, the parents are [columnar warehouses](16-columnar-warehouses.md) (the analytics engines that moved to the cloud first), distributed SQL / NewSQL (scale-out OLTP with ACID, run on shared-nothing clusters that are costly to operate; see [SQL vs. NoSQL vs. NewSQL](../sql-nosql-newsql.md)), and Hadoop's legacy: HDFS-style shared storage with disaggregated compute, which later moved to object stores ([MapReduce](14-mapreduce-hadoop.md)).
+## Coming from… [19 Document databases](19-document-databases.md)
+Choosing JSON instead of rows does not tell you who runs the machines or what to do with idle capacity. The bridge is operational, not a claim that document databases invented lakehouses: warehouses and batch jobs also had bursts of compute over data they needed to retain. Compare [columnar warehouses](16-columnar-warehouses.md) and [MapReduce](14-mapreduce-hadoop.md).
 
 ## Leading to… [22 Vector databases](22-vector-databases.md)
 **What changed in the workload:** data lakes now serve not only SQL analysts but **data scientists and ML engineers**, increasingly building models that convert text, images and records into **embeddings**. A new query type emerges (find the *nearest* items to this vector), which neither traditional indexes nor SQL predicates handle well. By 2022 the arrival of ChatGPT made this a mainstream developer need.

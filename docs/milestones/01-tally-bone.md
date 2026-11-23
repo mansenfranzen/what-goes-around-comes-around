@@ -34,7 +34,7 @@ Notice what is **missing**: what was counted, who counted, when. It is a table w
 
 ## How to explain it
 - **Analogy:** a score-keeping tally on a whiteboard. Everyone understands it, nobody can tell what the game was.
-- **Demo:** let the audience cut notches in the app, then ask "12 of what?". That question motivates the next stop.
+- **Demo:** count the mixed herd with one notch per animal. Once the gate closes, ask how many of the marks were goats. The total survived; the breakdown did not. That question motivates the next stop.
 - **Likely questions:** "Was it a calendar?" Honest answer: possibly; interpretations of Ishango (lunar calendar, arithmetic, even prime numbers) are speculative. Safe claim: a structured tally, roughly 20,000 years old.
 
 ## Relational lens

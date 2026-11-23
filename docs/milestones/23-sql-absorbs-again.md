@@ -25,23 +25,22 @@ The closing stop sums up how each category was absorbed. See the table *Absorpti
 | MapReduce | Distribution and fault-tolerance ideas; SQL-on-Hadoop → Presto, Impala, Spark SQL |
 | Key-value | Emulated trivially; embedded KV stores became storage engines inside DBMSs |
 | Document DBs | JSON type and operators (SQL:2016); NoSQL systems adopt SQL-like languages and ACID |
-| NoSQL's "scale needs no ACID" | Distributed SQL / NewSQL (Spanner, CockroachDB, TiDB, YugabyteDB): scale-out with ACID inside the relational model ([deep dive](../sql-nosql-newsql.md)) |
-| Column family | Largely retreated; Spanner and SQL layers replaced Bigtable internally |
+| [Early NoSQL](15-rise-of-nosql.md) | Distributed SQL also routes data by key, while retaining a query planner and paying for coordination when a transaction spans partitions ([deep dive](../sql-nosql-newsql.md)) |
 | Text search *(not a separate stop)* | Full-text indexes in all leading RDBMSs (still clunky) |
 | Arrays | SQL:1999 arrays; SQL:2003 nested arrays; SQL:2023 SQL/MDA |
 | Graph | SQL/PGQ in SQL:2023; graph extensions and translation layers |
 | Vector | Vector types/indexes in many RDBMSs by 2023 |
 | Columnar, cloud, lakehouse | Not absorbed: these *are* relational architecture changes |
-| Hardware accelerators *(not a separate stop)*, blockchain | Not adopted outside niches |
+| Hardware accelerators *(not a separate stop)* | Not adopted outside niches |
 
 ## Absorption by category
 The three categories used on every page explain *why* the absorption works, and why it works differently for each kind of challenger.
 
 | Category | Challengers in this talk | How the relational camp absorbed them | Why it worked |
 |----------|--------------------------|---------------------------------------|---------------|
-| **Primitives** (storage & access) | Column stores (16), key-value engines (17), Bigtable's log-structured storage (15), cloud object storage (21), ANN indexes (22), blockchain logs (20) | As **implementation changes underneath SQL**: new storage engines, layouts, index types, architectures | **Data independence.** Queries never name the physical layer, so it can be replaced without users noticing. Challengers here become *upgrades*, not rivals. |
-| **Language** (declarative querying) | Navigational DML (08, 09), MapReduce (14), NoSQL record-at-a-time APIs (19), Cypher (18) | By **re-adding SQL on top** (Hive, Spark SQL, PartiQL, CQL, SQL++) or **extending SQL** (SQL/PGQ) | "Higher level languages are almost universally preferred to record-at-a-time notations" (paper). Every procedural interface eventually grew a declarative layer. |
-| **Model** (relations, keys, logical/physical split) | Hierarchy (08), network (09), arrays (12), objects (13), column families (15), documents (19), graphs (18), vectors (22) | As **new column types and operators** while the relation remains the outer container: UDTs, `ARRAY`, XML, `JSON`, SQL/MDA, property graph views, `VECTOR` | **Extensible type system.** A table can hold a column of almost anything, so most "new models" end up as a type inside a row. |
+| **Primitives** (storage & access) | Key-based partitioning (15), column stores (16), key-value engines (17), cloud object storage (21), ANN indexes (22) | As **implementation changes underneath SQL**: new storage engines, layouts, index types, architectures | **Data independence.** Queries never name the physical layer, so it can be replaced without users noticing. Challengers here become *upgrades*, not rivals. |
+| **Language** (declarative querying) | Navigational DML (08, 09), MapReduce (14), NoSQL keyed APIs (15), Cypher (18) | By **re-adding SQL on top** (Hive, Spark SQL, PartiQL, CQL, SQL++) or **extending SQL** (SQL/PGQ) | "Higher level languages are almost universally preferred to record-at-a-time notations" (paper). Every procedural interface eventually grew a declarative layer. |
+| **Model** (relations, keys, logical/physical split) | Hierarchy (08), network (09), arrays (12), objects (13), documents (19), graphs (18), vectors (22) | As **new column types and operators** while the relation remains the outer container: UDTs, `ARRAY`, XML, `JSON`, SQL/MDA, property graph views, `VECTOR` | **Extensible type system.** A table can hold a column of almost anything, so most "new models" end up as a type inside a row. |
 
 The one-line version for the slide: *primitives get swapped underneath, languages get rebuilt as SQL, models get absorbed as types.* The relational model is the stable middle layer that makes the other two replaceable.
 

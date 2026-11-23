@@ -92,17 +92,17 @@ DB.transitions.push(
   },
   {
     from: '14',
-    question: 'Update one crawled page — right now?',
-    exhibit: 'MapReduce = batch job, start to end\npage changed → wait for next run\nwanted: update one row, now',
-    stuck: 'MapReduce only runs batch jobs; it cannot update one record in place.',
-    trigger: 'A giant sorted table, spread over many machines, that you can update live.'
+    question: 'One page changed. Run the whole batch?',
+    exhibit: 'batch: rebuild the web index\nonline: update the entry for one URL',
+    stuck: 'A batch job can rebuild an index, but a live service needs to read or change one record now.',
+    trigger: 'Give each record a key. Spread the keys across machines so a lookup can go straight to its data.'
   },
   {
     from: '15',
-    question: 'Column family… or column store?',
-    exhibit: 'SELECT SUM(price) FROM sales;\n-- wants 1 column, drags in dozens',
-    stuck: '"Column family" is not columnar: rows stay rows, and real analytics needs real columns.',
-    trigger: 'Keep the tables and SQL, but store one column at a time.'
+    question: 'Fast for one cart. What about every sale?',
+    exhibit: 'get(cart_id)\nSELECT SUM(price) FROM sales;',
+    stuck: 'A key points to one record. A sales total needs one field from millions of records.',
+    trigger: 'Keep SQL, but store prices together so the warehouse can read just that column.'
   },
   {
     from: '16',
@@ -127,17 +127,10 @@ DB.transitions.push(
   },
   {
     from: '19',
-    question: 'Whose database do you trust?',
-    exhibit: 'NoSQL (2009): rethink the model\nBlockchain (2009): rethink trust',
-    stuck: 'Documents say nothing about trust; this link is thematic, not causal: same 2009 mood.',
-    trigger: 'Another 2009 rethink: a shared record that no single owner controls.'
-  },
-  {
-    from: '20',
-    question: 'Add a node, move all the data?',
-    exhibit: 'nodes: always on, always paid for\nresize = reshuffle the data\nnetworks now outpace disks',
-    stuck: 'Blockchain is about trust, not operations: shared-nothing clusters stay costly and rigid to run.',
-    trigger: 'Networks now beat disks, and storage is cheap. Why keep compute and data together?'
+    question: 'The import is over. Why keep the cluster running?',
+    exhibit: 'nightly import: 2 hours\nstored documents: needed all day',
+    stuck: 'A flexible document format does not help a team pay for a burst of compute without also buying storage.',
+    trigger: 'Keep the data in object storage. Rent compute when there is work to do.'
   },
   {
     from: '21',
@@ -155,7 +148,7 @@ DB.transitions.push(
   },
   {
     from: '23',
-    question: '23 ideas. How do they fit together?',
+    question: DB.manifest.milestones.length + ' ideas. How do they fit together?',
     exhibit: 'primitives: store & find\nlanguage: ask\nmodel: shape',
     stuck: 'No single milestone explains the whole story; each is only one piece or layer.',
     trigger: 'Sort every piece into its layer, and one database mascot can be assembled.'
