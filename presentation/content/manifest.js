@@ -24,7 +24,6 @@ DB.manifest = {
     '12-arrays',
     '13-objects',
     '14-mapreduce',
-    '15-nosql',
     '17-key-value',
     '19-documents',
     '18-graph',

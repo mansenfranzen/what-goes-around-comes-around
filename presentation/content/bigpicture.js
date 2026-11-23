@@ -18,7 +18,6 @@ DB.bigpicture = {
     '12': { x: 380, y: 574, r: 44, role: 'ARRAY columns inside tables' },
     '13': { x: 380, y: 446, r: 44, role: 'User-defined types and objects' },
     '14': { x: 793, y: 462, r: 44, role: 'GROUP BY across many machines' },
-    '15': { x: 500, y: 574, r: 44, role: 'Partition by key to spread the load' },
     '16': { x: 620, y: 574, r: 44, role: 'Read only the columns you need' },
     '17': { x: 620, y: 692, r: 44, role: 'Blazing-fast get/put by key' },
     '18': { x: 500, y: 60, r: 44, role: 'Paths over relations (SQL/PGQ)' },

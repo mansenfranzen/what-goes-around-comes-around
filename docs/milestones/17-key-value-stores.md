@@ -1,6 +1,6 @@
 # 17 · Key-value stores (2003–07)
 
-[← 15 The rise of NoSQL](15-rise-of-nosql.md) · [Index](../README.md) · [Next → 19 Document databases](19-document-databases.md)
+[← 14 MapReduce / Hadoop](14-mapreduce-hadoop.md) · [Index](../README.md) · [Next → 19 Document databases](19-document-databases.md)
 
 | | |
 |---|---|
@@ -42,8 +42,8 @@ Hash the key to choose a node or bucket. The DBMS does not look inside the value
 ## Relational lens
 A KV store is a two-column table. If the application grows, the relational option offers a path forward, and embedded RDBMSs (SQLite, DuckDB) are full-featured alternatives. So a relational system can be "better even for simple applications".
 
-## Coming from… [15 The rise of NoSQL](15-rise-of-nosql.md)
-Sharding routes a cart request to one machine. What does that machine need to support? For a cart fetched by ID, a get/put interface is enough.
+## Coming from… [14 MapReduce / Hadoop](14-mapreduce-hadoop.md)
+MapReduce processes a whole dataset. A cart service usually knows which record it needs: `get(cart_id)` reads that cart, and `put(cart_id, cart)` saves the change without launching a batch job.
 
 ## Leading to… [19 Document databases](19-document-databases.md)
 A key names a whole cart, not a field inside it. A document store can index nested fields and find every cart that contains a particular item.

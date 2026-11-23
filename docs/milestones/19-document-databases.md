@@ -1,4 +1,4 @@
-# 19 · Document databases and NoSQL (2009 →)
+# 19 · Documents / JSON (2009 →)
 
 [← 17 Key-value stores](17-key-value-stores.md) · [Index](../README.md) · [Next → 18 Graph databases](18-graph-databases.md)
 
@@ -8,7 +8,7 @@
 | **Verdict** | Converging with SQL |
 | **Category** | **Model**: nested, denormalized JSON aggregates, schema later · secondary: **Language** (record-at-a-time APIs instead of SQL, then SQL-like languages again) |
 | **Key systems** | MongoDB (most popular); CouchDB; Couchbase; DynamoDB; later SQL-ish languages: PartiQL, SQL++, CQL, AQL; MongoDB SQL interface for Atlas (2021) |
-| **In the app** | Timeline → "Document DBs / NoSQL", demo: embedded vs. normalized price update |
+| **In the app** | Timeline → "Documents / JSON", demo: rename a customer in embedded vs. referenced records |
 
 ## Summary
 Store each record as a **JSON document** with nested fields and arrays; schema later; record-at-a-time API; weak(er) transactions.
@@ -43,11 +43,10 @@ This is the stop where the audience will ask "so which one should I use?". The s
 | **Transactions** | ACID | Often BASE / eventual (single-record atomicity) | ACID, distributed |
 | **Scaling** | Vertical; read replicas; manual sharding | Horizontal, automatic partitioning | Horizontal, automatic partitioning + consensus |
 
-Recall [the rise of NoSQL](15-rise-of-nosql.md): designing for a known access pattern made scale-out easier, but narrowed what the database promised. The document model makes the unit of that promise concrete: one nested record.
-
 ## How to explain it
 - **Analogy:** a folder per customer with everything inside, vs. a filing cabinet with one drawer per topic.
-- **Demo:** the app changes the price of "Pen" which appears in three orders: the embedded version needs three writes (and stale copies if one is missed); the normalized version needs one. Then discuss the flip side: embedded reads need no join.
+- **Demo:** rename Ada in six orders. Embedding her name makes each order a single read, but every copy needs an edit. With a customer reference, one edit changes the name every order displays.
+- **Takeaway:** Embed what you read together. Reference shared facts so you can update them once.
 - **Paper's critique:** same arguments as OO and XML. Pre-joining/denormalization is a 1970s topic: (1) if the join isn't one-to-many there is duplicated data; (2) pre-joins are not necessarily faster than joins; (3) **no data independence**. The "N+1 problem" often cited in ORMs is the claimed motivation.
 - **The turnaround:** by the end of the 2010s almost every NoSQL DBMS added a SQL(-like) interface (DynamoDB PartiQL, Cassandra CQL, Aerospike AQL, Couchbase SQL++; MongoDB the last holdout, adding SQL for Atlas in 2021). Many added ACID transactions. The message morphed from "do not use SQL: it's too slow" to "Not only SQL".
 - **What remains different (paper):** JSON support and "schema later". But the **SQL standard added a JSON type and operations in 2016**, and RDBMSs keep improving the "first five minutes" experience, so the two kinds "will soon be effectively identical".

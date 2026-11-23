@@ -1,6 +1,6 @@
 # Image credits
 
-All images come from Wikimedia Commons and are stored locally. Raster photos are downscaled thumbnails; SVGs are the Wikimedia PNG renders. Item 19 is cropped to the JSON half of the original.
+All images are stored locally. Most come from Wikimedia Commons; the paper scan, project logos and original diagram are identified below. Item 19 is cropped to the JSON half of the original.
 
 | # | File | Description | Author | License | Source |
 |---|------|-------------|--------|---------|--------|
@@ -14,16 +14,16 @@ All images come from Wikimedia Commons and are stored locally. Raster photos are
 | 08 | 08-ims.jpg | Apollo 11 Saturn V on Launch Pad 39A | NASA | Public domain | [File:The Apollo 11 Saturn V on Launch Pad 39A.jpg](https://commons.wikimedia.org/wiki/File:The_Apollo_11_Saturn_V_on_Launch_Pad_39A.jpg) |
 | 09 | 09-codasyl.svg | Suppliers and assemblies linked through shared part records | DB Time Machine | Original diagram | — |
 | 09 (unused) | 09-codasyl.png | Network data model diagram | U.S. Department of Transportation | Public domain | [File:Network Model.svg](https://commons.wikimedia.org/wiki/File:Network_Model.svg) |
-| 10 | 10-relational.png | Relational model diagram | U.S. Department of Transportation | Public domain | [File:Relational Model.svg](https://commons.wikimedia.org/wiki/File:Relational_Model.svg) |
+| 10 | 10-relational.png | First-page title and byline, *A Relational Model of Data for Large Shared Data Banks*, CACM 13(6), June 1970, p. 377 | E. F. Codd | Bibliographic excerpt | [Original paper](https://doi.org/10.1145/362384.362685) · [Scan used for crop](https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf) |
 | 11 | 11-sql.png | Anatomy of an SQL statement | SqlPac (modified by Ferdna) | CC BY-SA 3.0 | [File:SQL ANATOMY wiki.svg](https://commons.wikimedia.org/wiki/File:SQL_ANATOMY_wiki.svg) |
 | 12 | 12-arrays.png | Three-dimensional array diagram | Tropwine | CC BY 4.0 | [File:3D array diagram.svg](https://commons.wikimedia.org/wiki/File:3D_array_diagram.svg) |
 | 13 | 13-objects.png | UML class diagram example | Trashtoy | Public domain | [File:UML class diagram example.svg](https://commons.wikimedia.org/wiki/File:UML_class_diagram_example.svg) |
 | 14 | 14-mapreduce.png | Apache Hadoop logo | Apache Software Foundation | Apache License 2.0 | [File:Hadoop logo new.svg](https://commons.wikimedia.org/wiki/File:Hadoop_logo_new.svg) |
-| 15 | 15-nosql.jpg | Google data center, Council Bluffs, Iowa | Chad Davis | CC BY 2.0 | [File:Google Data Center, Council Bluffs Iowa (49062863796).jpg](https://commons.wikimedia.org/wiki/File:Google_Data_Center,_Council_Bluffs_Iowa_(49062863796).jpg) |
 | 16 | 16-columnar.png | Apache Parquet logo | The Apache Software Foundation | Public domain | [File:Apache Parquet logo.svg](https://commons.wikimedia.org/wiki/File:Apache_Parquet_logo.svg) |
 | 17 | 17-key-value.png | Hash table diagram | Jorge Stolfi | CC BY-SA 3.0 | [File:Hash table 3 1 1 0 1 0 0 SP.svg](https://commons.wikimedia.org/wiki/File:Hash_table_3_1_1_0_1_0_0_SP.svg) |
 | 18 | 18-graph.png | Property graph database diagram | Ole Mussmann | CC0 | [File:GraphDatabase PropertyGraph.svg](https://commons.wikimedia.org/wiki/File:GraphDatabase_PropertyGraph.svg) |
 | 19 | 19-documents.png | JSON document example (cropped from "JSON vs. XML") | Diego Mariano | CC BY-SA 4.0 | [File:JSON vs. XML.png](https://commons.wikimedia.org/wiki/File:JSON_vs._XML.png) |
+| 20 | 20-open-table-formats.svg | Apache Iceberg and Delta Lake wordmarks | Apache Software Foundation; Delta Lake project | Project trademarks | [Iceberg logo](https://iceberg.apache.org/assets/images/Iceberg-logo.svg) · [Delta Lake logo](https://github.com/delta-io/delta/blob/master/docs/src/assets/delta-lake-logo-light.svg) |
 | 21 | 21-cloud.jpg | Server room of BalticServers | BalticServers.com | CC BY-SA 3.0 | [File:BalticServers data center.jpg](https://commons.wikimedia.org/wiki/File:BalticServers_data_center.jpg) |
 | 22 | 22-vectors.png | Word embedding illustration | Fschwarzentruber | CC BY-SA 4.0 | [File:Word embedding illustration.svg](https://commons.wikimedia.org/wiki/File:Word_embedding_illustration.svg) |
 | 23 | 23-sql-absorbs.png | PostgreSQL elephant logo | Daniel Lundin | BSD | [File:Postgresql elephant.svg](https://commons.wikimedia.org/wiki/File:Postgresql_elephant.svg) |

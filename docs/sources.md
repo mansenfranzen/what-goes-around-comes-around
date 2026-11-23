@@ -5,7 +5,6 @@
 ## How the notes were built
 
 - **Backbone:** the 2024 paper (read in full): Stonebraker & Pavlo, SIGMOD Record 53(2), 2024. All "paper says" statements, the verdict labels, and the SQL-absorption claims (JSON in SQL:2016, SQL/PGQ and SQL/MDA in SQL:2023, vector indexes in 2023) come from it.
-- **NoSQL:** [The rise of NoSQL](milestones/15-rise-of-nosql.md) uses the Dynamo authors' workload and latency requirements, F1 as a distributed SQL counterexample, and Fowler's history of the name.
 - **Other background** (pre-1960 history, original papers, product dates) was not independently rechecked while writing the notes. Verify precise dates and numbers before quoting them on stage; uncertain details are marked **(verify)** in the milestone pages.
 - Credits for the current presentation's images are in [Image credits](../presentation/assets/images/CREDITS.md).
 - Wikipedia links below were checked to exist. They are convenient entry points, not primary evidence.

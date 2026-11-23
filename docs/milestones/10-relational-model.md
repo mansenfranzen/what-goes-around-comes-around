@@ -57,5 +57,5 @@ Network programming proved two things: (1) real data is graph-shaped, and (2) na
 - [Sel79] Selinger et al., SIGMOD 1979. [Astr76] System R overview.
 - [SH05] and [SP24] (overall narrative and thesis).
 - [Wikipedia: Relational model](https://en.wikipedia.org/wiki/Relational_model), [Edgar F. Codd](https://en.wikipedia.org/wiki/Edgar_F._Codd), [IBM System R](https://en.wikipedia.org/wiki/IBM_System_R), [Ingres](https://en.wikipedia.org/wiki/Ingres_(database)).
-- Image: relational model diagram, U.S. Department of Transportation, public domain, Wikimedia Commons.
+- Image: title and byline from page 377 of [Codd's original paper](https://doi.org/10.1145/362384.362685).
 - Confidence: high.

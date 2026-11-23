@@ -1,6 +1,6 @@
 # DB Time Machine: Speaker Notes
 
-Companion notes for the [interactive presentation](../presentation/index.html). One page per milestone, 23 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
+Companion notes for the [interactive presentation](../presentation/index.html). One page per milestone, 22 in total, written for someone who has to **explain the milestone to an audience** and, above all, **explain why the story moves on to the next one**.
 
 Backbone of the whole story: Stonebraker & Pavlo, *"What Goes Around Comes Around… And Around"*, SIGMOD Record 53(2), June 2024 ([PDF](https://db.cs.cmu.edu/papers/2024/whatgoesaround-sigmodrec2024.pdf)), the sequel to the 2005 chapter of the same name. Its thesis: the relational model (RM) plus SQL keeps winning; challengers either die, stay niche, or get absorbed into SQL. Everything before 1960 is context I added; see [sources.md](sources.md) for what comes from where and how sure I am.
 
@@ -45,9 +45,8 @@ How to say it on stage: **"Primitives are how we store, language is how we ask, 
 | 12 | [Array databases](milestones/12-array-databases.md) | 1980s | Model · Primitives, Language | Niche survivor |
 | 13 | [Object-oriented DBs](milestones/13-object-oriented-databases.md) | late 1980s | Model · Language | Absorbed |
 | 14 | [MapReduce / Hadoop](milestones/14-mapreduce-hadoop.md) | 2003–2014 | Language · Primitives | Dead end |
-| 15 | [The rise of NoSQL](milestones/15-rise-of-nosql.md) | 2005–2009 | Primitives · Language | Enduring trade-off |
 | 17 | [Key-value stores](milestones/17-key-value-stores.md) | 2007 | Primitives · Model | Niche survivor |
-| 19 | [Document DBs / NoSQL](milestones/19-document-databases.md) | 2009 → | Model · Language | Converging |
+| 19 | [Documents / JSON](milestones/19-document-databases.md) | 2009 → | Model · Language | Converging |
 | 18 | [Graph databases](milestones/18-graph-databases.md) | 2010 → | Model · Language | Converging |
 | 21 | [Cloud databases](milestones/21-cloud-lakehouse.md) | 2012 | Primitives · Language | Winner |
 | 16 | [Columnar storage](milestones/16-columnar-warehouses.md) | 2013 | Primitives | Winner (inside RM) |
@@ -55,7 +54,7 @@ How to say it on stage: **"Primitives are how we store, language is how we ask, 
 | 22 | [Vector databases](milestones/22-vector-databases.md) | 2019 → | Primitives · Model | Converging |
 | 23 | [SQL absorbs again](milestones/23-sql-absorbs-again.md) | 2023 → | All three (synthesis) | Winner |
 
-Other pages: [SQL vs. NoSQL vs. NewSQL](sql-nosql-newsql.md) (deep dive for stops 15 and 19 and the Q&A) · [Glossary](glossary.md) · [Sources and confidence](sources.md)
+Other pages: [SQL vs. NoSQL vs. NewSQL](sql-nosql-newsql.md) (deep dive for stop 19 and the Q&A) · [Glossary](glossary.md) · [Sources and confidence](sources.md)
 
 ## The transitions at a glance
 
@@ -76,8 +75,7 @@ The timeline is chronological; the *causal* story has a few threads. This table 
 | 11 → 12 | Business records fit tables; scientific grids do not | Array models for science and images |
 | 12 → 13 | Arrays serve a niche; mainstream developers have objects | Object databases |
 | 13 → 14 | OODBs lose; absorbed as object-relational + ORMs. The next pain is volume, not shape | Google's MapReduce |
-| 14 → 15 | A batch job cannot serve a live request for one record | Early NoSQL stores route online reads and writes by key |
-| 15 → 17 | Sharding spreads requests, but what does a cart service actually need? | Get and put by key |
+| 14 → 17 | A batch job cannot serve a shopper waiting for one cart | A key-value store gets or updates just the cart named by its key |
 | 17 → 19 | A blob per key hides fields | Document stores query inside the value |
 | 19 → 18 | Friendships cross document boundaries | Graph databases store edges between records |
 | 18 → 21 | Relationship queries leave machines idle between runs | Cloud warehouses scale compute independently of storage |

@@ -33,4 +33,5 @@ A snapshot answers “which records exist?” It does not answer “which record
 
 ## Sources
 - [Apache Iceberg: table specification](https://iceberg.apache.org/spec/) — snapshots, manifests and atomic commits.
+- Image: official Apache Iceberg and Delta Lake logos (see [image credits](../../presentation/assets/images/CREDITS.md)).
 - [Netflix: Iceberg, a fast table format for S3 (2018)](https://netflixtechblog.com/iceberg-fast-tables-for-s3-26cc32a429e2).

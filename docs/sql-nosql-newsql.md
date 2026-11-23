@@ -1,6 +1,6 @@
 # SQL vs. NoSQL vs. NewSQL
 
-[← Index](README.md) · Companion to [15 The rise of NoSQL](milestones/15-rise-of-nosql.md) and [19 Document databases](milestones/19-document-databases.md).
+[← Index](README.md) · Companion to [19 Documents / JSON](milestones/19-document-databases.md).
 
 A deep dive for the Q&A and for an optional 5-minute segment at stop 19. It replaces the former stand-alone NewSQL milestone: NewSQL is told here as the *resolution* of the NoSQL story rather than as its own stop.
 
@@ -89,7 +89,7 @@ Dynamo-style systems make this **tunable** with quorums: with `N` replicas, a wr
 
 ### Data model and schema
 - **SQL:** schema-on-write. Normalized tables, constraints, foreign keys; flexible queries; joins assemble aggregates on demand.
-- **NoSQL:** schema-on-read ("schemaless", more honestly "schema in the application"). Aggregates stored pre-joined; fast for the access pattern you designed for, painful for the next one. Duplicated data must be kept in sync by the application (the price-of-"Pen" demo at stop 19).
+- **NoSQL:** schema-on-read ("schemaless", more honestly "schema in the application"). Aggregates stored pre-joined; fast for the access pattern you designed for, painful for the next one. Duplicated data must be kept in sync by the application (the customer rename demo at stop 19).
 - **NewSQL:** schema-on-write like SQL, plus (today) JSON columns for the flexible parts.
 
 ### Query language

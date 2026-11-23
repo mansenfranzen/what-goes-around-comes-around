@@ -89,6 +89,8 @@ DB.images['05'] = { file: 'assets/images/05-card-catalog.jpg', alt: '…', credi
 
 **Add a milestone**: append the slug to `content/manifest.js`, then create `content/milestones/NN-slug.js`, `content/transitions.js` entry (`from` = the new id, and update the previous entry's `trigger` to point to it), `assets/symbols/NN-slug.svg`, image (optional), game files and a piece in `content/bigpicture.js`. Nothing else changes: the timeline, progress dots, edges and big picture derive from the list.
 
+When removing a milestone, also check the challenger list in `js/games/23-sql-absorbs.js`. Each token uses its milestone's title and symbol.
+
 ## Mini games (`js/games/NN-slug.js`)
 
 ```js

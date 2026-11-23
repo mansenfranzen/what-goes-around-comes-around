@@ -98,13 +98,6 @@ DB.transitions.push(
     trigger: 'Give each record a key. Spread the keys across machines so a lookup can go straight to its data.'
   },
   {
-    from: '15',
-    question: 'Which operation actually needs to scale?',
-    exhibit: 'cart:8812 → the contents of one cart',
-    stuck: 'Sharding spreads the traffic, but it does not define what a client can ask.',
-    trigger: 'Give the client just two operations for its cart: get and put by key.'
-  },
-  {
     from: '17',
     question: 'Which carts contain a pen?',
     exhibit: 'get(cart:8812) → { items: […] }\nfind all carts where items include "pen" → ?',

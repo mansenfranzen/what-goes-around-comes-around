@@ -1,6 +1,6 @@
 # 14 · MapReduce and Hadoop (2003–2014)
 
-[← 13 Object-oriented DBs](13-object-oriented-databases.md) · [Index](../README.md) · [Next → 15 The rise of NoSQL](15-rise-of-nosql.md)
+[← 13 Object-oriented DBs](13-object-oriented-databases.md) · [Index](../README.md) · [Next → 17 Key-value stores](17-key-value-stores.md)
 
 | | |
 |---|---|
@@ -46,8 +46,8 @@ Hadoop and MR lost as interface, but left real legacies: **scale-out and fault t
 ## Coming from… [13 Object-oriented DBs](13-object-oriented-databases.md)
 The OODB debate was about *how richly* data should be modelled. MapReduce deliberately ignored modelling: no schema, no types, no query language, just code over files. This is a swing of the pendulum from "describe data richly" to "just give me raw throughput". Notice how each wave rejects the previous wave's *priority*, and that this one attacks the **language** category directly: transformations as hand-written functions instead of declarative queries.
 
-## Leading to… [15 The rise of NoSQL](15-rise-of-nosql.md)
-A batch can rebuild an index. It cannot answer a shopper or update a single page while the user waits. Google and Amazon faced this online workload at cluster scale: if the request already identifies a row or cart, how much query planning and cross-machine coordination does the store need?
+## Leading to… [17 Key-value stores](17-key-value-stores.md)
+A batch can rebuild an index, but a shopper wants to update one cart while the page is open. If the request already contains the cart ID, the service can use that key to fetch or replace just that cart.
 
 ## Sources
 - [SP24] §2.1 (refs 122 MR, 134 GFS, 172 comparison study, 123/190 dueling CACM articles, 30/197 Hive, 150 Impala, 22 Drill, 185 Presto, 164 move to BigTable, 194 Google kills MR, 201 Spark, 109 Flink).
