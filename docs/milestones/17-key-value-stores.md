@@ -5,16 +5,16 @@
 | | |
 |---|---|
 | **Era** | 2000s web scale |
-| **Verdict** | Niche survivor (many matured into richer systems; others became embedded storage engines) |
-| **Category** | **Primitives**: a lookup structure (hash or sorted index) sold as a whole database · secondary: **Model** (the relational model reduced to a two-column table) |
+| **Verdict** | Absorbed as a map type; dedicated stores still serve keyed workloads |
+| **Category** | **Model**: each key names one value |
 | **Key systems** | Memcached (2003); Amazon Dynamo (2007) → DynamoDB; Redis; embedded: BerkeleyDB, LevelDB, RocksDB, WiredTiger |
-| **In the app** | Timeline → "Key-value stores", demo: put/get on hash buckets; "find by value" scan |
+| **In the app** | Timeline → "Key-Value", demo: find the same cart by scanning boxes or hashing its key |
 
 ## Summary
 The simplest possible data model: a binary relation `(key, value)`, with the value an opaque blob. Operations: get, set, delete.
 
 ## Category
-A key-value store is essentially one storage primitive, key → opaque blob, offered as a complete database. That explains how the category ended: as *products* most grew richer models (documents, records); as *primitives* they won quietly, becoming storage engines inside other DBMSs (RocksDB under MySQL, WiredTiger under MongoDB).
+The model is a mapping: each key names a value, whether the engine finds it by scanning, hashing or searching a tree. A relational system can hold that mapping in a column: for example, a DuckDB `MAP(VARCHAR, INTEGER)` can associate each item code in a cart with its quantity.
 
 ## Context (paper §2.2)
 - In the 2000s several internet companies built **distributed shared-nothing** KV stores for narrow uses (caching, sessions). Memcached is the well-known cache; Redis markets itself as a Memcached replacement with richer API and checkpointing.
@@ -34,13 +34,13 @@ Hash the key to choose a node or bucket. The DBMS does not look inside the value
 
 ## How to explain it
 - **Analogy:** a coat check. Hand over the ticket (key), get the coat (value). It cannot find "all red coats".
-- **Demo:** the app's hash-bucket view: `get` takes one step; "find city=Paris" requires scanning every blob because there is no secondary index.
+- **Demo:** find the requested cart in the unsorted boxes, then hash its key and open the indicated bucket. The access path changes, but the key and its value do not.
 - **Paper's caution:** "it is dangerous to use a KV store in a complex application." Joins, multi-get and secondary indexes must be written by the application.
 - **The evolution pattern:** several KV systems morphed into record stores with semi-structured values (DynamoDB and Aerospike), but "it is not trivial to re-engineer a KV store to make it support a complex data model, whereas RDBMSs easily emulate KV stores without any changes."
 - **Embedded engines became building blocks:** MySQL exposed a storage-engine API; Meta used it to build RocksDB-based storage for its MySQL fleet; MongoDB replaced its ill-fated MMAP engine by WiredTiger's KV store in 2014. Building a new DBMS on an embedded KV store saves years.
 
 ## Relational lens
-A KV store is a two-column table. If the application grows, the relational option offers a path forward, and embedded RDBMSs (SQLite, DuckDB) are full-featured alternatives. So a relational system can be "better even for simple applications".
+The mapping can be a two-column relation with a unique key, or a `MAP` value inside a larger row. With a map of items in each cart row, SQL can still join the cart to its customer.
 
 ## Coming from… [14 MapReduce / Hadoop](14-mapreduce-hadoop.md)
 MapReduce processes a whole dataset. A cart service usually knows which record it needs: `get(cart_id)` reads that cart, and `put(cart_id, cart)` saves the change without launching a batch job.

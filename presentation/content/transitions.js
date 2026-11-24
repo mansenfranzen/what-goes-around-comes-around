@@ -149,8 +149,8 @@ DB.transitions.push(
   {
     from: '23',
     question: DB.manifest.milestones.length + ' ideas. How do they fit together?',
-    exhibit: 'primitives: store & find\nlanguage: ask\nmodel: shape',
+    exhibit: 'legs & arms: storage and access\nbody: models around a relational heart\nvoice: SQL',
     stuck: 'No single milestone explains the whole story; each is only one piece or layer.',
-    trigger: 'Sort every piece into its layer, and one database mascot can be assembled.'
+    trigger: 'Build the legs and arms first. Then give the models a body and SQL a voice.'
   }
 );

@@ -8,9 +8,9 @@ DB.addMilestone({
   category: 'synthesis',
   verdict: 'Winner',
   concept: 'EXTENSIBLE',
-  today: 'JSON · ARRAY · GRAPH · VECTOR',
+  today: 'MAP · JSON · ARRAY · GRAPH · VECTOR',
   problem: 'Teams keep being told that this year\'s new database category will replace SQL.',
   solution: 'SQL absorbs the good idea as a new type, index or language extension, and moves on.',
-  relevance: 'JSON, arrays, graph patterns, vectors: one extensible relational model keeps absorbing each new data shape.',
+  relevance: 'Key-value pairs become MAP columns and embeddings become VECTOR columns. Both fit in rows you can query with SQL.',
   takeaway: 'Nothing replaced SQL, but everything changed inside it.'
 });

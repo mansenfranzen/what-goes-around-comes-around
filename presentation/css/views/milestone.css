@@ -57,3 +57,90 @@
 }
 .ms-take .chip { background: var(--cat); color: #fff; }
 .ms-take p { font-size: 1.75rem; font-weight: 800; letter-spacing: -.01em; line-height: 1.15; }
+
+/* Optional comparison overlay (m.compare): button in the Relevance box, overlay fixed on <body> above the menus */
+.rec-concept .ms-cmp-btn { margin-left: auto; }
+.ms-cmp-btn {
+  display: inline-flex; align-items: center; gap: .45em; padding: .5em .95em .5em .8em; border: .12rem solid var(--ink); border-radius: 99px;
+  background: var(--ink); color: #fff; font: 800 .82rem/1 var(--mono); letter-spacing: .04em; text-transform: uppercase;
+  transition: background .15s ease, border-color .15s ease, transform .12s ease;
+}
+.ms-cmp-btn:hover { background: var(--cat); border-color: var(--cat); transform: translateY(-.06rem); }
+.ms-cmp-ico svg { width: 1.15em; height: 1.15em; }
+
+.ms-cmp {
+  position: fixed; inset: 0; z-index: 100; display: grid; grid-template-rows: auto auto 1fr auto; gap: 1rem;
+  padding: 1.5rem 2.4rem 1.6rem; background-color: #fff; color: var(--ink); outline: none;
+  animation: msCmpIn .3s cubic-bezier(.2, .7, .2, 1);
+}
+@keyframes msCmpIn { from { opacity: .4; transform: scale(.97); } to { opacity: 1; transform: none; } }
+
+.ms-cmp-head { display: flex; align-items: flex-start; gap: 1.2rem; }
+.ms-cmp-title { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .45rem 1rem; }
+.ms-cmp-title h2 { font-size: 2.5rem; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+.ms-cmp-title p { grid-column: 1 / -1; font-size: 1.15rem; font-weight: 600; color: var(--muted); }
+.ms-cmp-close {
+  margin-left: auto; flex: none; width: 2.8rem; height: 2.8rem; display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border: .14rem solid var(--ink); border-radius: .7rem; background: #fff;
+}
+.ms-cmp-close:hover { background: var(--ink); color: #fff; }
+
+.ms-cmp-goal, .ms-cmp-side { background: #fff; border: .14rem solid var(--ink); border-left-width: .5rem; border-radius: .9rem; }
+.ms-cmp-goal {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .3rem 2rem;
+  padding: .7rem 1.2rem; border-left-color: var(--cat);
+}
+.ms-cmp-goal .rec-label { color: var(--cat-ink); }
+.ms-cmp-goal p { grid-column: 1; font-size: 1.35rem; font-weight: 700; line-height: 1.25; text-wrap: balance; }
+.ms-cmp-sample { grid-column: 2; grid-row: 1 / 3; display: flex; align-items: center; gap: .9rem; }
+.ms-cmp-rows { display: grid; grid-template-columns: repeat(3, auto); gap: .3rem; }
+.ms-cmp-rows.out { grid-template-columns: auto; }
+.ms-cmp-rows code {
+  font: 700 .8rem var(--mono); white-space: nowrap; padding: .3em .55em; border-radius: .4rem;
+  background: var(--paper); border: .1rem solid var(--line);
+}
+.ms-cmp-rows.out code { font-size: .92rem; background: var(--good-tint); border-color: transparent; color: #087F5B; }
+.ms-cmp-arrow { font: 800 1.6rem var(--mono); color: var(--muted); }
+
+.ms-cmp-side { display: flex; flex-direction: column; gap: .7rem; padding: .8rem 1.2rem 1rem; min-height: 0; }
+.ms-cmp-side header { display: flex; align-items: center; gap: 1rem; }
+.ms-cmp-side header small { font-size: .9rem; font-weight: 600; color: var(--muted); }
+.ms-cmp-stat { margin-left: auto; font: 800 .9rem/1 var(--mono); padding: .4em .85em; border-radius: 99px; white-space: nowrap; }
+.ms-cmp-side.hard { border-left-color: var(--bad); }
+.ms-cmp-side.hard .rec-label { color: var(--bad); }
+.ms-cmp-side.hard .ms-cmp-stat { background: var(--bad-tint); color: #C92A2A; }
+.ms-cmp-side.easy { border-left-color: var(--good); }
+.ms-cmp-side.easy .rec-label { color: var(--good); }
+.ms-cmp-side.easy .ms-cmp-stat { background: var(--good-tint); color: #087F5B; }
+
+.ms-cmp-blocks { flex: 1; display: flex; gap: .8rem; min-height: 0; }
+.ms-cmp-block { margin: 0; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: .35rem; }
+.ms-cmp-side.easy .ms-cmp-block { flex: none; }
+.ms-cmp-block figcaption { display: flex; align-items: baseline; gap: .6rem; }
+.ms-cmp-block figcaption b { font: 800 .95rem var(--mono); }
+.ms-cmp-block figcaption span { font-size: .82rem; font-weight: 700; color: var(--muted); }
+.ms-cmp-code {
+  flex: 1; margin: 0; padding: .7rem .9rem; border-radius: .6rem; overflow: hidden; white-space: pre;
+  background: var(--ink); color: #E6EEFF; font: 600 .82rem/1.4 var(--mono);
+}
+.ms-cmp-side.easy .ms-cmp-code { font-size: 1.05rem; }
+.ms-cmp-code .ck { color: #FFB86B; }
+.ms-cmp-code .ct { color: #8CE99A; }
+.ms-cmp-code .cf { color: #74C0FC; }
+.ms-cmp-code .cn { color: #F783AC; }
+.ms-cmp-code .ca { color: #B197FC; }
+.ms-cmp-or { align-self: center; font: 800 .9rem var(--mono); text-transform: uppercase; color: var(--muted); }
+
+.ms-cmp-needs { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.ms-cmp-needs span { font: 700 .8rem var(--mono); padding: .35em .7em; border-radius: 99px; background: var(--bad-tint); color: #C92A2A; }
+.ms-cmp-needs .ms-cmp-needs-label {
+  padding: 0; margin-right: .4rem; background: none; color: var(--muted); font-size: .76rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+.ms-cmp-foot { display: grid; grid-template-columns: auto 1fr; gap: 1rem; }
+.ms-cmp-verdict {
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: .8rem;
+  padding: 1.2rem 1.6rem; border-radius: .9rem; background: var(--ink); color: #fff;
+}
+.ms-cmp-verdict p { font-size: 1.75rem; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }

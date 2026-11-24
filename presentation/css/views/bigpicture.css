@@ -14,7 +14,7 @@
 .alive .sil { --sil-line: #0B1B33; --sil-fill: #FFFFFF; }
 .alive .sil-shape, .alive .sil-top, .alive .sil-line, .alive .sil-ring { stroke-dasharray: none; stroke-width: 6; }
 .alive .sil-top { fill: #DCEEFF; }
-.alive .cloud { fill: #EEF5FF; }
+.bp-svg .bp-eyes { stroke-width: 14; stroke-dasharray: none; }
 .alive .bp-slot { stroke: transparent; }
 
 /* pieces */
@@ -44,6 +44,7 @@
 .bp-legend b { color: var(--cat-ink); font-weight: 800; }
 
 .bp-callout { display: flex; gap: 1.4rem; align-items: center; background: #fff; border: .16rem solid var(--ink); border-radius: 1.4rem; padding: 1.4rem; box-shadow: .5rem .5rem 0 var(--cat-tint, var(--line)); min-height: 15rem; transition: opacity .3s ease; }
+.bp-callout[hidden] { display: none; }
 .co-sym { flex: none; width: 9rem; height: 9rem; padding: 1rem; border-radius: 1.6rem; background: var(--cat-tint); border: .16rem solid var(--cat); }
 .co-sym img { width: 100%; height: 100%; }
 .co-text { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }

@@ -11,6 +11,11 @@ DB.addView('timeline', function (slide, director) {
   var W = 1920, H = 1080, R = 18;
   var st = { t: 1, target: 1, lin: null, log: null, touched: false, step: 0 };
   var anim = null, tScaleTween = null, unreveal = null;
+  function revealed(i) {
+    if (!st.present) return true;
+    if (slide.review) return st.step === 0 ? i < slide.review.past : i >= slide.review.past;
+    return i < st.step;
+  }
 
   /* ----- DOM ----- */
   var svg = S('svg', { class: 'tl-svg' }), svgTop = S('svg', { class: 'tl-svg' }); // svgTop: year labels drawn over the stems
@@ -21,6 +26,8 @@ DB.addView('timeline', function (slide, director) {
   var nodesEl = h('div', { class: 'tl-nodes' });
 
   var nodes = ms.map(function (m, i) {
+    var label = m.short || m.title;
+    if (slide.review && director.mode === 'presentation' && i === slide.review.past) label = 'Up next: ' + label;
     var plus = h('span', { class: 'plus', title: 'Zoom in', on: { click: function (e) { e.stopPropagation(); zoomCluster(nd); } } });
     var btn = h('button', {
       class: 'tl-node off cat-' + m.category + (i % 2 ? ' below' : ' above'), 'data-id': m.id, title: m.title + ' (' + m.year + ')',
@@ -28,7 +35,7 @@ DB.addView('timeline', function (slide, director) {
     },
       h('i', { class: 'stem' }),
       h('span', { class: 'badge' }, h('img', { src: DB.symbolURL(m), alt: '', draggable: false })),
-      h('span', { class: 'txt' }, h('small', { class: 'nm', text: m.short || m.title })),
+      h('span', { class: 'txt' }, h('small', { class: 'nm', text: label })),
       plus);
     var nd = { m: m, i: i, el: btn, plus: plus, x: 0, cluster: [] };
     nodesEl.append(btn);
@@ -75,6 +82,12 @@ DB.addView('timeline', function (slide, director) {
     return { c: DB.clamp(v.c, YMIN + half, YMAX - half), k: k, anchor: v.anchor };
   }
   function fitLog() { return { c: (N - 1) / 2, k: (W - 2 * pad()) / (N - 1) }; }
+  function logicalFrame(step) {
+    if (!st.present || !slide.review) return fitLog();
+    // Leave a slot for the next milestone in the recap; pan that slot to the left for the preview.
+    var next = slide.review.past, first = step === 0 ? 0 : next, last = step === 0 ? next : N - 1;
+    return { c: (first + last) / 2, k: (W - 2 * pad()) / Math.max(1, last - first), anchor: next };
+  }
   var MAXK = { lin: 600, log: 700 };
 
   function xLin(year) { return W / 2 + (year - st.lin.c) * st.lin.k; }
@@ -111,13 +124,13 @@ DB.addView('timeline', function (slide, director) {
   // Grow the nodes as far as the lane neighbours allow, so the timeline fills the screen. Pairs outside the view count less
   // the farther out they are (gently, over a few hundred px), so the size changes smoothly while panning.
   function nodeScale() {
-    var n = Math.min(st.step, N), w0 = edgeRoom(), u = NODE_W * R * 1.08, s = MAXS, xs = [];
-    for (var i = 0; i < n; i++) xs.push(xOf(i));
+    var w0 = edgeRoom(), u = NODE_W * R * 1.08, s = MAXS, xs = [];
+    for (var i = 0; i < N; i++) if (revealed(i)) xs.push(xOf(i));
     function room(a, b, f) {
       var out = Math.max(0, -w0 - xs[b], xs[a] - W - w0) * .15;
       s = Math.min(s, (xs[b] - xs[a] + out) / (f * u));
     }
-    for (var a = 0; a + 2 < n; a++) { room(a, a + 2, CROSS); if (a + 4 < n) room(a, a + 4, 1); }
+    for (var a = 0; a + 2 < xs.length; a++) { room(a, a + 2, CROSS); if (a + 4 < xs.length) room(a, a + 4, 1); }
     return Math.max(1, s);
   }
   function render() {
@@ -138,12 +151,12 @@ DB.addView('timeline', function (slide, director) {
     var right = [-1e9, -1e9, -1e9, -1e9], lastX = right.slice(), last = null;
     // Folding runs over all revealed nodes (not just the visible ones), so it never depends on the pan position.
     nodes.forEach(function (nd) {
-      var L = nd.i % 4, x = nd.x = xOf(nd.i), el = nd.el, revealed = nd.i < st.step;
+      var L = nd.i % 4, x = nd.x = xOf(nd.i), el = nd.el, visible = revealed(nd.i);
       nd.cluster = [];
-      nd.shown = revealed && x > -w && x < W + w;
+      nd.shown = visible && x > -w && x < W + w;
       // fold into the previous visible node as "+N" if it overlaps its lane, or a far stem would cross the near node beside it
-      nd.folded = revealed && (x - w / 2 < right[L] + gap || x - lastX[(L + 2) % 4] < CROSS * w);
-      if (revealed && !nd.folded) { right[L] = x + w / 2; lastX[L] = x; last = nd; }
+      nd.folded = visible && (x - w / 2 < right[L] + gap || x - lastX[(L + 2) % 4] < CROSS * w);
+      if (visible && !nd.folded) { right[L] = x + w / 2; lastX[L] = x; last = nd; }
       else if (nd.folded && last && x > -w0 && x < W + w0) last.cluster.push(nd); // folds far outside the view are not counted
       el.classList.toggle('off', !nd.shown);
       el.classList.toggle('hid', nd.shown && nd.folded);
@@ -198,7 +211,7 @@ DB.addView('timeline', function (slide, director) {
     if (oLog > .02) {
       var gm = S('g', { opacity: oLog }), right = [-1e9, -1e9];
       nodes.forEach(function (nd) { // collisions over all revealed nodes (pan-independent); only when zoomed out past the fit
-        if (nd.i >= st.step || nd.folded) return;
+        if (!revealed(nd.i) || nd.folded) return;
         var txt = nd.m.year, half = txt.length * cw / 2, r = yearRow[nd.i];
         if (nd.x - half < right[r]) return;
         right[r] = nd.x + half + .6 * R;
@@ -337,7 +350,10 @@ DB.addView('timeline', function (slide, director) {
   }
   function onResize() {
     measure();
-    if (!st.touched) { st.lin = st.present ? presentFrame(st.step) : fitLin(); st.log = fitLog(); }
+    if (!st.touched) {
+      st.lin = st.present && !slide.review ? presentFrame(st.step) : fitLin();
+      st.log = logicalFrame(st.step);
+    }
     render();
   }
   window.addEventListener('resize', onResize);
@@ -364,21 +380,28 @@ DB.addView('timeline', function (slide, director) {
       if (!inited) {
         measure();
         st.present = !opts.explore;
-        if (st.present) st.t = st.target = step > N ? 1 : 0; // presentation reveals on the linear scale, then switches to logical
-        st.lin = st.present ? presentFrame(step) : fitLin(); st.log = fitLog();
+        if (st.present) st.t = st.target = slide.review || step > N ? 1 : 0; // recap uses logical spacing; the opening timeline reveals on the linear scale
+        st.lin = st.present && !slide.review ? presentFrame(step) : fitLin();
+        st.log = logicalFrame(step);
         inited = true;
       }
       var prev = st.step;
       st.step = step;
       if (st.present && !opts.instant && step !== prev) {
-        var logical = step > N;
         st.touched = false;
-        setScale(logical ? 1 : 0);
-        if (logical) animateTo('log', fitLog(), 800); else animateTo('lin', presentFrame(step), 1100);
+        if (slide.review) {
+          setScale(1);
+          animateTo('log', logicalFrame(step), 800);
+        }
+        else {
+          var logical = step > N;
+          setScale(logical ? 1 : 0);
+          if (logical) animateTo('log', fitLog(), 800); else animateTo('lin', presentFrame(step), 1100);
+        }
       }
       render();
-      if (!opts.instant && step > prev && step <= N) {
-        var nd = nodes[step - 1];
+      if (st.present && !opts.instant && step > prev && step <= N) {
+        var nd = nodes[slide.review ? slide.review.past : step - 1];
         nd.el.classList.remove('pulse'); void nd.el.offsetWidth; nd.el.classList.add('pulse');
       }
     },

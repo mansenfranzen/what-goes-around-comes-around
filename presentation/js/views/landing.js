@@ -14,7 +14,7 @@ DB.addView('landing', function () {
   /* ----- idea 2: challengers orbit the SQL core and get absorbed ----- */
   var orbitEl = h('div', { class: 'orbit' },
     h('div', { class: 'core' }, h('img', { src: 'assets/symbols/logo-db.svg', alt: '' }), h('span', { class: 'chip solid', text: 'SQL' })));
-  ['08', '09', '12', '13', '14', '17', '18', '19'].forEach(function (id) {
+  ['08', '09', '12', '13', '14', '17', '18', '19', '22'].forEach(function (id) {
     var m = DB.byId(id), s = h('div', { class: 'sat cat-' + m.category }, h('img', { src: DB.symbolURL(m), alt: '' }));
     orbitEl.append(s); sats.push(s);
   });

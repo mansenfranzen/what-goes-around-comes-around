@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
 <g stroke="#0B1B33" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
 <path d="M20 18V76H78" fill="none"/>
-<circle cx="60" cy="36" r="17" fill="#FFD8A8" stroke="#F76707" stroke-width="3" stroke-dasharray="5 4.5"/>
+<circle cx="60" cy="36" r="17" fill="#D0BFFF" stroke="#6741D9" stroke-width="3" stroke-dasharray="5 4.5"/>
 <g fill="#FFFFFF" stroke-width="3">
 <circle cx="34" cy="28" r="3.5"/>
 <circle cx="74" cy="64" r="3.5"/>
@@ -13,7 +13,7 @@
 <circle cx="54" cy="41" r="4"/>
 </g>
 <path d="M20 76L43 54.3" fill="none" stroke-width="8"/>
-<path d="M20 76L43 54.3" fill="none" stroke="#F76707" stroke-width="4"/>
-<path d="M-9 -6L0 0L-9 6Z" transform="translate(47 50) rotate(-43.9)" fill="#F76707" stroke-width="3"/>
+<path d="M20 76L43 54.3" fill="none" stroke="#6741D9" stroke-width="4"/>
+<path d="M-9 -6L0 0L-9 6Z" transform="translate(47 50) rotate(-43.9)" fill="#6741D9" stroke-width="3"/>
 </g>
 </svg>

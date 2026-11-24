@@ -3,11 +3,11 @@
   var h = DB.h, S = DB.svg;
   var CH = [
     { id: '19', sql: 'doc JSONB', msg: 'Document store: now a JSON column.' },
-    { id: '17', sql: 'INDEX USING hash', msg: 'Key-value store: now a hash index.' },
+    { id: '17', sql: 'items MAP(VARCHAR, INT)', msg: 'Key-value pairs: now a MAP column.' },
     { id: '18', sql: 'MATCH (a)-[e]->(b)', msg: 'Graph database: now a MATCH clause.' },
     { id: '16', sql: 'USING columnar', msg: 'Column store: now a table storage option.' },
     { id: '12', sql: 'tags INT[]', msg: 'Array database: now an ARRAY type.' },
-    { id: '22', sql: 'emb VECTOR(3)', msg: 'Vector database: now a column type and index.' },
+    { id: '22', sql: 'emb VECTOR(3)', msg: 'Embeddings: now a VECTOR column.' },
     { id: '14', sql: 'GROUP BY word', msg: 'MapReduce: now a parallel GROUP BY.' },
     { id: '13', sql: 'CREATE TYPE addr', msg: 'Object database: now a user-defined type.' },
     { id: '21', sql: "FROM 's3://lake'", msg: 'Cloud data lake: now a table over object storage.' }
@@ -35,7 +35,7 @@
         var el = h('div', { class: 'tk' }, icon(c.id), h('span', { class: 'tl' }, DB.byId(c.id).short), check);
         el.style.setProperty('--d', (n % 5) * -.5 + 's');
         toks.push({ el: el, done: false, busy: false });
-        (n < 5 ? colL : colR).append(el);
+        (n < Math.ceil(CH.length / 2) ? colL : colR).append(el);
       });
       var arena = h('div', { class: 'arena' }, colL, sq, colR);
       root.append(h('div', { class: 'g-row' }, msg), arena);

@@ -11,7 +11,7 @@
 | **B-tree** | The classic sorted index structure behind most relational indexes. |
 | **CAP theorem** | During a network partition a replicated system must choose between consistency (refuse some requests) and availability (answer, maybe with stale data). |
 | **Category: Language** | One of the talk's three lenses: how you express questions and transformations (navigational commands, SQL, MapReduce, graph patterns). |
-| **Category: Model** | One of the talk's three lenses: how data and its relationships are shaped, and whether the logical view is decoupled from storage (hierarchy, network, relational, documents, graphs). |
+| **Category: Model** | One of the talk's three lenses: how data and its relationships are shaped, independently of storage. Key-value pairs and vectors are models represented in rows by map and vector types. |
 | **Category: Primitives** | One of the talk's three lenses: the storage and access building blocks (count, type, record, index, random access, column layout, ANN index). |
 | **Columnar storage** | Store all values of one column together on disk instead of one row after another. |
 | **Consensus (Paxos, Raft)** | Protocols that let replicas agree on the order of updates even if some fail; the basis of NewSQL replication. |

@@ -4,7 +4,7 @@
   var D = DB.director = { mode: 'presentation' };
   var slides = [], idx = -1, step = 0, current = null, stage;
 
-  /* ---------- slide list: landing, timeline, (milestone, transition)*, big picture ---------- */
+  /* ---------- slide list: landing, timeline, (milestone, review?, transition)*, big picture, bonus pitch ---------- */
   function build() {
     var ms = DB.milestones;
     slides = [
@@ -13,13 +13,20 @@
     ];
     ms.forEach(function (m, i) {
       slides.push({ id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 3, ref: m, n: i });
+      if (m.id === '07' && ms[i + 1]) {
+        slides.push({
+          id: 'timeline-after-' + m.id, kind: 'timeline', hash: '#/timeline-after-' + m.id, steps: 1,
+          review: { past: i + 1 }
+        });
+      }
       slides.push({
         id: 't' + m.id, kind: 'transition', hash: '#/t/' + m.id, steps: 2,
         from: m, to: ms[i + 1] || null,
         ref: DB.transitions.find(function (t) { return t.from === m.id; }) || {}
       });
     });
-    slides.push({ id: 'big', kind: 'bigpicture', hash: '#/big', steps: ms.length + 1 });
+    slides.push({ id: 'big', kind: 'bigpicture', hash: '#/big', steps: DB.bigpicture.pieces.length + 1 });
+    if (DB.pitch && DB.views.pitch) slides.push({ id: 'pitch', kind: 'pitch', hash: '#/pitch', steps: DB.pitch.scenes.length - 1 });
   }
 
   D.slides = function () { return slides; };
@@ -96,6 +103,8 @@
         next: slide.to ? ref(slide.to, 'Next', 0) : { id: 'big', label: 'Big picture', small: 'Next', step: 0 }
       };
     }
+    if (slide.kind === 'bigpicture' && D.slideById('pitch')) return { next: { id: 'pitch', label: 'Pitch', small: 'Bonus', step: 0 } };
+    if (slide.kind === 'pitch') return { prev: { id: 'big', label: 'Big picture', small: 'Back to', step: 'end' } };
     return {};
   };
 
@@ -126,7 +135,7 @@
     else if (k === 'b' || k === 'B') D.goTo('big');
     else if (k === 'l' || k === 'L') D.goTo('landing');
     else if ((k === 'g' || k === 'G') && DB.gameShell) DB.gameShell.toggleCurrent();
-    else if (k === 'Escape' && current && (current.slide.kind === 'milestone' || current.slide.kind === 'transition' || current.slide.kind === 'bigpicture')) D.goTo('timeline', D.mode === 'presentation' ? slides[1].steps : 0);
+    else if (k === 'Escape' && current && (current.slide.kind === 'milestone' || current.slide.kind === 'transition' || current.slide.kind === 'bigpicture' || current.slide.kind === 'pitch')) D.goTo('timeline', D.mode === 'presentation' ? slides[1].steps : 0);
     else handled = false;
     if (handled) e.preventDefault();
   }

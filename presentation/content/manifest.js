@@ -5,10 +5,10 @@
        css/games/<slug>.css           game styles, scoped to .game-<NN>
        assets/symbols/<slug>.svg      hand-made symbol
        assets/images/<slug>.<ext>     real image, declared in content/images.js
-   - views: one js/views/<v>.js + css/views/<v>.css each (landing -> timeline -> milestone/transition -> bigpicture). */
+   - views: one js/views/<v>.js + css/views/<v>.css each (landing -> timeline -> milestone/transition -> bigpicture -> pitch). */
 window.DB = window.DB || {};
 DB.manifest = {
-  views: ['landing', 'timeline', 'milestone', 'transition', 'bigpicture'],
+  views: ['landing', 'timeline', 'milestone', 'transition', 'bigpicture', 'pitch'],
   milestones: [
     '01-tally-bone',
     '02-clay-tokens',

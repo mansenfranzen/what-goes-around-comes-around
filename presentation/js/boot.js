@@ -31,7 +31,7 @@
       slugs.forEach(function (s) { css('css/games/' + s + '.css'); });
 
       var files = [
-        'content/images.js', 'content/markers.js', 'content/transitions.js', 'content/bigpicture.js', 'content/parts-catalog.js'
+        'content/images.js', 'content/markers.js', 'content/transitions.js', 'content/bigpicture.js', 'content/pitch.js', 'content/parts-catalog.js'
       ];
       slugs.forEach(function (s) { files.push('content/milestones/' + s + '.js'); });
       files.push('js/core/director.js', 'js/core/menus.js', 'js/core/game-shell.js');

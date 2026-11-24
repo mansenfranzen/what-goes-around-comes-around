@@ -5,12 +5,12 @@ DB.addMilestone({
   short: 'Key-value',
   year: '2007',
   pos: 2007,
-  category: 'primitives',
-  verdict: 'Niche survivor',
-  concept: 'KV ENGINE',
-  today: 'get(\'user:1\')',
+  category: 'model',
+  verdict: 'Absorbed',
+  concept: 'MAP TYPE',
+  today: 'items MAP(VARCHAR, INTEGER)',
   problem: 'Busy websites needed to save a session or cart by id, instantly and always.',
-  solution: 'Strip it to get, set and delete: hash the key, store an opaque blob.',
-  relevance: 'Embedded KV engines such as RocksDB and WiredTiger now power MySQL and MongoDB.',
-  takeaway: 'Fast by key, blind to everything else.'
+  solution: 'Give each cart a unique key and treat its contents as one value. Get or replace that value by key.',
+  relevance: 'A MAP column brings the same shape into a row: in a cart, each item code maps to its quantity.',
+  takeaway: 'Key-value is a model; a hash index is one way to find a key.'
 });

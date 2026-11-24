@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" font-family="sans-serif" fill="#0B1B33" role="img" aria-labelledby="title desc">
+  <title id="title">Different formats, similar meaning</title>
+  <desc id="desc">A songbird image, the text “a bird singing,” and a birdsong recording each pass through a multimodal embedding model. Each output is a separate one-dimensional array. The example vectors are close because the inputs convey similar meaning.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#51627F"/>
+    </marker>
+  </defs>
+  <text x="12" y="32" font-size="29" font-weight="bold">Different formats, similar meaning</text>
+  <g font-size="16" font-weight="bold" fill="#51627F">
+    <text x="12" y="68">Input</text>
+    <text x="412" y="68">1D embedding per input</text>
+  </g>
+
+  <g fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2">
+    <rect x="12" y="79" width="205" height="54" rx="9"/>
+    <rect x="12" y="147" width="205" height="54" rx="9"/>
+    <rect x="12" y="215" width="205" height="54" rx="9"/>
+  </g>
+  <rect x="20" y="85" width="47" height="42" rx="5" fill="#DCEEFF"/>
+  <path d="m23 118 10-1 8-7" fill="none" stroke="#865C36" stroke-width="3" stroke-linecap="round"/>
+  <path d="m24 101 10 5c3 0 6-3 8-7 3-7 13-7 15 1 1 12-9 18-18 15-6-2-10-7-15-14Z" fill="#1971C2"/>
+  <path d="m56 99 7 3-7 2Z" fill="#B84500"/>
+  <circle cx="52" cy="98" r="1.5" fill="#fff"/>
+  <g fill="#6741D9" text-anchor="middle" font-family="serif" font-size="33" font-style="italic">
+    <text x="43" y="185">Aa</text>
+  </g>
+  <path d="M23 239v6m5-11v16m5-22v28m5-20v12m5-22v32m5-27v22m5-17v12m5-9v6m5-5v4" fill="none" stroke="#087F5B" stroke-width="3" stroke-linecap="round"/>
+  <g font-size="19" font-weight="bold">
+    <text x="77" y="103">Image</text>
+    <text x="77" y="171">Text</text>
+    <text x="77" y="239">Audio</text>
+  </g>
+  <g font-size="17" fill="#2C3E5A">
+    <text x="77" y="124">Songbird</text>
+    <text x="77" y="192">“a bird singing”</text>
+    <text x="77" y="260">Birdsong</text>
+  </g>
+
+  <g stroke="#51627F" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M218 106h24"/><path d="M218 174h24"/><path d="M218 242h24"/>
+    <path d="M382 106h25"/><path d="M382 174h25"/><path d="M382 242h25"/>
+  </g>
+  <rect x="247" y="79" width="135" height="190" rx="12" fill="#0B1B33"/>
+  <g fill="#fff" text-anchor="middle" font-size="19" font-weight="bold">
+    <text x="314" y="157">Multimodal</text>
+    <text x="314" y="180">embedding</text>
+    <text x="314" y="203">model</text>
+  </g>
+
+  <g fill="#E9E0FF">
+    <rect x="412" y="79" width="276" height="54" rx="9"/>
+    <rect x="412" y="147" width="276" height="54" rx="9"/>
+    <rect x="412" y="215" width="276" height="54" rx="9"/>
+  </g>
+  <g fill="#4B2DB3" font-family="monospace" font-size="19" font-weight="bold" text-anchor="middle">
+    <text x="550" y="113">[0.82, -0.14, 0.37, …]</text>
+    <text x="550" y="181">[0.80, -0.16, 0.39, …]</text>
+    <text x="550" y="249">[0.83, -0.13, 0.36, …]</text>
+  </g>
+  <text x="12" y="306" font-size="19">Similar meanings land near each other in vector space.</text>
+</svg>

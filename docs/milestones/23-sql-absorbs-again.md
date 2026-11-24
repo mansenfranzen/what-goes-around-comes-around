@@ -23,12 +23,12 @@ The closing stop sums up how each category was absorbed. See the table *Absorpti
 | Object-oriented DBs | User-defined types, object-relational features (SQL:1999) |
 | XML DBs *(not a separate stop)* | SQL/XML (SQL:2003) |
 | MapReduce | Distribution and fault-tolerance ideas; SQL-on-Hadoop → Presto, Impala, Spark SQL |
-| Key-value | Emulated trivially; embedded KV stores became storage engines inside DBMSs |
+| Key-value | A map type holds key-value pairs in a column, for example DuckDB’s `MAP(VARCHAR, INTEGER)` |
 | Document DBs | JSON type and operators (SQL:2016); NoSQL systems adopt SQL-like languages and ACID |
 | Text search *(not a separate stop)* | Full-text indexes in all leading RDBMSs (still clunky) |
 | Arrays | SQL:1999 arrays; SQL:2003 nested arrays; SQL:2023 SQL/MDA |
 | Graph | SQL/PGQ in SQL:2023; graph extensions and translation layers |
-| Vector | Vector types/indexes in many RDBMSs by 2023 |
+| Vector | A vector type holds an embedding in a column; a distance operator compares it to a query vector |
 | Columnar, cloud, lakehouse | Not absorbed: these *are* relational architecture changes |
 | Hardware accelerators *(not a separate stop)* | Not adopted outside niches |
 
@@ -37,11 +37,11 @@ The three categories used on every page explain *why* the absorption works, and 
 
 | Category | Challengers in this talk | How the relational camp absorbed them | Why it worked |
 |----------|--------------------------|---------------------------------------|---------------|
-| **Primitives** (storage & access) | Column stores (16), key-value engines (17), cloud object storage (21), ANN indexes (22) | As **implementation changes underneath SQL**: new storage engines, layouts, index types, architectures | **Data independence.** Queries never name the physical layer, so it can be replaced without users noticing. Challengers here become *upgrades*, not rivals. |
+| **Primitives** (storage & access) | Column stores (16), cloud object storage (21), open table formats (20) | As **implementation changes underneath SQL**: new storage engines, layouts, index types, architectures | **Data independence.** Queries never name the physical layer, so it can be replaced without users noticing. Challengers here become *upgrades*, not rivals. |
 | **Language** (declarative querying) | Navigational DML (08, 09), MapReduce (14), Cypher (18) | By **re-adding SQL on top** (Hive, Spark SQL, PartiQL, CQL, SQL++) or **extending SQL** (SQL/PGQ) | "Higher level languages are almost universally preferred to record-at-a-time notations" (paper). Every procedural interface eventually grew a declarative layer. |
-| **Model** (relations, keys, logical/physical split) | Hierarchy (08), network (09), arrays (12), objects (13), documents (19), graphs (18), vectors (22) | As **new column types and operators** while the relation remains the outer container: UDTs, `ARRAY`, XML, `JSON`, SQL/MDA, property graph views, `VECTOR` | **Extensible type system.** A table can hold a column of almost anything, so most "new models" end up as a type inside a row. |
+| **Model** (relations, keys, logical/physical split) | Hierarchy (08), network (09), arrays (12), objects (13), key-value (17), documents (19), graphs (18), vectors (22) | As **new types and operators** while the relation remains the outer container: UDTs, `ARRAY`, `MAP`, `JSON`, property graph views, `VECTOR` | **Extensible type system.** A table can hold a column of almost anything, so most "new models" end up as a type inside a row. |
 
-The one-line version for the slide: *primitives get swapped underneath, languages get rebuilt as SQL, models get absorbed as types.* The relational model is the stable middle layer that makes the other two replaceable.
+On the summary slide, build the legs and arms from the storage and access primitives. Put the relational model at the heart of the body and surround it with the models it absorbed. The SQL speech bubble gives the whole system a voice.
 
 ## The paper's parting advice (§4), useful as a closing slide
 1. **Never underestimate the value of good marketing for bad products.** (Oracle 1980s, MySQL 2000s, MongoDB 2010s.)

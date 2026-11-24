@@ -5,8 +5,8 @@
 | | |
 |---|---|
 | **Era** | LLM era; takes off after ChatGPT (late 2022) |
-| **Verdict** | Converging with SQL (fast) |
-| **Category** | **Primitives**: a new *index* family (approximate nearest neighbour) and a new *type* (vector) · secondary: **Model** (embeddings as a column) |
+| **Verdict** | Absorbed as a vector type; specialized vector databases also exist |
+| **Category** | **Model**: items are points in an embedding space and distance expresses similarity |
 | **Key systems** | Pinecone, Milvus, Weaviate; search engines adding vectors (Elasticsearch, Solr, Vespa); RDBMS vector indexes (pgvector, Oracle, SingleStore, Rockset, ClickHouse); libraries FAISS and DiskANN |
 | **In the app** | Timeline → "Vector databases", demo: move the pointer, see nearest neighbours |
 
@@ -14,7 +14,7 @@
 Store **embeddings** (high-dimensional vectors) produced by ML models and answer **similarity queries**: "which records are closest to this vector?"
 
 ## Category
-Mostly a primitives story: one new data type and one new index family. That is exactly why absorption took months rather than years: adding an index type is what relational engines are designed to do.
+A vector column brings the model into a row: the embedding sits next to the item's title, date or author. SQL can order the rows by distance without an index. An approximate nearest-neighbour index speeds up the search; it is not the model.
 
 ## Context (paper §2.7)
 - The paper treats the vector model as a reduction of the array model to one dimension, as column-family is to document. It gets separate discussion because it "is attracting the most attention right now from developers and investors (similar to the NoSQL fad)".

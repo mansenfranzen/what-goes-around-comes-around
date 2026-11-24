@@ -17,9 +17,9 @@ Every milestone page names the category it **mainly** addresses (and, where usef
 |----------|-----------|---------------------|--------------------|
 | **Primitives** | Storage & access primitives: the building blocks | *How is data recorded, stored and found?* | count, type, record layout, index, sortable/updatable index, random access, column layout, log-structured storage, ANN index |
 | **Language** | Declarative query language | *How do I say what I want, and express transformations?* | machine counting, navigational commands, SQL, MapReduce, graph patterns |
-| **Model** | The relational model (and its rivals) | *What shape do data and relationships have, and is the logical view decoupled from physical storage?* | hierarchy, network, relations + foreign keys, objects, arrays, documents, graphs |
+| **Model** | The relational model (and its rivals) | *What shape do data and relationships have, and is the logical view decoupled from physical storage?* | hierarchy, network, relations + foreign keys, objects, arrays, key-value pairs, documents, graphs, vectors |
 
-How to say it on stage: **"Primitives are how we store, language is how we ask, the model is how we shape."** The relational model is the stable middle layer: because queries never mention storage (data independence), primitives can be swapped underneath and languages rebuilt on top. Pre-history (01–07) is almost entirely about primitives; the model wars start at 08; from 14 onwards each challenger attacks one category, and the closing stop shows how each was absorbed.
+How to say it on stage: **"Primitives are how we store, language is how we ask, the model is how we shape."** On the summary slide, primitives build the mascot’s legs first, then its arms. The models fill the body around the relational heart. SQL is its voice.
 
 ## How to use these notes
 
@@ -45,13 +45,13 @@ How to say it on stage: **"Primitives are how we store, language is how we ask, 
 | 12 | [Array databases](milestones/12-array-databases.md) | 1980s | Model · Primitives, Language | Niche survivor |
 | 13 | [Object-oriented DBs](milestones/13-object-oriented-databases.md) | late 1980s | Model · Language | Absorbed |
 | 14 | [MapReduce / Hadoop](milestones/14-mapreduce-hadoop.md) | 2003–2014 | Language · Primitives | Dead end |
-| 17 | [Key-value stores](milestones/17-key-value-stores.md) | 2007 | Primitives · Model | Niche survivor |
+| 17 | [Key-value stores](milestones/17-key-value-stores.md) | 2007 | Model | Absorbed as a map type |
 | 19 | [Documents / JSON](milestones/19-document-databases.md) | 2009 → | Model · Language | Converging |
 | 18 | [Graph databases](milestones/18-graph-databases.md) | 2010 → | Model · Language | Converging |
 | 21 | [Cloud databases](milestones/21-cloud-lakehouse.md) | 2012 | Primitives · Language | Winner |
 | 16 | [Columnar storage](milestones/16-columnar-warehouses.md) | 2013 | Primitives | Winner (inside RM) |
 | 20 | [Open table formats](milestones/20-open-table-formats.md) | 2018 | Primitives | Adopted |
-| 22 | [Vector databases](milestones/22-vector-databases.md) | 2019 → | Primitives · Model | Converging |
+| 22 | [Vector databases](milestones/22-vector-databases.md) | 2019 → | Model | Absorbed as a vector type |
 | 23 | [SQL absorbs again](milestones/23-sql-absorbs-again.md) | 2023 → | All three (synthesis) | Winner |
 
 Other pages: [SQL vs. NoSQL vs. NewSQL](sql-nosql-newsql.md) (deep dive for stop 19 and the Q&A) · [Glossary](glossary.md) · [Sources and confidence](sources.md)
@@ -95,7 +95,7 @@ The timeline is chronological; the *causal* story has a few threads. This table 
 1. **Data independence** *(Model)*. The relational model's real innovation: programs should not break when storage changes.
 2. **Declarative beats navigational** *(Language)*. Say *what*, let the optimizer pick *how*.
 3. **Denormalization is a loan** *(Model)*. Embedding or pre-joining is fast now and costly later (duplication, no data independence).
-4. **Feature, not architecture** *(Primitives)*. Many "new databases" turn out to be one new index or type (vector, graph, JSON, full-text).
+4. **Model to column type** *(Model)*. A cart can hold a map of item codes to quantities; an article can hold an embedding vector. Both remain rows that SQL can filter and join.
 5. **Hardware drives architecture** *(Primitives)*. Disk (1956), SSD, fast networks and object stores (2010s) changed *implementations*, not the model.
 6. **Stickiness.** Old systems (IMS) survive because migrating data is risky, not because they are best.
 7. **Caveat for the speaker.** The 2024 paper is opinionated, written by two relational-database people. Present its conclusions as a well-argued position, and invite the audience to push back.
