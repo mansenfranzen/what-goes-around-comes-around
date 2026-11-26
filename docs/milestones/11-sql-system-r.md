@@ -53,5 +53,5 @@ Codd defined the model; SQL made it **usable**; System R made it **fast and safe
 - [CB74] Chamberlin & Boyce. [Astr76] System R. [Sel79] optimizer.
 - [SP24] §2.3 and §4 (optimizer, SQL longevity, PRQL/Malloy).
 - [Wikipedia: SQL](https://en.wikipedia.org/wiki/SQL), [Donald D. Chamberlin](https://en.wikipedia.org/wiki/Donald_D._Chamberlin), [Oracle Database](https://en.wikipedia.org/wiki/Oracle_Database), [IBM System R](https://en.wikipedia.org/wiki/IBM_System_R).
-- Image: Don Chamberlin, Dicklyon, CC BY-SA 4.0, Wikimedia Commons.
+- Image: [One request in English and SQL](../../presentation/assets/images/11-sql.svg), original DB Time Machine diagram.
 - Confidence: high on 1974 paper and 1979 Oracle; standard years (1986/87) as commonly cited; trademark reason for the name change **(verify)**.

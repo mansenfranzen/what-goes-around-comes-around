@@ -48,10 +48,6 @@
 .rec-concept { display: flex; align-items: center; gap: .7rem; margin-top: .15rem; }
 .rec-concept code { font: 700 .86rem var(--mono); color: var(--ink); background: var(--paper); border: .1rem solid var(--line); border-radius: .4rem; padding: .3em .6em; }
 
-.ms-hero { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity .35s ease, transform .35s ease; }
-.ms-hero img { height: 76%; aspect-ratio: 1; filter: drop-shadow(0 1rem 1.6rem rgba(11, 27, 51, .12)); }
-.ms-hero.gone { opacity: 0; transform: scale(.9); pointer-events: none; }
-
 .ms-take {
   display: flex; align-items: center; gap: 1.2rem; background: var(--ink); color: #fff;
   border-radius: 1rem; padding: .9rem 1.6rem; min-height: 4.4rem;

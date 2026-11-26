@@ -137,8 +137,6 @@ DB.addView('milestone', function (slide, director) {
     h('p', { text: m.takeaway }),
     present && cmp ? cmp.button : null);
 
-  var hero = h('div', { class: 'ms-hero' }, h('img', { src: DB.symbolURL(m), alt: '' }));
-
   var el = h('div', { class: 'view-milestone grid-bg cat-' + m.category },
     h('header', { class: 'ms-head' },
       h('div', { class: 'ms-symbol' }, h('img', { src: DB.symbolURL(m), alt: '' })),
@@ -159,14 +157,13 @@ DB.addView('milestone', function (slide, director) {
             m.today ? h('code', { text: m.today }) : null,
             cmp ? cmp.button : null))
         ]),
-      h('div', { class: 'ms-right' }, hero, game.el)),
+      h('div', { class: 'ms-right' }, game.el)),
     present ? null : takeaway);
 
   return {
     el: el,
     setStep: function (step) {
       DB.applySteps(el, step);
-      hero.classList.toggle('gone', step >= 1);
       if (step >= 1) { game.mount(); game.el.classList.add('shown'); } else game.el.classList.remove('shown');
     },
     onKey: function (e) { return cmp ? cmp.onKey(e) : false; },

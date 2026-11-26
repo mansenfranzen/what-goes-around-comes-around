@@ -37,7 +37,7 @@
       for (var i = 0; i < 4; i++) resultG.append(S('rect', { class: 'slt', x: RX + 1, y: TOP + HEAD + i * RH + 1, width: RW - 2, height: RH - 2, rx: 1.6 }));
 
       cust.forEach(function (c) {
-        c.sock = S('circle', { class: 'sock', cx: CX + CW, cy: RH / 2, r: 2 });
+        c.sock = S('circle', { class: 'sock', cx: CW, cy: RH / 2, r: 2 });
         c.name$ = txt('nm', 16, RH / 2 + 1.8, 5, c.name);
         c.el = S('g', { class: 'row crow' }, S('rect', { class: 'bg', x: 0, y: 0, width: CW, height: RH, rx: 0 }),
           S('circle', { class: 'badge', cx: 7.5, cy: RH / 2, r: 4.8, fill: KEY[c.id] }), txt('bn', 7.5, RH / 2 + 1.5, 4.4, String(c.id), 'middle'),

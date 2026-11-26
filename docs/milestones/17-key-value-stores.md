@@ -52,5 +52,5 @@ A key names a whole cart, not a field inside it. A document store can index nest
 - [SP24] §2.2 (refs 131 Memcached, 67 Redis, 125 Dynamo, 170 BerkeleyDB, 37 LevelDB, 68 RocksDB, 129 DynamoDB, 9 Aerospike, 71 SQLite, 180 DuckDB, 120/138 WiredTiger).
 - [DeC07] Dynamo, SOSP 2007.
 - [Wikipedia: Key–value database](https://en.wikipedia.org/wiki/Key–value_database), [Dynamo (storage system)](https://en.wikipedia.org/wiki/Dynamo_(storage_system)), [Redis](https://en.wikipedia.org/wiki/Redis), [Memcached](https://en.wikipedia.org/wiki/Memcached), [SQLite](https://en.wikipedia.org/wiki/SQLite), [DuckDB](https://en.wikipedia.org/wiki/DuckDB).
-- Image: hash table diagram; Jorge Stolfi, CC BY-SA 3.0, Wikimedia Commons.
+- Image: [Amazon DynamoDB, Redis, Memcached and RocksDB logos](../../presentation/assets/images/17-key-value.svg) illustrate the range of key-value stores. The DynamoDB icon represents the later managed service, not the original 2007 Dynamo system. See [image credits](../../presentation/assets/images/CREDITS.md) for sources.
 - Confidence: high (paper-based).

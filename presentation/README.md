@@ -60,7 +60,7 @@ Slides: `landing` (2 steps) → `timeline` (one reveal per milestone on the line
 - **Presentation mode**: content appears step by step. Forward = click, →, Space, Enter, PageDown. Back = ←, PageUp, Backspace. Going back onto the previous slide shows it fully revealed.
 - **Exploration mode**: everything visible, free navigation. Switch with the corner toggle (hidden; appears when the pointer nears the top-right corner) or `E`. The choice is stored in `localStorage.dbtm.mode`; `?mode=explore` overrides.
 - Reveal mechanism: any element with `data-at="N"` is hidden until step ≥ N (`DB.applySteps`, `css/base.css`). Views just put `data-at` on things.
-- Milestone steps: 0 header + photo; 1 game replaces the hero symbol; 2 takeaway below the photo. Exploration shows Problem, Solution and Relevance under the photo, with the takeaway in the footer.
+- Milestone steps: 0 header + photo; 1 game appears on the right; 2 takeaway below the photo. Exploration shows Problem, Solution and Relevance under the photo, with the takeaway in the footer.
 - Transition steps: 0 centered question between the milestone cards; 1 mark the outgoing card as stuck; 2 reveal the destination. Only exploration shows the exhibit, stuck explanation and trigger beneath the question.
 - Hidden menus appear near the edges: top bar (logo, Timeline, progress dots, Big picture, bonus Pitch with a gift icon), bottom dock on the timeline (Logical/Linear scale, zoom −/+/Fit, Start/End), left/right edge arrows (adjacent milestones), top-right corner (mode toggle and fullscreen).
 
