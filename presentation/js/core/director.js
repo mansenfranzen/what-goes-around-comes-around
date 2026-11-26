@@ -12,7 +12,7 @@
       { id: 'timeline', kind: 'timeline', hash: '#/timeline', steps: ms.length + 1 } // last step: switch to the logical scale
     ];
     ms.forEach(function (m, i) {
-      slides.push({ id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 3, ref: m, n: i });
+      slides.push({ id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 2, ref: m, n: i });
       if (m.id === '07' && ms[i + 1]) {
         slides.push({
           id: 'timeline-after-' + m.id, kind: 'timeline', hash: '#/timeline-after-' + m.id, steps: 1,

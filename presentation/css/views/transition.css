@@ -3,6 +3,10 @@
   padding: 3rem 3.2rem; background-color: #fff;
 }
 .tr-card { display: flex; flex-direction: column; align-items: center; gap: .5rem; text-align: center; }
+.tr-label { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+/* Presentation: labels hang below the symbol so the symbols and the question share the vertical centre */
+.mode-presentation .tr-card { position: relative; }
+.mode-presentation .tr-label { position: absolute; top: 100%; left: 0; right: 0; margin-top: .5rem; }
 .tr-card b { font-size: 1.5rem; line-height: 1.1; font-weight: 800; }
 .tr-card small { font-size: .9rem; color: var(--muted); font-weight: 700; }
 .tr-sym { position: relative; width: 13rem; height: 13rem; padding: 1.1rem; border-radius: 2rem; background: var(--cat-tint); border: .16rem solid var(--cat); transition: all .5s ease; }
@@ -25,6 +29,7 @@
 @keyframes trPop { 0% { transform: scale(.85); } 100% { transform: scale(1); } }
 
 .tr-center { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; text-align: center; min-width: 0; }
+.mode-presentation .tr-exhibit, .mode-presentation .tr-banner { display: none; }
 .tr-question { font-size: 4.4rem; line-height: 1.05; font-weight: 800; letter-spacing: -.025em; text-wrap: balance; }
 .tr-exhibit {
   display: flex; flex-direction: column; align-items: flex-start; gap: .25rem;

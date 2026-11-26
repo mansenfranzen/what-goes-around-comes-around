@@ -1,7 +1,8 @@
 /* Milestone view: identical layout for every milestone.
-   Steps: 0 header + photo | 1 Problem (+ game) | 2 Solution | 3 Relevance + takeaway.
+   Presentation steps: 0 header + photo | 1 game | 2 takeaway below the photo.
+   Exploration shows the three detailed sections under the photo and the takeaway in the footer.
    All copy comes from content/milestones/NN-slug.js; the game from js/games/NN-slug.js. */
-DB.addView('milestone', function (slide) {
+DB.addView('milestone', function (slide, director) {
   var ICON_CODE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>';
   var ICON_CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var KEYWORDS = {
@@ -26,7 +27,7 @@ DB.addView('milestone', function (slide) {
     return pre;
   }
 
-  /* Optional full-screen comparison (m.compare), opened from the Relevance box. It lives on <body> like an
+  /* Optional full-screen comparison (m.compare), opened from the milestone. It lives on <body> like an
      expanded game and has its own reveal steps: 0 goal + hard side | 1 easy side | 2 verdict. */
   function compareOverlay(m) {
     var c = m.compare, h = DB.h, step = 0, el = null;
@@ -107,6 +108,7 @@ DB.addView('milestone', function (slide) {
   }
 
   var m = slide.ref, h = DB.h;
+  var present = director.mode === 'presentation';
   var game = DB.gameShell.create(m);
   var cmp = m.compare ? compareOverlay(m) : null;
   game.el.setAttribute('data-at', '1');
@@ -123,17 +125,17 @@ DB.addView('milestone', function (slide) {
     photo = h('figure', { class: 'ms-photo contain' }, h('img', { src: DB.symbolURL(m), alt: '' }));
   }
 
-  function rec(kind, at, label, text, extra) {
-    return h('div', { class: 'ms-rec rec-' + kind, 'data-at': at },
+  function rec(kind, label, text, extra) {
+    return h('div', { class: 'ms-rec rec-' + kind },
       h('div', { class: 'rec-label' }, h('i'), h('span', { text: label })),
       h('p', { text: text }),
       extra);
   }
 
-  var relevanceExtra = h('div', { class: 'rec-concept' },
-    h('span', { class: 'chip solid', text: m.concept }),
-    m.today ? h('code', { text: m.today }) : null,
-    cmp ? cmp.button : null);
+  var takeaway = h(present ? 'section' : 'footer', { class: 'ms-take', 'data-at': present ? 2 : null },
+    h('span', { class: 'chip solid', text: 'TAKEAWAY' }),
+    h('p', { text: m.takeaway }),
+    present && cmp ? cmp.button : null);
 
   var hero = h('div', { class: 'ms-hero' }, h('img', { src: DB.symbolURL(m), alt: '' }));
 
@@ -149,13 +151,16 @@ DB.addView('milestone', function (slide) {
     h('div', { class: 'ms-body' },
       h('div', { class: 'ms-left' },
         photo,
-        rec('problem', 1, 'Problem', m.problem),
-        rec('solution', 2, 'Solution', m.solution),
-        rec('relevance', 3, 'Relevance', m.relevance, relevanceExtra)),
+        present ? takeaway : [
+          rec('problem', 'Problem', m.problem),
+          rec('solution', 'Solution', m.solution),
+          rec('relevance', 'Relevance', m.relevance, h('div', { class: 'rec-concept' },
+            h('span', { class: 'chip solid', text: m.concept }),
+            m.today ? h('code', { text: m.today }) : null,
+            cmp ? cmp.button : null))
+        ]),
       h('div', { class: 'ms-right' }, hero, game.el)),
-    h('footer', { class: 'ms-take', 'data-at': 3 },
-      h('span', { class: 'chip solid', text: 'TAKEAWAY' }),
-      h('p', { text: m.takeaway })));
+    present ? null : takeaway);
 
   return {
     el: el,

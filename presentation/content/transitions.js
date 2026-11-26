@@ -36,8 +36,8 @@ DB.transitions.push(
   },
   {
     from: '06',
-    question: 'Is seat 14C free — right now?',
-    exhibit: 'flight 702 · seat 14C → free?\ndeck: feed every card, in order\nanswer: after the whole run',
+    question: 'What is the age of Heidi?',
+    exhibit: 'Billy - 23 years?\ndeck: feed every card, in order\nanswer: after the whole run',
     stuck: 'Cards and tape are sequential: one answer means running the whole deck through.',
     trigger: 'What if a head could jump straight to any record on a spinning platter?'
   },

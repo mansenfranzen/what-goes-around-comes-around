@@ -13,7 +13,7 @@ DB.addMilestone({
   solution: 'Programmers write just map and reduce; the framework spreads the work and survives machine failures.',
   relevance: 'Scale-out, fault-tolerant execution lives on inside SQL engines; the job itself is a GROUP BY.',
   takeaway: 'Scale was real; the hand-written interface lost to SQL.',
-  // Opened from the Relevance box. Java: simplified excerpt of SecondarySort.java in the Apache Hadoop examples
+  // Java: simplified excerpt of SecondarySort.java in the Apache Hadoop examples
   // (the full file has 6 classes and ~140 lines of code without comments).
   compare: {
     button: 'Java vs SQL',

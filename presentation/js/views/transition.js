@@ -1,5 +1,5 @@
 /* Transition view: a dedicated "what is still unsolved?" page between two milestones.
-   Steps: 0 question + exhibit | 1 why the current milestone is stuck | 2 spark -> next milestone revealed.
+   Steps: 0 question | 1 mark the current milestone stuck | 2 reveal the next milestone. Exploration adds the details.
    Copy comes from content/transitions.js (entry with from === current milestone id). */
 DB.addView('transition', function (slide) {
   var h = DB.h, from = slide.from, to = slide.to, t = slide.ref || {};
@@ -9,16 +9,18 @@ DB.addView('transition', function (slide) {
     h('div', { class: 'tr-sym' },
       h('img', { src: DB.symbolURL(from), alt: '' }),
       h('span', { class: 'tr-x', 'data-at': 1, html: '&#10005;' })),
-    h('b', { text: from.short || from.title }),
-    h('small', { class: 'mono', text: from.year }));
+    h('div', { class: 'tr-label' },
+      h('b', { text: from.short || from.title }),
+      h('small', { class: 'mono', text: from.year })));
 
   var toSym = isLast ? 'assets/symbols/logo-db.svg' : DB.symbolURL(to);
   var toCard = h('div', { class: 'tr-card tr-to ' + (isLast ? 'cat-synthesis' : 'cat-' + to.category) },
     h('div', { class: 'tr-sym ghost' },
       h('img', { src: toSym, alt: '' }),
       h('span', { class: 'tr-q', text: '?' })),
-    h('b', { class: 'tr-to-title', text: isLast ? 'Big picture' : (to.short || to.title) }),
-    h('small', { class: 'mono tr-to-year', text: isLast ? 'all together' : to.year }));
+    h('div', { class: 'tr-label' },
+      h('b', { class: 'tr-to-title', text: isLast ? 'Big picture' : (to.short || to.title) }),
+      h('small', { class: 'mono tr-to-year', text: isLast ? 'all together' : to.year })));
 
   var lines = String(t.exhibit || '').split('\n').map(function (l) { return h('span', { text: l || ' ' }); });
 

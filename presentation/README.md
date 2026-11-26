@@ -23,7 +23,7 @@ node tools/shot.mjs '#/m/05/1' '[["wait",500],["click",".game-05 .g-btn"],["shot
 | Need to change | Edit only |
 |---|---|
 | Wording of a milestone (problem / solution / relevance / takeaway / year / concept chip) | `content/milestones/NN-slug.js` |
-| Optional code-comparison overlay (button in the Relevance box, e.g. MapReduce "Java vs SQL") | `compare` in `content/milestones/NN-slug.js`; layout in `js/views/milestone.js` + `css/views/milestone.css` |
+| Optional code-comparison overlay (e.g. MapReduce "Java vs SQL") | `compare` in `content/milestones/NN-slug.js`; layout in `js/views/milestone.js` + `css/views/milestone.css` |
 | Wording of a transition page between milestones | `content/transitions.js` (entry with `from: 'NN'`) |
 | Vertical timeline markers (0 BCE, writing, …) | `content/markers.js` |
 | Real photo / diagram of a milestone | drop file in `assets/images/`, register in `content/images.js`, credit in `assets/images/CREDITS.md` |
@@ -55,13 +55,13 @@ tools/                serve.mjs · shot.mjs · icon-sheet.html (all symbols on o
 
 ## Presentation flow, steps and modes
 
-Slides: `landing` (2 steps) → `timeline` (one reveal per milestone on the linear scale, then the switch to the logical scale) → for each milestone `m` (3 steps) then `t` transition (2 steps) → `bigpicture` (one step per mascot piece, then a query run) → bonus `pitch` (one step per scene after the opening question). MapReduce is a timeline milestone, not a mascot piece. After RAMAC, the timeline first shows the milestones covered so far. Advance once to pan to IMS and fit all remaining milestones to its right, then continue to the existing RAMAC→IMS transition.
+Slides: `landing` (2 steps) → `timeline` (one reveal per milestone on the linear scale, then the switch to the logical scale) → for each milestone `m` (2 steps) then `t` transition (2 steps) → `bigpicture` (one step per mascot piece, then a query run) → bonus `pitch` (one step per scene after the opening question). MapReduce is a timeline milestone, not a mascot piece. After RAMAC, the timeline first shows the milestones covered so far. Advance once to pan to IMS and fit all remaining milestones to its right, then continue to the existing RAMAC→IMS transition.
 
 - **Presentation mode**: content appears step by step. Forward = click, →, Space, Enter, PageDown. Back = ←, PageUp, Backspace. Going back onto the previous slide shows it fully revealed.
 - **Exploration mode**: everything visible, free navigation. Switch with the corner toggle (hidden; appears when the pointer nears the top-right corner) or `E`. The choice is stored in `localStorage.dbtm.mode`; `?mode=explore` overrides.
 - Reveal mechanism: any element with `data-at="N"` is hidden until step ≥ N (`DB.applySteps`, `css/base.css`). Views just put `data-at` on things.
-- Milestone steps: 0 header + photo, 1 Problem (+ game appears), 2 Solution, 3 Relevance + takeaway.
-- Transition steps: 0 question + exhibit, 1 "stuck" banner, 2 trigger and the next milestone revealed.
+- Milestone steps: 0 header + photo; 1 game replaces the hero symbol; 2 takeaway below the photo. Exploration shows Problem, Solution and Relevance under the photo, with the takeaway in the footer.
+- Transition steps: 0 centered question between the milestone cards; 1 mark the outgoing card as stuck; 2 reveal the destination. Only exploration shows the exhibit, stuck explanation and trigger beneath the question.
 - Hidden menus appear near the edges: top bar (logo, Timeline, progress dots, Big picture, bonus Pitch with a gift icon), bottom dock on the timeline (Logical/Linear scale, zoom −/+/Fit, Start/End), left/right edge arrows (adjacent milestones), top-right corner (mode toggle and fullscreen).
 
 Keys: `→ ← Space Enter PageUp/Down Backspace` navigate · `E` mode · `F` fullscreen · `T` timeline · `B` big picture · `L` landing · `G` expand/close current game · `Esc` closes an expanded game or comparison overlay, otherwise returns to the timeline (from milestone, transition, big picture and pitch). Timeline only: `+ - 0` zoom, `Home End` jump to start/end, `S` toggle linear/logical scale.
@@ -79,7 +79,7 @@ DB.addMilestone({
   concept: 'INSERT·INDEX',   // relevance chip
   today: 'INSERT INTO cards VALUES (…)',   // optional code line next to the chip
   problem: '…', solution: '…', relevance: '…', takeaway: '…',
-  compare: {                 // optional: adds a button to the Relevance box that opens a full-screen comparison
+  compare: {                 // optional: button in the presentation takeaway or exploration Relevance box
     button: 'Java vs SQL', kicker: '…', title: '…', intro: '…', goal: '…',
     input: ['…'], output: ['…'],           // tiny example shown next to the goal
     hard: { label, note, stat, lang: 'java', blocks: [{ title, tag, code }], needsLabel, needs: ['…'] },
@@ -88,7 +88,7 @@ DB.addMilestone({
   }
 });
 
-// content/transitions.js: question + exhibit are on screen at step 0
+// content/transitions.js: presentation shows the question; exploration also shows the supporting details
 DB.transitions.push({ from: '05', question: '…', exhibit: '…', stuck: '…', trigger: '…' });
 
 // content/images.js
@@ -131,7 +131,7 @@ Rules (the same game runs in a ~1100×640 panel and full screen):
 ## Views, in one paragraph each
 
 - **timeline** (`js/views/timeline.js`): DOM nodes (symbol + label) over an SVG axis. Each node has a fixed lane (`i % 4`: above/below the axis, near/far), so icons never hop between rows when zooming or panning; nodes that don't fit fold into a "+N" badge that zooms in, and the node size (`nodeScale`) grows smoothly with the available room. Years appear only as axis labels (`drawTicks`, drawn above the stems): regular ticks on the linear scale, each milestone's `year` on the logical scale (in fixed rows). `st.t` blends linear (0) and logical (1) scale; the linear axis runs from 20,000 BCE to 2030 (`YMIN`/`YMAX`) and zoom/pan stay inside it; markers come from `content/markers.js`. Wheel/drag/buttons zoom and pan; clicking a node opens the milestone. Presentation mode starts on the linear scale and reveals one node per step; each step animates the camera (`presentFrame`) forward to the newest milestone and zooms in as milestones cluster into shorter time spans (the zoom never widens again; tune `CAM`); the last step switches to the logical scale before the first milestone. The post-RAMAC review uses logical spacing for both its recap and its preview. Exploration mode starts on the logical scale, fitted.
-- **milestone**: identical layout for all: symbol next to the title, photo, three sections, game, takeaway, adjacent links via edge menus. A milestone with `compare` (MapReduce) gets a button in the Relevance box that opens a full-screen overlay on `<body>` with its own reveal: goal + `hard` code, then `easy` code, then the verdict. While it is open, forward/back keys and clicks walk those steps, either end (or `Esc`) closes it, and leaving the slide removes it.
+- **milestone**: symbol next to the title, photo and takeaway on the left in presentation mode, game on the right, adjacent links via edge menus. A milestone with `compare` (MapReduce) gets a button in the takeaway (Relevance box in exploration) that opens a full-screen overlay on `<body>` with its own reveal: goal + `hard` code, then `easy` code, then the verdict. While it is open, forward/back keys and clicks walk those steps, either end (or `Esc`) closes it, and leaving the slide removes it.
 - **transition**: the issue the previous milestone cannot solve, then the trigger for the next one.
 - **bigpicture**: mascot "Rowie" (SVG viewBox 1000×1020). The `pieces` array in `content/bigpicture.js` sets assembly order independently of the timeline: primitives build the legs, then the arms; models fill the torso around the relational heart; SQL is the voice. The synthesis badge completes the mascot, and the last step runs a query through it.
 - **pitch** (bonus, after the big picture): a management pitch for trying DuckDB on commodity compute, after Fraser's Fivetran post (see `docs/sources.md`). A left rail accumulates the argument in three acts (data is small → premium compute is a markup → proof & momentum) and the stage shows one animated SVG scene per step: hook (cluster vs phone), query-size histogram, largest-EC2-machine growth, EC2 price drop, premium-vs-EC2 markup, TPC-H benchmark, AWS/DuckLabs acquisition, the ask. Scenes, copy and chart values live in `content/pitch.js`; each `chart` key maps to a renderer in `js/views/pitch.js`. Rail items jump to a scene (exploration mode starts on the last one). Red = premium compute, green = commodity compute / DuckDB. Chart values are schematic (read off published charts); re-check them before presenting.
