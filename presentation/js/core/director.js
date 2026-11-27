@@ -12,7 +12,10 @@
       { id: 'timeline', kind: 'timeline', hash: '#/timeline', steps: ms.length + 1 } // last step: switch to the logical scale
     ];
     ms.forEach(function (m, i) {
-      slides.push({ id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 2, ref: m, n: i });
+      slides.push({
+        id: 'm' + m.id, kind: 'milestone', hash: '#/m/' + m.id, steps: 2, ref: m, n: i,
+        skipInPresentation: m.id === '19' || m.id === '18'
+      });
       if (m.id === '07' && ms[i + 1]) {
         slides.push({
           id: 'timeline-after-' + m.id, kind: 'timeline', hash: '#/timeline-after-' + m.id, steps: 1,
@@ -39,9 +42,11 @@
   function show(i, s, opts) {
     opts = opts || {};
     i = DB.clamp(i, 0, slides.length - 1);
+    var dir = opts.dir || (i >= idx ? 1 : -1);
+    while (D.mode === 'presentation' && slides[i].skipInPresentation) i += dir;
+    i = DB.clamp(i, 0, slides.length - 1);
     var slide = slides[i], explore = D.mode === 'exploration';
     var st = explore ? slide.steps : DB.clamp(s || 0, 0, slide.steps);
-    var dir = opts.dir || (i >= idx ? 1 : -1);
 
     if (!current || current.slide !== slide || opts.remount) {
       if (DB.gameShell) DB.gameShell.close();

@@ -12,10 +12,11 @@ All images are stored locally. Most come from Wikimedia Commons; the paper scan,
 | 06 | 06-punch-cards.jpg | Hollerith punched card | Unknown author | Public domain | [File:Hollerith Punched Card.jpg](https://commons.wikimedia.org/wiki/File:Hollerith_Punched_Card.jpg) |
 | 07 | 07-ramac-disk.jpg | IBM RAMAC 305 disk platter | Deep silence (Mikaël Restoux) | CC BY 2.5 | [File:RAMAC 305 disk.JPG](https://commons.wikimedia.org/wiki/File:RAMAC_305_disk.JPG) |
 | 08 | 08-ims.jpg | Apollo 11 Saturn V on Launch Pad 39A | NASA | Public domain | [File:The Apollo 11 Saturn V on Launch Pad 39A.jpg](https://commons.wikimedia.org/wiki/File:The_Apollo_11_Saturn_V_on_Launch_Pad_39A.jpg) |
-| 09 | 09-codasyl.svg | Suppliers and assemblies linked through shared part records | DB Time Machine | Original diagram | — |
-| 09 (unused) | 09-codasyl.png | Network data model diagram | U.S. Department of Transportation | Public domain | [File:Network Model.svg](https://commons.wikimedia.org/wiki/File:Network_Model.svg) |
+| 09 | 09-codasyl-tombstone.png | Cropped photo of the COBOL tombstone commemorating the language | I Programmer; original photographer unknown | Used with permission (user-confirmed) | [Photo](https://www.i-programmer.info/images/stories/News/2019/may/B/coboltombstone85.JPG) (article cites *Computer Museum Report*, Summer 1985) |
+| 09 (unused) | 09-codasyl.svg | Suppliers and assemblies linked through shared part records | DB Time Machine | Original diagram | — |
+| 09 (unused) | 09-codasyl.png | Network data model diagram | U.S. Department of Transportation | Public domain | [File: Network Model.svg](https://commons.wikimedia.org/wiki/File:Network_Model.svg) |
 | 10 | 10-relational.png | First-page title and byline, *A Relational Model of Data for Large Shared Data Banks*, CACM 13(6), June 1970, p. 377 | E. F. Codd | Bibliographic excerpt | [Original paper](https://doi.org/10.1145/362384.362685) · [Scan used for crop](https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf) |
-| 11 | 11-sql.svg | The same request in plain English and SQL | DB Time Machine | Original diagram | — |
+| 11 | 11-sql.svg | The same request in plain English, relational algebra and SQL | DB Time Machine | Original diagram | — |
 | 11 (unused) | 11-sql.png | Anatomy of an SQL statement | SqlPac (modified by Ferdna) | CC BY-SA 3.0 | [File:SQL ANATOMY wiki.svg](https://commons.wikimedia.org/wiki/File:SQL_ANATOMY_wiki.svg) |
 | 12 | 12-arrays.png | Three-dimensional array diagram | Tropwine | CC BY 4.0 | [File:3D array diagram.svg](https://commons.wikimedia.org/wiki/File:3D_array_diagram.svg) |
 | 13 | 13-objects.png | UML class diagram example | Trashtoy | Public domain | [File:UML class diagram example.svg](https://commons.wikimedia.org/wiki/File:UML_class_diagram_example.svg) |

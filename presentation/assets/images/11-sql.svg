@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="sans-serif" fill="#0B1B33">
-  <title>One request in English and SQL</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" font-family="sans-serif" fill="#0B1B33">
+  <title>One request in English, relational algebra and SQL</title>
   <path d="M32 10H568Q590 10 590 32V126Q590 148 568 148H98L62 174V148H32Q10 148 10 126V32Q10 10 32 10Z" fill="#DCEEFF" stroke="#0F5499" stroke-width="3"/>
   <text x="40" y="46" font-size="20" font-weight="bold" letter-spacing="2" fill="#0F5499">IN ENGLISH</text>
   <g font-size="38" font-weight="bold">
@@ -7,11 +7,15 @@
     <text x="40" y="132">customers in Oslo.</text>
   </g>
 
-  <rect x="10" y="184" width="580" height="206" rx="22" fill="#0B1B33"/>
-  <text x="40" y="222" font-size="20" font-weight="bold" letter-spacing="2" fill="#A5D8FF">IN SQL</text>
+  <rect x="10" y="184" width="580" height="106" rx="22" fill="#0B1B33"/>
+  <text x="40" y="222" font-size="20" font-weight="bold" letter-spacing="2" fill="#A5D8FF">IN RELATIONAL ALGEBRA</text>
+  <text x="40" y="262" font-family="monospace" font-size="32" fill="#fff"><tspan fill="#A5D8FF">π</tspan><tspan baseline-shift="sub" font-size="23">name</tspan>(<tspan fill="#A5D8FF">σ</tspan><tspan baseline-shift="sub" font-size="23">city = <tspan fill="#96F2D7">'Oslo'</tspan></tspan>(customer))</text>
+
+  <rect x="10" y="304" width="580" height="206" rx="22" fill="#0B1B33"/>
+  <text x="40" y="342" font-size="20" font-weight="bold" letter-spacing="2" fill="#A5D8FF">IN SQL</text>
   <g font-family="monospace" font-size="40" fill="#fff">
-    <text x="40" y="269"><tspan fill="#A5D8FF">SELECT</tspan> name</text>
-    <text x="40" y="317"><tspan fill="#A5D8FF">FROM</tspan> customer</text>
-    <text x="40" y="365"><tspan fill="#A5D8FF">WHERE</tspan> city = <tspan fill="#96F2D7">'Oslo'</tspan>;</text>
+    <text x="40" y="389"><tspan fill="#A5D8FF">SELECT DISTINCT</tspan> name</text>
+    <text x="40" y="437"><tspan fill="#A5D8FF">FROM</tspan> customer</text>
+    <text x="40" y="485"><tspan fill="#A5D8FF">WHERE</tspan> city = <tspan fill="#96F2D7">'Oslo'</tspan>;</text>
   </g>
 </svg>

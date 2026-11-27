@@ -1,18 +1,21 @@
-.view-timeline { background-color: #fff; touch-action: none; cursor: grab; }
+.view-timeline { background-color: #fff; touch-action: none; cursor: grab; --ev: #8A97AB; --ev-tint: #E6EAF1; }
 .view-timeline.panning { cursor: grabbing; }
 .view-timeline.panning .tl-node { pointer-events: none; }
 
 .tl-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .tl-axis { stroke: var(--ink); stroke-width: .42rem; stroke-linecap: round; }
 .tl-arrow { fill: var(--ink); }
-.tl-tick { stroke: var(--ink); stroke-width: .2rem; }
-.tl-tick-label { font: 800 1.1rem var(--mono); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: .6rem; stroke-linejoin: round; }
-.mk-line { stroke: var(--muted); stroke-width: .12rem; stroke-dasharray: .5rem .6rem; opacity: .6; }
-.mk-line.strong { stroke: var(--ink); stroke-width: .2rem; stroke-dasharray: none; opacity: 1; }
-.mk-label rect { fill: #fff; stroke: var(--ink); stroke-width: .12rem; }
-.mk-label text { font: 800 .92rem var(--sans); fill: var(--ink); }
-.mk-label.strong rect { fill: var(--ink); }
-.mk-label.strong text { fill: #fff; }
+/* Three line styles: milestones = solid stem in the category colour with a dot on the axis (.tl-node .stem),
+   years = ink tick across the axis leading to a dark pill (.tl-year), with a light ruler on the linear scale (.tl-tick),
+   world events = grey milestones with a dotted stem and a grey dot (.tl-event, .ev-line, .ev-dot). */
+.tl-year-line { fill: none; stroke: var(--ink); stroke-width: .2rem; stroke-linecap: round; stroke-linejoin: round; }
+.tl-year rect { fill: var(--ink); stroke: #fff; stroke-width: .25rem; paint-order: stroke; }
+.tl-year text { font: 800 1.05rem var(--mono); fill: #fff; }
+.tl-year.pin rect { fill: var(--ink-2); }
+.tl-tick { stroke: var(--muted); stroke-width: .12rem; }
+.tl-tick-label { font: 600 .85rem var(--mono); fill: var(--muted); paint-order: stroke; stroke: #fff; stroke-width: .4rem; stroke-linejoin: round; }
+.ev-line { stroke: var(--ev); stroke-width: .2rem; stroke-linecap: round; stroke-dasharray: 0 .6rem; }
+.ev-dot { fill: var(--ev); stroke: #fff; stroke-width: .12rem; }
 .gap-pill rect { fill: #fff; stroke: var(--ink); stroke-width: .1rem; }
 .gap-pill text { font: 700 .72rem var(--mono); fill: var(--ink-2); }
 
@@ -24,7 +27,13 @@
 }
 .tl-node.above { flex-direction: column-reverse; }
 .tl-node.off, .tl-node.hid { opacity: 0; pointer-events: none; }
-.tl-node .stem { width: .16em; height: var(--stem, 1.5em); background: var(--ink); flex: none; }
+.tl-node .stem { position: relative; width: .2em; height: var(--stem, 1.5em); background: var(--cat); flex: none; }
+.tl-node .stem::after {
+  content: ""; position: absolute; left: 50%; width: .8em; height: .8em; margin-left: -.4em; border-radius: 50%;
+  background: var(--cat); box-shadow: 0 0 0 .15em #fff;
+}
+.tl-node.above .stem::after { bottom: -.4em; }
+.tl-node.below .stem::after { top: -.4em; }
 .tl-node .badge {
   width: 4.7em; height: 4.7em; padding: .5em; border-radius: 1.2em; background: #fff; flex: none;
   border: .17em solid var(--cat); box-shadow: 0 .3em 0 var(--cat-tint); transition: transform .2s ease, background .2s ease;
@@ -32,7 +41,7 @@
 .tl-node .badge img { width: 100%; height: 100%; pointer-events: none; }
 .tl-node .txt { display: flex; flex-direction: column; align-items: center; height: 1.4em; padding-top: .2em; line-height: 1.1; }
 .tl-node.above .txt { justify-content: flex-end; padding: 0 0 .2em; }
-.tl-node .nm { font: 700 .8em var(--sans); color: var(--ink-2); white-space: nowrap; }
+.tl-node .nm { font: 700 max(.8em, 1.1rem) var(--sans); color: var(--ink-2); white-space: nowrap; }
 .tl-node .nm { text-shadow: 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff; }
 .tl-node:hover .badge { transform: scale(1.12); background: var(--cat-tint); }
 .tl-node.pulse .badge { animation: nodePop .8s cubic-bezier(.2, 1.5, .4, 1); }
@@ -42,14 +51,32 @@
 @keyframes nodePop { 0% { transform: scale(.2); } 100% { transform: scale(1); } }
 @keyframes nodeRing { 0% { box-shadow: 0 0 0 0 var(--cat); opacity: .8; } 100% { box-shadow: 0 0 0 1.6em var(--cat); opacity: 0; } }
 
+/* "+N" sits on the badge's right edge, clear of the name line */
 .tl-node .plus {
-  position: absolute; display: none; right: .1em; z-index: 2; background: var(--ink); color: #fff; font: 800 .8em var(--mono);
+  position: absolute; display: none; right: -.2em; z-index: 2; background: var(--ink); color: #fff; font: 800 .8em var(--mono);
   border-radius: 99px; padding: .25em .55em; cursor: zoom-in;
 }
-.tl-node.above .plus { top: .1em; }
+.tl-node.above .plus { top: 1.6em; }
 .tl-node .plus.on { display: block; }
-.tl-node.below .plus { bottom: .2em; }
+.tl-node.below .plus { bottom: 1.6em; }
 .tl-node .plus:hover { background: var(--cat); }
+
+/* world events: grey milestones (label over badge); sizes mirror EV in js/views/timeline.js */
+.tl-events { position: absolute; inset: 0; pointer-events: none; }
+.tl-event {
+  position: absolute; left: 0; top: 0; display: flex; flex-direction: column; align-items: center;
+  pointer-events: auto; transition: opacity .3s ease; will-change: transform;
+}
+.tl-event.hid { opacity: 0; pointer-events: none; }
+.tl-event .nm {
+  height: 1.3rem; font: 700 .9rem/1.3rem var(--sans); color: var(--muted); white-space: nowrap;
+  text-shadow: 0 0 .3em #fff, 0 0 .3em #fff, 0 0 .3em #fff;
+}
+.tl-event .badge {
+  width: 3.2rem; height: 3.2rem; padding: .35rem; border-radius: .85rem; background: #fff; flex: none;
+  border: .14rem solid var(--ev); box-shadow: 0 .2rem 0 var(--ev-tint);
+}
+.tl-event .badge img { display: block; width: 100%; height: 100%; pointer-events: none; }
 
 /* dock */
 .tl-dock {
